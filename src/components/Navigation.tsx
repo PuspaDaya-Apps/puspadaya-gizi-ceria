@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Home, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,7 +19,7 @@ const Navigation = () => {
     <div className="fixed top-0 left-0 w-full bg-white shadow-sm z-50">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <span className="text-primary text-2xl font-bold">Puspadaya</span>
+          <Link to="/" className="text-primary text-2xl font-bold">Puspadaya</Link>
         </div>
 
         {/* Desktop Navigation */}
@@ -26,29 +27,29 @@ const Navigation = () => {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuLink href="#" className={navigationMenuTriggerStyle()}>
+                <Link to="/" className={cn(navigationMenuTriggerStyle())}>
                   Beranda
-                </NavigationMenuLink>
+                </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink href="#features" className={navigationMenuTriggerStyle()}>
+                <a href="#features" className={cn(navigationMenuTriggerStyle())}>
                   Fitur
-                </NavigationMenuLink>
+                </a>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink href="#demo" className={navigationMenuTriggerStyle()}>
+                <a href="#demo" className={cn(navigationMenuTriggerStyle())}>
                   Demo
-                </NavigationMenuLink>
+                </a>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink href="#download" className={navigationMenuTriggerStyle()}>
+                <a href="#download" className={cn(navigationMenuTriggerStyle())}>
                   Download
-                </NavigationMenuLink>
+                </a>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink href="#team" className={navigationMenuTriggerStyle()}>
+                <Link to="/team" className={cn(navigationMenuTriggerStyle())}>
                   Tim Kami
-                </NavigationMenuLink>
+                </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -61,11 +62,11 @@ const Navigation = () => {
               <Menu size={24} />
             </Button>
             <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mt-4">
-              <li><a href="#">Beranda</a></li>
+              <li><Link to="/">Beranda</Link></li>
               <li><a href="#features">Fitur</a></li>
               <li><a href="#demo">Demo</a></li>
               <li><a href="#download">Download</a></li>
-              <li><a href="#team">Tim Kami</a></li>
+              <li><Link to="/team">Tim Kami</Link></li>
             </ul>
           </div>
         </div>
