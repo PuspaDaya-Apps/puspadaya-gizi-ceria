@@ -1,5 +1,7 @@
+
 import React from 'react';
 import FeatureCard from './FeatureCard';
+import { BarChart3, Calendar } from 'lucide-react';
 
 const FeaturesSection = () => {
   return (
@@ -30,7 +32,7 @@ const FeaturesSection = () => {
           />
           
           <FeatureCard 
-            icon={<ChartBar size={48} />}
+            icon={<BarChart3 size={48} />}
             title="Grafik Tumbuh Kembang Interaktif"
             description="Visualisasi interaktif perkembangan anak berdasarkan standar WHO"
           />
