@@ -57,7 +57,7 @@ const HeroSection = () => {
             {/* Phone frame with animated hover effect */}
             <div className="animate-float">
               <img 
-                src="/uploads/95e14473-190b-4fd1-8942-8b32f7627ce1.png" 
+                src="/lovable-uploads/95e14473-190b-4fd1-8942-8b32f7627ce1.png" 
                 alt="Puspadaya App Interface" 
                 className="w-full rounded-3xl shadow-lg animate-pulse-gentle"
               />
