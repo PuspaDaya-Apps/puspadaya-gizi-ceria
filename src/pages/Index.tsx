@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Navigation from '@/components/Navigation';
 import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import DownloadSection from '@/components/DownloadSection';
@@ -11,6 +12,7 @@ import FooterSection from '@/components/FooterSection';
 const Index = () => {
   return (
     <div className="font-poppins">
+      <Navigation />
       <HeroSection />
       <FeaturesSection />
       <DemoSection />

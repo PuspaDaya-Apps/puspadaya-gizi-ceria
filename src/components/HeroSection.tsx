@@ -13,7 +13,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="min-h-screen bg-white relative overflow-hidden">
+    <section className="pt-24 min-h-screen bg-white relative overflow-hidden">
       {/* Floating animations */}
       <div className="absolute top-20 left-20 w-20 h-20 rounded-full bg-blue-100 opacity-60 animate-float"></div>
       <div className="absolute top-40 right-40 w-16 h-16 rounded-full bg-accent opacity-40 animate-float" style={{ animationDelay: '1s' }}></div>
@@ -53,12 +53,19 @@ const HeroSection = () => {
         </div>
         
         <div className="w-full lg:w-1/2 flex justify-center">
-          <div className="card bg-white shadow-lg border-4 border-yellow-400 rounded-2xl p-4 w-[280px] max-w-full animate-pulse-gentle">
-            <img 
-              src="https://images.unsplash.com/photo-1576614086934-497daf90ffb5?q=80&w=2070&auto=format&fit=crop" 
-              alt="Puspadaya App Interface" 
-              className="rounded-xl"
-            />
+          <div className="relative w-[280px] max-w-full">
+            {/* Phone frame with animated hover effect */}
+            <div className="animate-float">
+              <img 
+                src="/lovable-uploads/12b2c3f8-ab44-498d-8257-82c5a7abe436.png" 
+                alt="Puspadaya App Interface" 
+                className="w-full rounded-3xl shadow-lg animate-pulse-gentle"
+              />
+            </div>
+            
+            {/* Floating elements around the phone */}
+            <div className="absolute -top-4 -right-4 w-12 h-12 bg-blue-100 rounded-full animate-float" style={{ animationDelay: '0.5s' }}></div>
+            <div className="absolute -bottom-4 -left-4 w-8 h-8 bg-yellow-200 rounded-full animate-float" style={{ animationDelay: '1.2s' }}></div>
           </div>
         </div>
       </div>
