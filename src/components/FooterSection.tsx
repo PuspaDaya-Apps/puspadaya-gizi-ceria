@@ -45,7 +45,7 @@ const FooterSection = () => {
                     <ul className="space-y-2">
                       <li><a href="#" className="text-gray-600 hover:text-primary">Syarat & Ketentuan</a></li>
                       <li><a href="#" className="text-gray-600 hover:text-primary">Kebijakan Privasi</a></li>
-                      <li><a href="#" className="text-gray-600 hover:text-primary">FAQ</a></li>
+                      {/* <li><a href="#" className="text-gray-600 hover:text-primary">FAQ</a></li> */}
                     </ul>
                   </div>
                 </div>
@@ -76,9 +76,9 @@ const FooterSection = () => {
             <p className="text-xs text-white">
               © {new Date().getFullYear()} Puspadaya. Hak Cipta Dilindungi.
             </p>
-            <p className="text-xs text-white">
+            {/* <p className="text-xs text-white">
               Jl. Kesehatan No. 123, Jakarta Selatan, Indonesia
-            </p>
+            </p> */}
           </div>
         </div>
       </div>

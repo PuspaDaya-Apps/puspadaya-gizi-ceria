@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 
 const DownloadSection = () => {
   return (
-    <section className="py-20 bg-blue-50">
+    <section id="download" className="py-20 bg-blue-50">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
           <div className="w-full lg:w-1/2">
@@ -32,10 +32,10 @@ const DownloadSection = () => {
                 Download di Google Play
               </Button>
               
-              <Button variant="outline" className="btn btn-outline btn-accent gap-2">
+              {/* <Button variant="outline" className="btn btn-outline btn-accent gap-2">
                 <Apple size={20} />
                 Download di App Store
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>

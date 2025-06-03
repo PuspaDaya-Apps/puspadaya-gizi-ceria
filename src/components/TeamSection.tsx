@@ -5,34 +5,34 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const TeamSection = () => {
   const teamMembers = [
-    {
-      name: "dr. Indra Wijaya",
-      role: "Founder & Dokter Spesialis Anak",
-      description: "20+ tahun pengalaman dalam kesehatan anak dan tumbuh kembang",
-      imageUrl: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=2070&auto=format&fit=crop",
-      isOnline: true
-    },
-    {
-      name: "Siti Rahmawati, M.Gz",
-      role: "Ahli Gizi & Nutrisi",
-      description: "Spesialis gizi anak dengan pengalaman di WHO dan UNICEF",
-      imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop",
-      isOnline: true
-    },
-    {
-      name: "Reza Firmansyah",
-      role: "CTO",
-      description: "Pengembang aplikasi kesehatan dengan pengalaman 8+ tahun",
-      imageUrl: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=2070&auto=format&fit=crop",
-      isOnline: false
-    },
-    {
-      name: "Amalia Putri",
-      role: "UI/UX Designer",
-      description: "Desainer dengan fokus pada pengalaman pengguna dalam aplikasi kesehatan",
-      imageUrl: "https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?q=80&w=1989&auto=format&fit=crop",
-      isOnline: true
-    }
+   {
+  name: "The University of Sydney",
+  role: "Global Research Advisor",
+  // description: "Lembaga akademik terkemuka yang memberikan arahan strategis dalam pengembangan teknologi kesehatan dan riset berbasis data global.",
+  imageUrl: "https://ih1.redbubble.net/image.3512201100.7135/st,small,507x507-pad,600x600,f8f8f8.jpg"
+},
+{
+  name: "Universitas Airlangga",
+  role: "Nutrition Research ",
+  // description: "Berperan sebagai mitra riset bidang gizi dan kesehatan masyarakat dalam pengembangan aplikasi berbasis data lokal.",
+  imageUrl: "https://unair.ac.id/wp-content/uploads/2023/11/Logo-Branding-UNAIR-biru.png",
+  isOnline: true
+},
+{
+  name: "Universitas Patimura",
+  role: "Nutrition Research",
+  // description: "Berperan sebagai mitra riset bidang gizi dan kesehatan masyarakat dalam pengembangan aplikasi berbasis data lokal.",
+  imageUrl: "https://assetd.kompas.id/BWIhEtxAPZhaqWPbtg-bkX2Tldc=/1024x1024/https%3A%2F%2Fkompaspedia.kompas.id%2Fwp-content%2Fuploads%2F2020%2F08%2Flogo_Universitas-Patimura.png",
+  isOnline: false
+},
+{
+  name: "Politeknik Negeri Banyuwangi",
+  role: "Health App Developer",
+  // description: "Tim pengembang teknologi dari Poliwangi yang berfokus pada solusi digital untuk pemantauan kesehatan dan gizi masyarakat.",
+  imageUrl: "https://upload.wikimedia.org/wikipedia/id/e/e3/Logo_Politeknik_Negeri_Banyuwangi.png",
+  isOnline: true
+}
+
   ];
 
   return (
@@ -41,7 +41,7 @@ const TeamSection = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">Tim Kami</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Puspadaya didukung oleh tim ahli kesehatan, gizi, dan teknologi
+            Didukung oleh lembaga dan tenaga ahli di bidang kesehatan, gizi, serta teknologi untuk mewujudkan pelayanan yang berkualitas.
           </p>
         </div>
         
@@ -51,7 +51,7 @@ const TeamSection = () => {
               key={index}
               name={member.name}
               role={member.role}
-              description={member.description}
+           
               imageUrl={member.imageUrl}
               isOnline={member.isOnline}
             />
