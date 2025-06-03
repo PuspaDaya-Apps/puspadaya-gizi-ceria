@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Team from "./pages/Team";
 import NotFound from "./pages/NotFound";
 import FeaturesSection from "./components/FeaturesSection";
+import KebijakanPrivasi from "./pages/KebijakanPrivasi";
+import SyaratdanKetentuan from "./pages/SyaratdanKetentuan";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +22,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/team" element={<Team />} />
+          <Route path="/kebijakanprivasi" element={<KebijakanPrivasi />} />
+          <Route path="/syaratdanketentuan" element={<SyaratdanKetentuan />} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -19,6 +19,11 @@ const Navigation = () => {
     <div className="fixed top-0 left-0 w-full bg-white shadow-sm z-50">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center gap-2">
+          <img
+            src="	https://puspadaya.netlify.app/_next/image?url=%2Fimages%2Flogo%2Flogo-puspa.png&w=256&q=75"
+            alt="Puspadaya Logo"
+            className="h-6 w-auto"
+          />
           <Link to="/" className="text-primary text-2xl font-bold">Puspadaya</Link>
         </div>
 

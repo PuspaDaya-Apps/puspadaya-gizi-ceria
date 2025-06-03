@@ -1,7 +1,5 @@
 
-import React from 'react';
 import TeamMember from './TeamMember';
-import { Card, CardContent } from '@/components/ui/card';
 
 const TeamSection = () => {
   const teamMembers = [
@@ -51,7 +49,6 @@ const TeamSection = () => {
               key={index}
               name={member.name}
               role={member.role}
-           
               imageUrl={member.imageUrl}
               isOnline={member.isOnline}
             />
