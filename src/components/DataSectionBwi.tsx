@@ -1,11 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FeatureCard from "./FeatureCard";
 import { BarChart3, Calendar } from "lucide-react";
 import DataCard from "./DataCard";
 import VisualisasiSection from "./VisualisasiSectionBwi";
 import VisualisasiSectionBwi from "./VisualisasiSectionBwi";
 
-const DatasSectionBwi = () => {
+interface DataSectionProps {
+  region: string;
+}
+
+
+const DatasSectionBwi: React.FC<DataSectionProps> = ({ region }) => 
+  {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api?kabupaten_kota=${region}`);
+        const json = await res.json();
+        setData(json.data);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (region) {
+      fetchData();
+    }
+  }, [region]);
+
+  if (loading) {
+    return (
+      <div className="text-center py-10 text-gray-500">
+        Memuat data Banyuwangi...
+      </div>
+    );
+  }
+
   return (
     <section id="features" className="py-0">
       <div className="container mx-auto px-4 py-1">
@@ -51,7 +87,7 @@ const DatasSectionBwi = () => {
               </svg>
             }
             title="Balita Terdaftar"
-            description="2980"
+            description= {data?.total_balita??  "-"}
           />
 
           {/* 2. Ibu Hamil */}
@@ -77,7 +113,7 @@ const DatasSectionBwi = () => {
               </svg>
             }
             title="Ibu Hamil Terdaftar"
-            description="10"
+            description={data?.total_ibu_hamil ??  "-"}
           />
 
           {/* 3. Posyandu */}
@@ -102,7 +138,7 @@ const DatasSectionBwi = () => {
               </svg>
             }
             title="Posyandu Terdaftar"
-            description="40"
+            description={data?.total_posyandu ??  "-"}
           />
 
           {/* 4. Kader */}
@@ -146,13 +182,11 @@ const DatasSectionBwi = () => {
               </svg>
             }
             title="Kader Terdaftar"
-            description="120"
+            description={data?.total_kader ??  "-"}
           />
         </div>
-       
       </div>
-     <VisualisasiSectionBwi/>
-      
+      <VisualisasiSectionBwi />
     </section>
   );
 };

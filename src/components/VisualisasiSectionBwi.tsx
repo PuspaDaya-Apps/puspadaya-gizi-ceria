@@ -15,6 +15,12 @@ import {
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { MoreVertical } from "lucide-react";
 import * as htmlToImage from "html-to-image";
+import StatusGizi from "./visualisasi/banyuwangi/statusgizi";
+import DistribusiPengguna from "./visualisasi/banyuwangi/DistribusiPengguna";
+import StatusGiziBwi from "./visualisasi/banyuwangi/statusgizi";
+import DistribusiPenggunaBwi from "./visualisasi/banyuwangi/DistribusiPengguna";
+import CardInformation from "./visualisasi/CardInformation";
+import DistribusiBalitaBwi from "./visualisasi/banyuwangi/DistribusiBalita";
 
 const VisualisasiSectionBwi = () => {
   const barChartRef = useRef<HTMLDivElement>(null);
@@ -23,7 +29,7 @@ const VisualisasiSectionBwi = () => {
   const handleDownload = async (format: "png" | "jpeg") => {
     if (!barChartRef.current) return;
 
-    const options = { backgroundColor: "#ffffff" }; // putih
+    const options = { backgroundColor: "#ffffff" };
 
     const dataUrl =
       format === "png"
@@ -37,28 +43,6 @@ const VisualisasiSectionBwi = () => {
     link.href = dataUrl;
     link.download = `barchart.${format}`;
     link.click();
-  };
-
-  // Pie Chart Status Gizi
-  const nutritionData = [
-    { name: "Stunting", value: 35 },
-    { name: "Wasting", value: 20 },
-    { name: "Underweight", value: 25 },
-  ];
-  const COLORS = ["#ef4444", "#f59e0b", "#1e40af"];
-
-  // Pie Chart User
-  const userData = [
-    { name: "Kader", value: 120 },
-    { name: "Ketua Kader", value: 30 },
-  ];
-  const USER_COLORS = ["#3b82f6", "#10b981"];
-
-  // Info data
-  const infoData = {
-    totalUser: 150,
-    desaMaluku: 20,
-    desaBanyuwangi: 15,
   };
 
   // Data Bar Chart Balita
@@ -78,164 +62,19 @@ const VisualisasiSectionBwi = () => {
       <div className="px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Pie Chart Gizi */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-              Status Gizi Balita
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={nutritionData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  label
-                >
-                  {nutritionData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+
+          <StatusGiziBwi region="Banyuwangi" />
 
           {/* Pie Chart User */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-              Distribusi Pengguna
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={userData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  label
-                >
-                  {userData.map((entry, index) => (
-                    <Cell
-                      key={`cell-user-${index}`}
-                      fill={USER_COLORS[index]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+          <DistribusiPenggunaBwi region="Banyuwangi" />
         </div>
       </div>
 
       {/* Info Card */}
-      <div className="px-4 md:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-blue-50 rounded-2xl shadow p-6 text-center">
-            <h4 className="text-lg font-semibold text-gray-700">
-              Jumlah Puskesmas Terdaftar di Maluku
-            </h4>
-            <p className="text-2xl font-bold text-blue-600">
-              {infoData.totalUser}
-            </p>
-          </div>
-          <div className="bg-blue-50 rounded-2xl shadow p-6 text-center">
-            <h4 className="text-lg font-semibold text-gray-700">
-              Jumlah Puskesmas Terdaftar di Banyuwangi
-            </h4>
-            <p className="text-2xl font-bold text-blue-600">
-              {infoData.totalUser}
-            </p>
-          </div>
-          <div className="bg-green-50 rounded-2xl shadow p-6 text-center">
-            <h4 className="text-lg font-semibold text-gray-700">
-              Jumlah Desa Maluku Terdaftar
-            </h4>
-            <p className="text-2xl font-bold text-green-600">
-              {infoData.desaMaluku}
-            </p>
-          </div>
-          <div className="bg-yellow-50 rounded-2xl shadow p-6 text-center">
-            <h4 className="text-lg font-semibold text-gray-700">
-              Jumlah Desa Banyuwangi Terdaftar
-            </h4>
-            <p className="text-2xl font-bold text-yellow-600">
-              {infoData.desaBanyuwangi}
-            </p>
-          </div>
-        </div>
-      </div>
+      <CardInformation />
 
       {/* Bar Chart Distribusi Balita */}
-      <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
-          <h3 className="text-xl font-semibold text-primary text-center w-full">
-            Distribusi Balita per Desa
-          </h3>
-
-          {/* Burger Button */}
-          <Menu as="div" className="relative inline-block text-left">
-            <MenuButton className="p-2 rounded-full hover:bg-gray-100">
-              <MoreVertical className="w-5 h-5 text-gray-600" />
-            </MenuButton>
-            <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right bg-white border border-gray-200 rounded-lg shadow-lg focus:outline-none">
-              <MenuItem>
-                {({ active }) => (
-                  <button
-                    onClick={() => handleDownload("png")}
-                    className={`${
-                      active ? "bg-gray-100" : ""
-                    } w-full px-4 py-2 text-left text-sm text-gray-700`}
-                  >
-                    Download PNG
-                  </button>
-                )}
-              </MenuItem>
-              <MenuItem>
-                {({ active }) => (
-                  <button
-                    onClick={() => handleDownload("jpeg")}
-                    className={`${
-                      active ? "bg-gray-100" : ""
-                    } w-full px-4 py-2 text-left text-sm text-gray-700`}
-                  >
-                    Download JPG
-                  </button>
-                )}
-              </MenuItem>
-            </MenuItems>
-          </Menu>
-        </div>
-
-        <div
-          ref={barChartRef}
-          className="bg-white p-6 rounded-lg"
-          style={{ width: "100%" }}
-        >
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart
-              layout="vertical"
-              data={desaData}
-              margin={{ top: 20, right: 30, left: 40, bottom: 20 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" />
-              <YAxis dataKey="name" type="category" />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="stunting" fill="#ef4444" />
-              <Bar dataKey="wasting" fill="#f59e0b" />
-              <Bar dataKey="underweight" fill="#1e40af" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      <DistribusiBalitaBwi region="Banyuwangi" />
 
       {/* Chart SKDN */}
       <div className="bg-white rounded-2xl shadow p-6 relative">

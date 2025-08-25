@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DatasSectionBwi from "./DataSectionBwi";
 import DatasSectionMaluku from "./DataSectionMaluku";
 
+
 const DashboardTabs = () => {
   return (
     <section id="dashboard" className="py-10">
@@ -13,7 +14,7 @@ const DashboardTabs = () => {
             Dashboard Data Wilayah
           </h2>
           <p className="text-base text-gray-600 max-w-xl mx-auto">
-            Pilih wilayah untuk melihat data pengguna, gizi, kesehatan, dan 
+            Pilih wilayah untuk melihat data pengguna, gizi, kesehatan, dan
             informasi lainnya secara interaktif.
           </p>
         </div>
@@ -21,32 +22,24 @@ const DashboardTabs = () => {
         {/* Tabs untuk memilih wilayah */}
         <Tabs defaultValue="bwi" className="w-full">
           <TabsList className="flex justify-center gap-2 mb-6 bg-gray-100 p-1 rounded-xl shadow-sm w-fit mx-auto">
-            <TabsTrigger
-              value="bwi"
-              className="px-4 py-2 rounded-lg text-sm font-medium transition-colors
+            <TabsTrigger value="bwi" className="px-4 py-2 rounded-lg text-sm font-medium transition-colors
                          data-[state=active]:bg-primary data-[state=active]:text-white
-                         hover:bg-primary/10"
-            >
+                         hover:bg-primary/10">
               Banyuwangi
             </TabsTrigger>
-            <TabsTrigger
-              value="mlk"
-              className="px-4 py-2 rounded-lg text-sm font-medium transition-colors
+            <TabsTrigger value="mlk" className="px-4 py-2 rounded-lg text-sm font-medium transition-colors
                          data-[state=active]:bg-primary data-[state=active]:text-white
-                         hover:bg-primary/10"
-            >
+                         hover:bg-primary/10">
               Maluku
             </TabsTrigger>
           </TabsList>
 
-          {/* Konten Tab Banyuwangi */}
           <TabsContent value="bwi">
-            <DatasSectionBwi />
+            <DatasSectionBwi region="Banyuwangi" />
           </TabsContent>
 
-          {/* Konten Tab Maluku */}
           <TabsContent value="mlk">
-            <DatasSectionMaluku />
+            <DatasSectionMaluku region="Maluku" />
           </TabsContent>
         </Tabs>
       </div>
