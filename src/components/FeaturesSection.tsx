@@ -1,20 +1,27 @@
 import React from "react";
 import FeatureCard from "./FeatureCard";
 import { BarChart3, Calendar } from "lucide-react";
+import DataCard from "./DataCard";
+import DatasSection from "./DataSectionBwi";
+import DatasSectionBwi from "./DataSectionBwi";
+import DatasSectionMaluku from "./DataSectionMaluku";
+import DashboardTabs from "./DashboardTabs";
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="py-16 bg-blue-50">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            Fitur Utama
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Puspadaya hadir dengan fitur lengkap untuk memantau gizi dan tumbuh
-            kembang si kecil secara menyeluruh
-          </p>
-        </div>
+<section id="features" className="py-16">
+  <div className="container mx-auto px-4">
+   
+    <div className="bg-blue-50 rounded-2xl p-8">
+      <div className="text-center mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+          Fitur Utama
+        </h2>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Puspadaya hadir dengan fitur lengkap untuk memantau gizi dan tumbuh
+          kembang si kecil secara menyeluruh
+        </p>
+      </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <FeatureCard
@@ -121,8 +128,13 @@ const FeaturesSection = () => {
             description="Pengingat jadwal konsultasi dan tips persalinan aman."
           />
         </div>
-      </div>
-    </section>
+    </div>
+  </div>
+<DashboardTabs/>
+
+
+
+</section>
   );
 };
 
