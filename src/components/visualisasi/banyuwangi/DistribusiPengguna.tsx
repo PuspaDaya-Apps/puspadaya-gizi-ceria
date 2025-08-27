@@ -67,7 +67,7 @@ const DistribusiPenggunaBwi: React.FC<DataSectionProps> = ({ region }) => {
             cx="50%"
             cy="50%"
             outerRadius={100}
-            label={({ name, value }) => `${name}: ${value}`}
+            label={({ name, value }) => `${name}: ${value}%`} 
           >
             {data.map((entry, index) => (
               <Cell
@@ -77,7 +77,7 @@ const DistribusiPenggunaBwi: React.FC<DataSectionProps> = ({ region }) => {
             ))}
           </Pie>
 
-          <Tooltip formatter={(value) => `${value}`} />
+          <Tooltip formatter={(value) => `${value}%`} /> 
           <Legend />
         </PieChart>
       </ResponsiveContainer>
