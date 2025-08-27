@@ -26,7 +26,7 @@ const DistribusiPenggunaMlk: React.FC<DataSectionProps> = ({ region }) => {
         const json = await res.json();
 
         if (json.data) {
-          // mapping API response → chart format
+          // mapping API response → langsung pakai angka asli
           const mappedData = [
             { name: "Kader", value: json.data.total_kader },
             { name: "Ketua Kader", value: json.data.total_ketua_kader },
@@ -67,11 +67,7 @@ const DistribusiPenggunaMlk: React.FC<DataSectionProps> = ({ region }) => {
             cx="50%"
             cy="50%"
             outerRadius={100}
-            label={({ name, value }) => {
-              const total = data.reduce((sum, d) => sum + d.value, 0);
-              const percent = ((value / total) * 100).toFixed(2);
-              return `${name}: ${percent}%`;
-            }}
+            label={({ name, value }) => `${name}: ${value}`}
           >
             {data.map((entry, index) => (
               <Cell
@@ -81,16 +77,7 @@ const DistribusiPenggunaMlk: React.FC<DataSectionProps> = ({ region }) => {
             ))}
           </Pie>
 
-          <Tooltip
-            formatter={(value) => {
-              const total = data.reduce((sum, d) => sum + d.value, 0);
-              const percent = ((Number(value) / total) * 100).toFixed(2);
-              return `${percent}%`;
-            }}
-          />
-
-          {/* Tooltip tambahin % */}
-          <Tooltip formatter={(value) => `${value}%`} />
+          <Tooltip formatter={(value) => `${value}`} />
           <Legend />
         </PieChart>
       </ResponsiveContainer>

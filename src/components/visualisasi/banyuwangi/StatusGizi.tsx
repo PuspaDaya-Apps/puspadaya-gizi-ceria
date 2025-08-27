@@ -26,24 +26,19 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region }) => {
         const json = await res.json();
 
         if (json.data) {
-          const total =
-            json.data.total_stunting +
-            json.data.total_wasting +
-            json.data.total_underweight;
-
-          // mapping API response → persentase
+          // mapping API response → langsung pakai angka asli (bukan persen)
           const mappedData = [
             {
               name: "Stunting",
-              value: total > 0 ? (json.data.total_stunting / total) * 100 : 0,
+              value: json.data.total_stunting,
             },
             {
               name: "Wasting",
-              value: total > 0 ? (json.data.total_wasting / total) * 100 : 0,
+              value: json.data.total_wasting,
             },
             {
               name: "Underweight",
-              value: total > 0 ? (json.data.total_underweight / total) * 100 : 0,
+              value: json.data.total_underweight,
             },
           ];
           setData(mappedData);
@@ -91,9 +86,7 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region }) => {
               cx="50%"
               cy="50%"
               outerRadius={100}
-              label={({ name, value }) =>
-                `${name}: ${value.toFixed(2)}%`
-              }
+              label={({ name, value }) => `${name}: ${value}`}
             >
               {data.map((entry, index) => (
                 <Cell
@@ -102,9 +95,7 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region }) => {
                 />
               ))}
             </Pie>
-            <Tooltip
-              formatter={(value) => `${Number(value).toFixed(2)}%`}
-            />
+            <Tooltip formatter={(value) => `${value}`} />
             <Legend />
           </PieChart>
         </ResponsiveContainer>
