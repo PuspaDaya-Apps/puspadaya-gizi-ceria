@@ -19,17 +19,10 @@ interface DataSectionProps {
 }
 
 interface DesaData {
-  name: string;        
-  stunting: number;
-  wasting: number;
+  name: string;       
+  stunting: number;    
+  wasting: number;   
   underweight: number;
-}
-
-interface DesaData {
-  nama_desa_kelurahan: string;
-  jumlah_stunting: number;
-  jumlah_wasting: number;
-  jumlah_underweight: number;
 }
 
 const DistribusiBalitaBwi: React.FC<DataSectionProps> = ({ region }) => {
@@ -37,6 +30,7 @@ const DistribusiBalitaBwi: React.FC<DataSectionProps> = ({ region }) => {
   const [desaData, setDesaData] = useState<DesaData[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Fungsi download chart sebagai PNG/JPEG
   const handleDownload = async (format: "png" | "jpeg") => {
     if (!barChartRef.current) return;
 
@@ -56,6 +50,7 @@ const DistribusiBalitaBwi: React.FC<DataSectionProps> = ({ region }) => {
     link.click();
   };
 
+  // Ambil data
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -64,7 +59,7 @@ const DistribusiBalitaBwi: React.FC<DataSectionProps> = ({ region }) => {
         const json = await res.json();
 
         if (json.data && Array.isArray(json.data)) {
-          const mappedData = json.data.map((desa: any) => ({
+          const mappedData: DesaData[] = json.data.map((desa: any) => ({
             name: desa.nama_desa_kelurahan,
             stunting: desa.jumlah_stunting,
             wasting: desa.jumlah_wasting,
@@ -82,43 +77,38 @@ const DistribusiBalitaBwi: React.FC<DataSectionProps> = ({ region }) => {
     if (region) fetchData();
   }, [region]);
 
-//   if (loading) {
-//     return (
-//       <div className="text-center py-10 text-gray-500">
-//         Memuat data {region}...
-//       </div>
-//     );
-//   }
-
-const isAllZero = desaData.every(
-  (d) => d.stunting === 0 && d.wasting === 0 && d.underweight === 0
-);
-
-if (loading) {
-  return (
-    <div className="text-center py-10 text-gray-500">
-      Memuat data {region}...
-    </div>
+  const isAllZero = desaData.every(
+    (d) => d.stunting === 0 && d.wasting === 0 && d.underweight === 0
   );
-}
 
-// Jika semua 0
-if (!loading && isAllZero) {
-  return (
-    <div className="bg-white rounded-2xl shadow p-6 text-center mb-8">
-      <h3 className="text-xl font-semibold text-primary mb-4">
-        Distribusi Balita per Desa
-      </h3>
-      <p className="text-gray-500">Tidak ada balita yang mengalami gizi buruk.</p>
-    </div>
-  );
-}
+  if (loading) {
+    return (
+      <div className="text-center py-10 text-gray-500">
+        Memuat data {region}...
+      </div>
+    );
+  }
+
+  // Jika semua 0
+  if (!loading && isAllZero) {
+    return (
+      <div className="bg-white rounded-2xl shadow p-6 text-center mb-8">
+        <h3 className="text-xl font-semibold text-primary mb-4">
+          {/* Distribusi Balita per Desa */}
+        </h3>
+        <p className="text-gray-500">
+          Tidak ada balita yang mengalami gizi buruk.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
+      {/* Header + menu download */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
-          Distribusi Balita per Desa
+          {/* Distribusi Balita per Desa */}
         </h3>
 
         <Menu as="div" className="relative inline-block text-left">
@@ -154,11 +144,12 @@ if (!loading && isAllZero) {
         </Menu>
       </div>
 
-      <div
-        ref={barChartRef}
-        className="bg-white p-6 rounded-lg"
-        style={{ width: "100%" }}
-      >
+      {/* Chart + Title dalam 1 ref supaya judul ikut ke gambar */}
+      <div ref={barChartRef} className="bg-white p-6 rounded-lg">
+        <h3 className="text-xl font-semibold text-primary mb-4 text-center">
+          Distribusi Balita per Desa - {region}
+        </h3>
+
         <ResponsiveContainer width="100%" height={400}>
           <BarChart
             layout="vertical"

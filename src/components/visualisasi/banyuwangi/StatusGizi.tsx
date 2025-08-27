@@ -26,11 +26,25 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region }) => {
         const json = await res.json();
 
         if (json.data) {
-          // mapping API response → chart format
+          const total =
+            json.data.total_stunting +
+            json.data.total_wasting +
+            json.data.total_underweight;
+
+          // mapping API response → persentase
           const mappedData = [
-            { name: "Stunting", value: json.data.total_stunting },
-            { name: "Wasting", value: json.data.total_wasting },
-            { name: "Underweight", value: json.data.total_underweight },
+            {
+              name: "Stunting",
+              value: total > 0 ? (json.data.total_stunting / total) * 100 : 0,
+            },
+            {
+              name: "Wasting",
+              value: total > 0 ? (json.data.total_wasting / total) * 100 : 0,
+            },
+            {
+              name: "Underweight",
+              value: total > 0 ? (json.data.total_underweight / total) * 100 : 0,
+            },
           ];
           setData(mappedData);
         }
@@ -77,7 +91,9 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region }) => {
               cx="50%"
               cy="50%"
               outerRadius={100}
-              label={({ name, value }) => `${name}: ${value}%`}
+              label={({ name, value }) =>
+                `${name}: ${value.toFixed(2)}%`
+              }
             >
               {data.map((entry, index) => (
                 <Cell
@@ -86,7 +102,9 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region }) => {
                 />
               ))}
             </Pie>
-            <Tooltip formatter={(value) => `${value}%`} />
+            <Tooltip
+              formatter={(value) => `${Number(value).toFixed(2)}%`}
+            />
             <Legend />
           </PieChart>
         </ResponsiveContainer>

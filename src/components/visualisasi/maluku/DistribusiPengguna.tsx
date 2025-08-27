@@ -67,8 +67,11 @@ const DistribusiPenggunaMlk: React.FC<DataSectionProps> = ({ region }) => {
             cx="50%"
             cy="50%"
             outerRadius={100}
-            // label dengan tanda %
-            label={({ name, value }) => `${name}: ${value}%`}
+            label={({ name, value }) => {
+              const total = data.reduce((sum, d) => sum + d.value, 0);
+              const percent = ((value / total) * 100).toFixed(2);
+              return `${name}: ${percent}%`;
+            }}
           >
             {data.map((entry, index) => (
               <Cell
@@ -77,6 +80,15 @@ const DistribusiPenggunaMlk: React.FC<DataSectionProps> = ({ region }) => {
               />
             ))}
           </Pie>
+
+          <Tooltip
+            formatter={(value) => {
+              const total = data.reduce((sum, d) => sum + d.value, 0);
+              const percent = ((Number(value) / total) * 100).toFixed(2);
+              return `${percent}%`;
+            }}
+          />
+
           {/* Tooltip tambahin % */}
           <Tooltip formatter={(value) => `${value}%`} />
           <Legend />

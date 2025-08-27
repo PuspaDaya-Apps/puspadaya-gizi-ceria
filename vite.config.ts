@@ -40,6 +40,12 @@ export default defineConfig(({ mode }) => ({
         rewrite: (path) =>
           path.replace(/^\/gizi-desa/, "/api/v1/public-dashboard/status-gizi-desa"),
       },
+        "/data-skdn": {
+        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        changeOrigin: true,
+        rewrite: (path) =>
+          path.replace(/^\/data-skdn/, "/api/v1/public-dashboard/skdn-data"),
+      },
 
     },
   },

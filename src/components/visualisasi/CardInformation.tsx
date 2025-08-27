@@ -19,7 +19,7 @@ const CardInformation: React.FC = () => {
         const json = await res.json();
 
         if (json.data) {
-          const maluku = json.data["maluku tengah"];
+          const maluku = json.data["maluku_tengah"];
           const banyuwangi = json.data["banyuwangi"];
 
           const mappedCardData: CardInfo[] = [
