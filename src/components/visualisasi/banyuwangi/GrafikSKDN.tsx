@@ -25,7 +25,7 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region }) => {
         // Data dummy SKDN
         const dummyData = [
           { name: "Sasaran", value: 120 },
-          { name: "Kunjungan", value: 95 },
+          { name: "KMS", value: 95 },
           { name: "Ditimbang", value: 88 },
           { name: "Naik BB", value: 70 },
         ];
