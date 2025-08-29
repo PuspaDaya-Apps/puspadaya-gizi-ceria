@@ -1,6 +1,12 @@
-/api/*        http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/:splat   200
-/balita/*     http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/balita-status/:splat   200
-/pengguna/*   http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/kader-data/:splat   200
-/data-wilayah/*  http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/wilayah-data/:splat   200
-/gizi-desa/*  http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/status-gizi-desa/:splat   200
-/data-skdn/*  http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/skdn-data/:splat   200
+/api/*              http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/:splat
+/balita/*           http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/balita-status/:splat
+/balita-period/*    http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/balita-status-period/:splat
+/skdn/*             http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/skdn-data/:splat
+/gizi-desa/*        http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/status-gizi-desa/:splat
+/mpasi/*            http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/anak-mpasi/:splat
+/asi/*              http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/asi-eksklusif/:splat
+/ibu-hamil/*        http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/ibu-hamil/:splat
+/ibu-hamil-periodik/*  http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/ibu-hamil-periodik/:splat
+/kompetensi/*       http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/jenis-kompetensi/:splat
+/kunjungan/*        http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-kunjungan/:splat
+/jadwal-posyandu/*  http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-jadwal-posyandu/:splat
