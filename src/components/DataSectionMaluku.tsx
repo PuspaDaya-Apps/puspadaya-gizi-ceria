@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from "react";
-import FeatureCard from "./FeatureCard";
-import { BarChart3, Calendar } from "lucide-react";
 import DataCard from "./DataCard";
-import VisualisasiSection from "./VisualisasiSectionBwi";
 import VisualisasiSectionMaluku from "./VisualisasiSectionMaluku";
 
 interface DataSectionProps {
   region: string;
+  desa?: string;
+  posyandu?: string;
 }
 
-const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region }) =>{
+const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =>{
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+ useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api?kabupaten_kota=${region}`);
+        // bangun query string dinamis
+        const query = new URLSearchParams({
+          kabupaten_kota: region,
+          ...(desa ? { desa } : {}),
+          ...(posyandu ? { posyandu } : {}),
+        });
+
+        const res = await fetch(`/api?${query.toString()}`);
         const json = await res.json();
         setData(json.data);
       } catch (err) {
@@ -30,7 +36,7 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region }) =>{
     if (region) {
       fetchData();
     }
-  }, [region]);
+  }, [region, desa, posyandu]); 
 
 
   if (loading) {

@@ -11,11 +11,57 @@ const DashboardTabs = () => {
   // Data dummy
   const dataWilayah = {
     Banyuwangi: {
-      desa: ["Glagah", "Rogojampi", "Genteng"],
+      desa: ["Benculuk", "Sembulung", "Sraten", "Tampo"],
       posyandu: {
-        Glagah: ["Posyandu Mawar", "Posyandu Melati"],
-        Rogojampi: ["Posyandu Anggrek", "Posyandu Kenanga"],
-        Genteng: ["Posyandu Dahlia", "Posyandu Cempaka"],
+        Benculuk: [
+          "MELATI 1",
+          "Melati 2",
+          "Melati 6",
+          "Dahlia 2",
+          "Melati 3",
+          "Melati 4",
+          "Nusa Indah 2",
+          "Dahlia 1",
+          "Dahlia 3",
+          "Mawar 1",
+          "Mawar 2",
+          "Nusa Indah 1",
+          "Melati 5",
+        ],
+        Sembulung: [
+          "Mawar Ungu I",
+          "Mawar Jingga II",
+          "Mawar Merah I",
+          "Mawar Putih I",
+          "Mawar Putih II",
+          "Mawar Jingga I",
+          "Mawar Jingga III",
+          "Mawar Merah II",
+          "Mawar Ungu II",
+        ],
+        Sraten: [
+          "Mawar Merah",
+          "Anggrek Biru",
+          "Anggrek Merah",
+          "Anggrek Putih",
+          "Anggrek Kuning",
+          "Anggrek",
+          "Mawar Kuning",
+          "Anggrek Ungu",
+          "Anggrek Jingga",
+          "Mawar Putih",
+          "Aggrek Biru",
+        ],
+        Tampo: [
+          "Anggrek II",
+          "Anggrek III",
+          "Dahlia I",
+          "Dahlia II",
+          "Mawar I",
+          "Mawar II",
+          "Teratai",
+          "Anggrek I",
+        ],
       },
     },
     Maluku: {
@@ -52,16 +98,18 @@ const DashboardTabs = () => {
             Dashboard Data Wilayah
           </h2>
           <p className="text-base text-gray-600 max-w-xl mx-auto">
-            Pilih wilayah, desa, dan posyandu untuk melihat data pengguna, gizi, kesehatan, dan
-            informasi lainnya secara interaktif.
+            Pilih wilayah, desa, dan posyandu untuk melihat data pengguna, gizi,
+            kesehatan, dan informasi lainnya secara interaktif.
           </p>
         </div>
 
-        {/* Filter Horizontal - Diubah tampilannya */}
+        {/* Filter Horizontal */}
         <div className="bg-white shadow-lg rounded-xl p-6 mb-8 flex flex-col md:flex-row gap-5 justify-center items-center w-full max-w-4xl mx-auto">
           {/* Filter Wilayah */}
           <div className="relative w-full md:w-1/3">
-            <label className="block text-sm font-medium text-gray-700 mb-1 ml-1">Wilayah</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1 ml-1">
+              Wilayah
+            </label>
             <select
               value={selectedWilayah}
               onChange={handleWilayahChange}
@@ -77,7 +125,9 @@ const DashboardTabs = () => {
 
           {/* Filter Desa */}
           <div className="relative w-full md:w-1/3">
-            <label className="block text-sm font-medium text-gray-700 mb-1 ml-1">Desa</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1 ml-1">
+              Desa
+            </label>
             <select
               value={selectedDesa}
               onChange={handleDesaChange}
@@ -94,7 +144,9 @@ const DashboardTabs = () => {
 
           {/* Filter Posyandu */}
           <div className="relative w-full md:w-1/3">
-            <label className="block text-sm font-medium text-gray-700 mb-1 ml-1">Posyandu</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1 ml-1">
+              Posyandu
+            </label>
             <select
               value={selectedPosyandu}
               onChange={handlePosyanduChange}
@@ -103,20 +155,30 @@ const DashboardTabs = () => {
             >
               <option value="">Semua Posyandu</option>
               {selectedDesa &&
-                dataWilayah[selectedWilayah].posyandu[selectedDesa]?.map((pos) => (
-                  <option key={pos} value={pos}>
-                    {pos}
-                  </option>
-                ))}
+                dataWilayah[selectedWilayah].posyandu[selectedDesa]?.map(
+                  (pos) => (
+                    <option key={pos} value={pos}>
+                      {pos}
+                    </option>
+                  )
+                )}
             </select>
           </div>
         </div>
 
         {/* Section Data */}
         {selectedWilayah === "Banyuwangi" ? (
-          <DatasSectionBwi region={selectedWilayah} />
+          <DatasSectionBwi
+            region={selectedWilayah}
+            desa={selectedDesa}
+            posyandu={selectedPosyandu}
+          />
         ) : (
-          <DatasSectionMaluku region={selectedWilayah} />
+          <DatasSectionMaluku
+            region={selectedWilayah}
+            desa={selectedDesa}
+            posyandu={selectedPosyandu}
+          />
         )}
       </div>
     </section>
