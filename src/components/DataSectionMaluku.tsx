@@ -191,7 +191,8 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu
           />
         </div>
       </div>
-      <VisualisasiSectionMaluku />
+  
+       <VisualisasiSectionMaluku region={region} desa={desa} posyandu={posyandu} />
     </section>
   );
 };

@@ -12,7 +12,7 @@ interface DataSectionProps {
   region: string;
 }
 
-const MpasiBwi: React.FC<DataSectionProps> = ({ region,  }) => {
+const MpasiMlk: React.FC<DataSectionProps> = ({ region,  }) => {
   
   
   
@@ -90,4 +90,4 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region,  }) => {
   );
 };
 
-export default MpasiBwi;
+export default MpasiMlk;

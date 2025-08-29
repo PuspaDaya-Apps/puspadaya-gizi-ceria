@@ -26,7 +26,7 @@ interface WorkloadData {
   value: number;
 }
 
-const KompetensiBebanKerja: React.FC<DataSectionProps> = ({   region,
+const KompetensiBebanKerjaMlk : React.FC<DataSectionProps> = ({   region,
   desa,
   posyandu, }) => {
   const barChartRef = useRef<HTMLDivElement>(null);
@@ -112,7 +112,7 @@ useEffect(() => {
   if (loading) {
     return (
       <div className="text-center py-10 text-gray-500">
-        Memuat data {region || "Banyuwangi"}...
+        Memuat data {region || "Maluku"}...
       </div>
     );
   }
@@ -175,7 +175,7 @@ useEffect(() => {
       {/* Chart + Title dalam 1 ref supaya judul ikut ke gambar */}
       <div ref={barChartRef} className="bg-white p-6 rounded-lg">
         <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-          Kompetensi Beban Kerja - {region || "Banyuwangi"}
+          Kompetensi Beban Kerja - {region || "Maluku"}
         </h3>
 
         <ResponsiveContainer width="100%" height={400}>
@@ -224,4 +224,4 @@ useEffect(() => {
   );
 };
 
-export default KompetensiBebanKerja;
+export default KompetensiBebanKerjaMlk ;

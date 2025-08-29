@@ -10,7 +10,13 @@ import KompetensiBebanKerja from "./visualisasi/banyuwangi/KompetensiBebanKerja"
 import DurasiKunjunganRumahBwi from "./visualisasi/banyuwangi/DurasiKunjunganRumah";
 import DurasiPelaksanaanPosyanduBwi from "./visualisasi/banyuwangi/DurasiPelaksanaanPosyandu";
 
-const VisualisasiSectionBwi = () => {
+interface VisualisasiSectionBwiProps {
+  region: string;
+  desa?: string;
+  posyandu?: string;
+}
+
+const VisualisasiSectionBwi: React.FC<VisualisasiSectionBwiProps> = ({ region, desa, posyandu }) => {
 
 
   return (
@@ -20,15 +26,15 @@ const VisualisasiSectionBwi = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Pie Chart Gizi */}
 
-          <StatusGiziBwi region="Banyuwangi" />
+          <StatusGiziBwi region={region} desa={desa} posyandu={posyandu} />
 
           {/* Pie Chart User */}
-          <GrafikSKDNBwi region="Banyuwangi" />
+          <GrafikSKDNBwi region={region} desa={desa} posyandu={posyandu}  />
         </div>
       </div>
 
       {/* Bar Chart Distribusi Balita */}
-      <ProgresGiziBwi region="Banyuwangi" />
+      <ProgresGiziBwi region={region} desa={desa} posyandu={posyandu} />
 
       <div className="px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -41,7 +47,7 @@ const VisualisasiSectionBwi = () => {
        <RestikIbuHamil region="Banyuwangi" />
        <ProgresIbuHamilBwi region="Banyuwangi" />
 
-       <KompetensiBebanKerja region="Banyuwangi"/>
+       <KompetensiBebanKerja region={region} desa={desa} posyandu={posyandu}/>
 
       <div className="px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">

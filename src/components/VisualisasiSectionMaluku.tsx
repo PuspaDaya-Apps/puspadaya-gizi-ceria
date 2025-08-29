@@ -1,32 +1,67 @@
 import React, { useRef } from "react";
 import StatusGiziMlk from "./visualisasi/maluku/StatusGizi";
 import GeafikSkdnMlk from "./visualisasi/maluku/GrafikSKDN";
-import DistribusiBalitaMlk from "./visualisasi/maluku/DistribusiBalita";
-import ChartSKDNMlk from "./visualisasi/maluku/ChartSKDN";
-import GrafikSKDNMlk from "./visualisasi/maluku/GrafikSKDN";
 
-const VisualisasiSectionMaluku = () => {
+import GrafikSKDNMlk from "./visualisasi/maluku/GrafikSKDN";
+import ProgresGiziMlk from "./visualisasi/maluku/ProgresGizi";
+import MpasiMlk from "./visualisasi/maluku/Mpasi";
+import AsiEklusifMlk from "./visualisasi/maluku/AsiEklusif";
+import RestikIbuHamilMlk from "./visualisasi/maluku/RestikIbuHamil";
+import ProgresIbuHamilMlk from "./visualisasi/maluku/ProgresIbuHamil";
+import KompetensiBebanKerjaMlk from "./visualisasi/maluku/KompetensiBebanKerja";
+import DurasiKunjunganRumahMlk from "./visualisasi/maluku/DurasiKunjunganRumah";
+import DurasiPelaksanaanPosyanduMlk from "./visualisasi/maluku/DurasiPelaksanaanPosyandu";
+
+
+
+interface VisualisasiSectionMlkProps {
+  region: string;
+  desa?: string;
+  posyandu?: string;
+}
+
+const VisualisasiSectionMaluku : React.FC<VisualisasiSectionMlkProps> = ({ region, desa, posyandu }) => {
   const barChartRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section id="visualisasi" className="py-10">
+        <section id="visualisasi" className="py-10">
       {/* Chart Atas */}
       <div className="px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Pie Chart Gizi */}
 
-          <StatusGiziMlk region="Maluku" />
+          <StatusGiziMlk region={region} desa={desa} posyandu={posyandu} />
 
           {/* Pie Chart User */}
-          <GeafikSkdnMlk region="Maluku" />
+          <GrafikSKDNMlk region={region} desa={desa} posyandu={posyandu}  />
         </div>
       </div>
 
       {/* Bar Chart Distribusi Balita */}
-      <GrafikSKDNMlk region="Maluku" />
+      <ProgresGiziMlk region={region} desa={desa} posyandu={posyandu} />
 
-      {/* Chart SKDN */}
-     <ChartSKDNMlk region="Maluku" />
+      <div className="px-4 md:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <MpasiMlk region="Maluku" />
+          <AsiEklusifMlk region="Maluku" />
+
+        </div>
+      </div>
+
+       <RestikIbuHamilMlk region="Maluku" />
+       <ProgresIbuHamilMlk region="Maluku" />
+
+       <KompetensiBebanKerjaMlk region={region} desa={desa} posyandu={posyandu}/>
+
+      <div className="px-4 md:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <DurasiKunjunganRumahMlk region="Maluku" />
+          <DurasiPelaksanaanPosyanduMlk region="Maluku" />
+
+        </div>
+      </div>
+
+
     </section>
   );
 };

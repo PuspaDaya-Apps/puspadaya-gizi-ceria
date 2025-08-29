@@ -18,17 +18,24 @@ interface DataSectionProps {
   region: string;
 }
 
-interface DesaData {
-  name: string;       
-  stunting: number;    
-  wasting: number;   
-  underweight: number;
+interface RiskData {
+  name: string;
+  value: number;
 }
 
-const DistribusiBalitaMlk: React.FC<DataSectionProps> = ({ region }) => {
+const RestikIbuHamilMlk: React.FC<DataSectionProps> = ({ region }) => {
   const barChartRef = useRef<HTMLDivElement>(null);
-  const [desaData, setDesaData] = useState<DesaData[]>([]);
+  const [riskData, setRiskData] = useState<RiskData[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Data dummy untuk risiko ibu hamil
+  const dummyData: RiskData[] = [
+    { name: "KEK", value: 45 },
+    { name: "Anemia", value: 62 },
+    { name: "Pendek", value: 28 },
+    { name: "Terlalu Tua", value: 15 },
+    { name: "Terlalu Muda", value: 32 },
+  ];
 
   // Fungsi download chart sebagai PNG/JPEG
   const handleDownload = async (format: "png" | "jpeg") => {
@@ -46,29 +53,22 @@ const DistribusiBalitaMlk: React.FC<DataSectionProps> = ({ region }) => {
 
     const link = document.createElement("a");
     link.href = dataUrl;
-    link.download = `DistribusiBalita.${format}`;
+    link.download = `RisikoIbuHamil.${format}`;
     link.click();
   };
 
-  // Ambil data
+  // Simulasi pengambilan data
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/gizi-desa?kabupaten_kota=${region}`);
-        const json = await res.json();
-
-        if (json.data && Array.isArray(json.data)) {
-          const mappedData: DesaData[] = json.data.map((desa: any) => ({
-            name: desa.nama_desa_kelurahan,
-            stunting: desa.jumlah_stunting,
-            wasting: desa.jumlah_wasting,
-            underweight: desa.jumlah_underweight,
-          }));
-          setDesaData(mappedData);
-        }
+        // Simulasi delay untuk loading
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setRiskData(dummyData);
       } catch (err) {
         console.error("Error fetching data:", err);
+        // Gunakan data dummy jika terjadi error
+        setRiskData(dummyData);
       } finally {
         setLoading(false);
       }
@@ -77,9 +77,7 @@ const DistribusiBalitaMlk: React.FC<DataSectionProps> = ({ region }) => {
     if (region) fetchData();
   }, [region]);
 
-  const isAllZero = desaData.every(
-    (d) => d.stunting === 0 && d.wasting === 0 && d.underweight === 0
-  );
+  const isAllZero = riskData.every(d => d.value === 0);
 
   if (loading) {
     return (
@@ -94,10 +92,10 @@ const DistribusiBalitaMlk: React.FC<DataSectionProps> = ({ region }) => {
     return (
       <div className="bg-white rounded-2xl shadow p-6 text-center mb-8">
         <h3 className="text-xl font-semibold text-primary mb-4">
-          {/* Distribusi Balita per Desa */}
+          Risiko Ibu Hamil
         </h3>
         <p className="text-gray-500">
-          Tidak ada balita yang mengalami gizi buruk.
+          Tidak ada data risiko ibu hamil.
         </p>
       </div>
     );
@@ -108,7 +106,7 @@ const DistribusiBalitaMlk: React.FC<DataSectionProps> = ({ region }) => {
       {/* Header + menu download */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
-          {/* Distribusi Balita per Desa */}
+          Risiko Ibu Hamil
         </h3>
 
         <Menu as="div" className="relative inline-block text-left">
@@ -147,34 +145,50 @@ const DistribusiBalitaMlk: React.FC<DataSectionProps> = ({ region }) => {
       {/* Chart + Title dalam 1 ref supaya judul ikut ke gambar */}
       <div ref={barChartRef} className="bg-white p-6 rounded-lg">
         <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-          Distribusi Balita per Desa - {region}
+          Risiko Ibu Hamil - {region}
         </h3>
 
         <ResponsiveContainer width="100%" height={400}>
           <BarChart
+            data={riskData}
             layout="vertical"
-            data={desaData}
-            margin={{ top: 20, right: 30, left: 40, bottom: 20 }}
+            margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" />
-            <YAxis dataKey="name" type="category" />
-            <Tooltip />
+            <YAxis 
+              dataKey="name" 
+              type="category" 
+              width={90}
+            />
+            <Tooltip 
+              formatter={(value) => [`${value} `, "Jumlah"]}
+              labelFormatter={(name) => `Risiko: ${name}`}
+            />
             <Legend />
-            <Bar dataKey="stunting" fill="#ef4444">
-              <LabelList dataKey="stunting" position="right" />
-            </Bar>
-            <Bar dataKey="wasting" fill="#f59e0b">
-              <LabelList dataKey="wasting" position="right" />
-            </Bar>
-            <Bar dataKey="underweight" fill="#1e40af">
-              <LabelList dataKey="underweight" position="right" />
+            <Bar dataKey="value" fill="#8884d8">
+              <LabelList 
+                dataKey="value" 
+                position="right" 
+                formatter={(value) => `${value} `}
+              />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+        
+        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+          <h4 className="font-semibold text-blue-800 mb-2">Keterangan Risiko:</h4>
+          <ul className="text-sm text-gray-700 list-disc pl-5 space-y-1">
+            <li>KEK (Kurang Energi Kronis): Kondisi ibu hamil dengan asupan energi kurang dari kebutuhan</li>
+            <li>Anemia: Kondisi ibu hamil dengan kadar hemoglobin rendah</li>
+            <li>Pendek: Tinggi badan ibu hamil kurang dari 145 cm</li>
+            <li>Terlalu Tua: Ibu hamil berusia di atas 35 tahun</li>
+            <li>Terlalu Muda: Ibu hamil berusia di bawah 20 tahun</li>
+          </ul>
+        </div>
       </div>
     </div>
   );
 };
 
-export default DistribusiBalitaMlk;
+export default RestikIbuHamilMlk;

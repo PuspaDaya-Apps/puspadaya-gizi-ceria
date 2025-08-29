@@ -192,7 +192,7 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
           />
         </div>
       </div>
-      <VisualisasiSectionBwi />
+      <VisualisasiSectionBwi region={region} desa={desa} posyandu={posyandu} />
     </section>
   );
 };

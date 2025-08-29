@@ -14,10 +14,12 @@ import {
 
 interface DataSectionProps {
   region: string;
+  desa?: string;
+  posyandu?: string;
 }
 
-const StatusGiziBwi: React.FC<DataSectionProps> = ({ region }) => {
-  const COLORS = ["#ef4444", "#f59e0b", "#1e40af", "#22c55e"]; // Merah, Kuning, Biru, Hijau
+const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
+  const COLORS = ["#ef4444", "#f59e0b", "#1e40af", "#22c55e"]; 
 
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,14 +28,26 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Menggunakan data dummy dengan nilai persentase
-        const dummyData = [
-          { name: "Stunting", value: 20 },  // 20%
-          { name: "Wasting", value: 15 },   // 15%
-          { name: "Underweight", value: 10 }, // 10%
-          { name: "Normal", value: 55 },    // 55%
-        ];
-        setData(dummyData);
+        // Bangun query param dinamis
+         const query = new URLSearchParams({
+          kabupaten_kota: region,
+          ...(desa ? { desa } : {}),
+          ...(posyandu ? { posyandu } : {}),
+        });
+        const res = await fetch(`/balita?${query.toString()}`);
+        const json = await res.json();
+
+        if (json.data) {
+          const mappedData = [
+            { name: "Stunting", value: json.data.total_stunting },
+            { name: "Wasting", value: json.data.total_wasting },
+            { name: "Underweight", value: json.data.total_underweight },
+            { name: "Normal", value: json.data.total_normal },
+          ];
+          setData(mappedData);
+        } else {
+          setData([]);
+        }
       } catch (err) {
         console.error("Error fetching data:", err);
       } finally {
@@ -44,12 +58,13 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region }) => {
     if (region) {
       fetchData();
     }
-  }, [region]);
+  }, [region, desa, posyandu]);
 
   if (loading) {
     return (
       <div className="text-center py-10 text-gray-500">
-        Memuat data {region}...
+        Memuat data {region} {desa ? `- ${desa}` : ""}{" "}
+        {posyandu ? `- ${posyandu}` : ""}...
       </div>
     );
   }
@@ -59,18 +74,14 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region }) => {
 
   // Fungsi untuk memformat tooltip
   const formatTooltip = (value: number) => {
-    return [`${value}%`, "Persentase"];
-  };
-
-  // Fungsi untuk memformat label
-  const formatLabel = (value: number) => {
-    return `${value}%`;
+    return [`${value}`, "Jumlah Balita"];
   };
 
   return (
     <div className="bg-white rounded-2xl shadow p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
         Status Gizi Balita {region}
+        {desa ? ` - ${desa}` : ""} {posyandu ? ` - ${posyandu}` : ""}
       </h3>
 
       <ResponsiveContainer width="100%" height={300}>
@@ -80,17 +91,16 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region }) => {
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
-          <YAxis 
-            domain={[0, 100]} 
-            label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }} 
+          <YAxis
+            label={{ value: "Jumlah Balita", angle: -90, position: "insideLeft" }}
           />
           <Tooltip formatter={formatTooltip} />
           <Legend />
-          <Bar dataKey="value" name="Persentase">
+          <Bar dataKey="value" name="Jumlah Balita">
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
-            <LabelList dataKey="value" position="top" formatter={formatLabel} />
+            <LabelList dataKey="value" position="top" />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
@@ -98,7 +108,7 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region }) => {
       {/* Menampilkan informasi nilai total */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg text-center">
         <p className="text-lg font-semibold text-gray-800">
-          Total Balita: <span className="text-blue-600">{total}%</span>
+          Total Balita: <span className="text-blue-600">{total}</span>
         </p>
       </div>
     </div>

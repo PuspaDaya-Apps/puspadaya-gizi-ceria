@@ -16,29 +16,12 @@ export default defineConfig(({ mode }) => ({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, "/api/v1/public-dashboard"),
       },
+
       "/balita": {
         target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
           path.replace(/^\/balita/, "/api/v1/public-dashboard/balita-status"),
-      },
-      "/pengguna": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
-        changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(/^\/pengguna/, "/api/v1/public-dashboard/kader-data"),
-      },
-      "/data-wilayah": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
-        changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(/^\/data-wilayah/, "/api/v1/public-dashboard/wilayah-data"),
-      },
-        "/gizi-desa": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
-        changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(/^\/gizi-desa/, "/api/v1/public-dashboard/status-gizi-desa"),
       },
         "/data-skdn": {
         target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
@@ -46,6 +29,29 @@ export default defineConfig(({ mode }) => ({
         rewrite: (path) =>
           path.replace(/^\/data-skdn/, "/api/v1/public-dashboard/skdn-data"),
       },
+      "/progres-status-gizi": {
+        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        changeOrigin: true,
+        rewrite: (path) =>
+          path.replace(/^\/progres-status-gizi/, "/api/v1/public-dashboard/balita-status-period"),
+      },
+
+
+        "/anak-mpasi": {
+        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        changeOrigin: true,
+        rewrite: (path) =>
+          path.replace(/^\/anak-mpasi/, "/api/v1/public-dashboard/anak-mpas"),
+      },
+
+      // Beban Kerja
+      "/jenis-kompetensi": {
+        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        changeOrigin: true,
+        rewrite: (path) =>
+          path.replace(/^\/jenis-kompetensi/, "/api/v1/public-dashboard/jenis-kompetensi"),
+      },
+      
 
     },
   },

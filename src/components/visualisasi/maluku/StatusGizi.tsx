@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -13,10 +14,12 @@ import {
 
 interface DataSectionProps {
   region: string;
+  desa?: string;
+  posyandu?: string;
 }
 
-const StatusGiziMlk: React.FC<DataSectionProps> = ({ region }) => {
-  const COLORS = ["#ef4444", "#f59e0b", "#1e40af", "#22c55e"]; // Merah, Kuning, Biru, Hijau
+const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
+  const COLORS = ["#ef4444", "#f59e0b", "#1e40af", "#22c55e"]; 
 
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,14 +28,26 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Menggunakan data dummy karena ini adalah contoh
-        const dummyData = [
-          { name: "Stunting", value: 22 },
-          { name: "Wasting", value: 18 },
-          { name: "Underweight", value: 12 },
-          { name: "Normal", value: 48 }, // Menambahkan variabel normal
-        ];
-        setData(dummyData);
+        // Bangun query param dinamis
+         const query = new URLSearchParams({
+          kabupaten_kota: region,
+          ...(desa ? { desa } : {}),
+          ...(posyandu ? { posyandu } : {}),
+        });
+        const res = await fetch(`/balita?${query.toString()}`);
+        const json = await res.json();
+
+        if (json.data) {
+          const mappedData = [
+            { name: "Stunting", value: json.data.total_stunting },
+            { name: "Wasting", value: json.data.total_wasting },
+            { name: "Underweight", value: json.data.total_underweight },
+            { name: "Normal", value: json.data.total_normal },
+          ];
+          setData(mappedData);
+        } else {
+          setData([]);
+        }
       } catch (err) {
         console.error("Error fetching data:", err);
       } finally {
@@ -43,12 +58,13 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region }) => {
     if (region) {
       fetchData();
     }
-  }, [region]);
+  }, [region, desa, posyandu]);
 
   if (loading) {
     return (
       <div className="text-center py-10 text-gray-500">
-        Memuat data {region}...
+        Memuat data {region} {desa ? `- ${desa}` : ""}{" "}
+        {posyandu ? `- ${posyandu}` : ""}...
       </div>
     );
   }
@@ -58,18 +74,14 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region }) => {
 
   // Fungsi untuk memformat tooltip
   const formatTooltip = (value: number) => {
-    return [`${value}%`, "Persentase"];
-  };
-
-  // Fungsi untuk memformat label
-  const formatLabel = (value: number) => {
-    return `${value}%`;
+    return [`${value}`, "Jumlah Balita"];
   };
 
   return (
     <div className="bg-white rounded-2xl shadow p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
         Status Gizi Balita {region}
+        {desa ? ` - ${desa}` : ""} {posyandu ? ` - ${posyandu}` : ""}
       </h3>
 
       <ResponsiveContainer width="100%" height={300}>
@@ -79,39 +91,24 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region }) => {
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
-          <YAxis 
-            domain={[0, 100]} 
-            label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }} 
+          <YAxis
+            label={{ value: "Jumlah Balita", angle: -90, position: "insideLeft" }}
           />
           <Tooltip formatter={formatTooltip} />
           <Legend />
-          <Bar dataKey="value" name="Persentase">
+          <Bar dataKey="value" name="Jumlah Balita">
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
-            <LabelList dataKey="value" position="top" formatter={formatLabel} />
+            <LabelList dataKey="value" position="top" />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
 
-      {/* Keterangan */}
-      <div className="mt-4 text-sm text-gray-600">
-        <p><strong>Keterangan:</strong></p>
-        <ul className="list-disc pl-5 mt-1 space-y-1">
-          <li>Stunting: Tinggi badan kurang dari standar usia</li>
-          <li>Wasting: Berat badan kurang dari standar tinggi badan</li>
-          <li>Underweight: Berat badan kurang dari standar usia</li>
-          <li>Normal: Status gizi sesuai standar</li>
-        </ul>
-      </div>
-
       {/* Menampilkan informasi nilai total */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg text-center">
         <p className="text-lg font-semibold text-gray-800">
-          Total Balita: <span className="text-blue-600">{total}%</span>
-        </p>
-        <p className="text-sm text-gray-600 mt-1">
-          Jumlah persentase di atas merupakan total dari semua kategori status gizi
+          Total Balita: <span className="text-blue-600">{total}</span>
         </p>
       </div>
     </div>

@@ -28,7 +28,7 @@ interface GiziData {
   normal: number;
 }
 
-const ProgresGiziBwi: React.FC<DataSectionProps> = ({
+const ProgresGiziMlk: React.FC<DataSectionProps> = ({
   region,
   desa,
   posyandu,
@@ -198,4 +198,4 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
   );
 };
 
-export default ProgresGiziBwi;
+export default ProgresGiziMlk;
