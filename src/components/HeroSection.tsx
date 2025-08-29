@@ -22,10 +22,10 @@ const HeroSection = () => {
       <div className="container mx-auto px-4 py-20 flex flex-col lg:flex-row items-center gap-12">
         <div className="w-full lg:w-1/2 space-y-6">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary leading-tight">
-            Pantau Gizi & Perkembangan Si Kecil dengan Puspadaya
+            Pantau Kegiatan Posyandu Dengan Puspadaya
           </h1>
           <p className="text-xl text-gray-500">
-            Mudah, Akurat, dan Terpercaya untuk Ibu Cerdas
+            Mudah, Akurat, dan Terpercaya untuk Kader Cerdas
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-6">
             <Button 
