@@ -142,7 +142,16 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region }) => {
             <XAxis dataKey="bulan" />
             <YAxis domain={[0, 30]} label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }} />
             <Tooltip 
-              formatter={(value) => [`${value}%`, "Persentase"]}
+              formatter={(value, name) => {
+                const labels: Record<string, string> = {
+                  kek: "KEK",
+                  anemia: "Anemia",
+                  pendek: "Pendek",
+                  terlaluTua: "Terlalu Tua",
+                  terlaluMuda: "Terlalu Muda"
+                };
+                return [`${value}%`, labels[name] || name];
+              }}
               labelFormatter={(label) => `Bulan: ${label}`}
             />
             <Legend />
