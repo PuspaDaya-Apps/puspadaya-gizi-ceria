@@ -1,9 +1,9 @@
 import React, { useRef } from "react";
 import StatusGiziMlk from "./visualisasi/maluku/StatusGizi";
-import DistribusiPenggunaMlk from "./visualisasi/maluku/DistribusiPengguna";
-import CardInformation from "./visualisasi/CardInformation";
+import GeafikSkdnMlk from "./visualisasi/maluku/GrafikSKDN";
 import DistribusiBalitaMlk from "./visualisasi/maluku/DistribusiBalita";
 import ChartSKDNMlk from "./visualisasi/maluku/ChartSKDN";
+import GrafikSKDNMlk from "./visualisasi/maluku/GrafikSKDN";
 
 const VisualisasiSectionMaluku = () => {
   const barChartRef = useRef<HTMLDivElement>(null);
@@ -18,15 +18,12 @@ const VisualisasiSectionMaluku = () => {
           <StatusGiziMlk region="Maluku" />
 
           {/* Pie Chart User */}
-          <DistribusiPenggunaMlk region="Maluku" />
+          <GeafikSkdnMlk region="Maluku" />
         </div>
       </div>
 
-      {/* Info Card */}
-      <CardInformation />
-
       {/* Bar Chart Distribusi Balita */}
-      <DistribusiBalitaMlk region="Maluku" />
+      <GrafikSKDNMlk region="Maluku" />
 
       {/* Chart SKDN */}
      <ChartSKDNMlk region="Maluku" />

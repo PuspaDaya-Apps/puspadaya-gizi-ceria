@@ -1,10 +1,11 @@
 import React, { useRef } from "react";
-import DistribusiPenggunaBwi from "./visualisasi/banyuwangi/DistribusiPengguna";
-import CardInformation from "./visualisasi/CardInformation";
 import DistribusiBalitaBwi from "./visualisasi/banyuwangi/DistribusiBalita";
 import StatusGiziBwi from "./visualisasi/banyuwangi/StatusGizi";
-import ChartSKDN from "./visualisasi/banyuwangi/ChartSKDN";
 import ChartSKDNBwi from "./visualisasi/banyuwangi/ChartSKDN";
+import GrafikSKDNBwi from "./visualisasi/banyuwangi/GrafikSKDN";
+import ProgresGiziBwi from "./visualisasi/banyuwangi/ProgresGizi";
+import MpasiAsielkusifBwi from "./visualisasi/banyuwangi/Mpasi";
+import AsiEKlusifBwi from "./visualisasi/banyuwangi/AsiEklusif";
 
 const VisualisasiSectionBwi = () => {
 
@@ -19,12 +20,22 @@ const VisualisasiSectionBwi = () => {
           <StatusGiziBwi region="Banyuwangi" />
 
           {/* Pie Chart User */}
-          <DistribusiPenggunaBwi region="Banyuwangi" />
+          <GrafikSKDNBwi region="Banyuwangi" />
         </div>
       </div>
 
-      {/* Info Card */}
-      <CardInformation />
+      {/* Bar Chart Distribusi Balita */}
+      <ProgresGiziBwi region="Banyuwangi" />
+
+      <div className="px-4 md:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Pie Chart Gizi */}
+
+          <MpasiAsielkusifBwi region="Banyuwangi" />
+          <AsiEKlusifBwi region="Banyuwangi" />
+
+        </div>
+      </div>
 
       {/* Bar Chart Distribusi Balita */}
       <DistribusiBalitaBwi region="Banyuwangi" />
