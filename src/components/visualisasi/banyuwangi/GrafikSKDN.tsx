@@ -8,6 +8,7 @@ import {
   Legend,
   ResponsiveContainer,
   CartesianGrid,
+  LabelList,
 } from "recharts";
 
 interface DataSectionProps {
@@ -48,6 +49,10 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region }) => {
     );
   }
 
+  // Menentukan domain sumbu Y dengan menambahkan 10 dari nilai maksimum
+  const maxValue = Math.max(...data.map(item => item.value));
+  const yDomain = [0, maxValue + 10];
+
   return (
     <div className="bg-white rounded-2xl shadow p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
@@ -57,10 +62,12 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region }) => {
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
-          <YAxis />
+          <YAxis domain={yDomain} />
           <Tooltip />
           <Legend />
-          <Bar dataKey="value" fill="#2563eb" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="value" fill="#2563eb" radius={[8, 8, 0, 0]}>
+            <LabelList dataKey="value" position="top" />
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>

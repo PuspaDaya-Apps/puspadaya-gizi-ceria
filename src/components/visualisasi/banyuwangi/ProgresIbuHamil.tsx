@@ -18,17 +18,18 @@ interface DataSectionProps {
   region: string;
 }
 
-interface GiziData {
+interface IbuHamilData {
   bulan: string;
-  stunting: number;
-  wasting: number;
-  underweight: number;
-  normal: number;
+  kek: number;
+  anemia: number;
+  pendek: number;
+  terlaluTua: number;
+  terlaluMuda: number;
 }
 
 const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region }) => {
   const chartRef = useRef<HTMLDivElement>(null);
-  const [giziData, setGiziData] = useState<GiziData[]>([]);
+  const [ibuHamilData, setIbuHamilData] = useState<IbuHamilData[]>([]);
   const [loading, setLoading] = useState(true);
 
   const handleDownload = async (format: "png" | "jpeg") => {
@@ -43,22 +44,22 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region }) => {
           });
     const link = document.createElement("a");
     link.href = dataUrl;
-    link.download = `ProgresGizi.${format}`;
+    link.download = `ProgresIbuHamil.${format}`;
     link.click();
   };
 
   useEffect(() => {
     setLoading(true);
     try {
-      const dummyData: GiziData[] = [
-        { bulan: "Jan", stunting: 15, wasting: 10, underweight: 8, normal: 67 },
-        { bulan: "Feb", stunting: 12, wasting: 11, underweight: 7, normal: 70 },
-        { bulan: "Mar", stunting: 14, wasting: 9, underweight: 6, normal: 71 },
-        { bulan: "Apr", stunting: 11, wasting: 8, underweight: 5, normal: 76 },
-        { bulan: "Mei", stunting: 10, wasting: 7, underweight: 5, normal: 78 },
-        { bulan: "Jun", stunting: 9, wasting: 7, underweight: 4, normal: 80 },
+      const dummyData: IbuHamilData[] = [
+        { bulan: "Jan", kek: 12, anemia: 25, pendek: 8, terlaluTua: 5, terlaluMuda: 15 },
+        { bulan: "Feb", kek: 10, anemia: 22, pendek: 7, terlaluTua: 4, terlaluMuda: 14 },
+        { bulan: "Mar", kek: 11, anemia: 24, pendek: 8, terlaluTua: 5, terlaluMuda: 16 },
+        { bulan: "Apr", kek: 9, anemia: 20, pendek: 6, terlaluTua: 3, terlaluMuda: 13 },
+        { bulan: "Mei", kek: 8, anemia: 18, pendek: 5, terlaluTua: 2, terlaluMuda: 12 },
+        { bulan: "Jun", kek: 7, anemia: 16, pendek: 4, terlaluTua: 2, terlaluMuda: 10 },
       ];
-      setGiziData(dummyData);
+      setIbuHamilData(dummyData);
     } catch (err) {
       console.error("Error fetching data:", err);
     } finally {
@@ -73,6 +74,24 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region }) => {
       </div>
     );
   }
+
+  // Warna yang ramah untuk tunanetra warna
+  const COLORS = {
+    kek: "#1f77b4",      // Biru
+    anemia: "#ff7f0e",   // Oranye
+    pendek: "#2ca02c",   // Hijau
+    terlaluTua: "#d62728", // Merah
+    terlaluMuda: "#9467bd", // Ungu
+  };
+
+  // Pola garis yang berbeda untuk membedakan garis
+  const LINE_STYLES = {
+    kek: { strokeDasharray: "0" },      // Garis lurus
+    anemia: { strokeDasharray: "5 5" }, // Garis putus-putus
+    pendek: { strokeDasharray: "10 5" }, // Garis panjang-putus
+    terlaluTua: { strokeDasharray: "3 3 9 3" }, // Garis titik-titik panjang
+    terlaluMuda: { strokeDasharray: "1 1" }, // Titik-titik rapat
+  };
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
@@ -118,23 +137,59 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region }) => {
       {/* Chart */}
       <div ref={chartRef} className="bg-white p-6 rounded-lg">
         <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={giziData} margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
+          <LineChart data={ibuHamilData} margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="bulan" />
-            <YAxis />
-            <Tooltip />
+            <YAxis domain={[0, 30]} label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }} />
+            <Tooltip 
+              formatter={(value) => [`${value}%`, "Persentase"]}
+              labelFormatter={(label) => `Bulan: ${label}`}
+            />
             <Legend />
-            <Line type="monotone" dataKey="stunting" stroke="#ef4444" strokeWidth={2}>
-              <LabelList dataKey="stunting" position="top" />
+            <Line 
+              type="monotone" 
+              dataKey="kek" 
+              stroke={COLORS.kek} 
+              strokeWidth={2}
+              {...LINE_STYLES.kek}
+            >
+              <LabelList dataKey="kek" position="top" formatter={(value: number) => `${value}%`} />
             </Line>
-            <Line type="monotone" dataKey="wasting" stroke="#3b82f6" strokeWidth={2}>
-              <LabelList dataKey="wasting" position="top" />
+            <Line 
+              type="monotone" 
+              dataKey="anemia" 
+              stroke={COLORS.anemia} 
+              strokeWidth={2}
+              {...LINE_STYLES.anemia}
+            >
+              <LabelList dataKey="anemia" position="top" formatter={(value: number) => `${value}%`} />
             </Line>
-            <Line type="monotone" dataKey="underweight" stroke="#8B4513" strokeWidth={2}>
-              <LabelList dataKey="underweight" position="top" />
+            <Line 
+              type="monotone" 
+              dataKey="pendek" 
+              stroke={COLORS.pendek} 
+              strokeWidth={2}
+              {...LINE_STYLES.pendek}
+            >
+              <LabelList dataKey="pendek" position="top" formatter={(value: number) => `${value}%`} />
             </Line>
-            <Line type="monotone" dataKey="normal" stroke="#000000" strokeWidth={2}>
-              <LabelList dataKey="normal" position="top" />
+            <Line 
+              type="monotone" 
+              dataKey="terlaluTua" 
+              stroke={COLORS.terlaluTua} 
+              strokeWidth={2}
+              {...LINE_STYLES.terlaluTua}
+            >
+              <LabelList dataKey="terlaluTua" position="top" formatter={(value: number) => `${value}%`} />
+            </Line>
+            <Line 
+              type="monotone" 
+              dataKey="terlaluMuda" 
+              stroke={COLORS.terlaluMuda} 
+              strokeWidth={2}
+              {...LINE_STYLES.terlaluMuda}
+            >
+              <LabelList dataKey="terlaluMuda" position="top" formatter={(value: number) => `${value}%`} />
             </Line>
           </LineChart>
         </ResponsiveContainer>

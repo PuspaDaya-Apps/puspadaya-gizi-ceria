@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import DistribusiBalitaBwi from "./visualisasi/banyuwangi/DistribusiBalita";
 import StatusGiziBwi from "./visualisasi/banyuwangi/StatusGizi";
 import GrafikSKDNBwi from "./visualisasi/banyuwangi/GrafikSKDN";
 import ProgresGiziBwi from "./visualisasi/banyuwangi/ProgresGizi";
@@ -52,9 +51,7 @@ const VisualisasiSectionBwi = () => {
         </div>
       </div>
 
-       {/* <DistribusiBalitaBwi region="Banyuwangi" /> */}
 
-        
     </section>
   );
 };
