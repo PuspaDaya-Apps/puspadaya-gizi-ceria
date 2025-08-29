@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   PieChart,
   Pie,
@@ -12,85 +12,78 @@ interface DataSectionProps {
   region: string;
 }
 
-const AsiEKlusifBwi : React.FC<DataSectionProps> = ({ region }) => {
-  const COLORS = ["#ef4444", "#f59e0b", "#1e40af"];
+const AsiEklusifBwi : React.FC<DataSectionProps> = ({ region }) => {
+  // Dummy data for "Ya" dan "Tidak" dengan penjelasan
+  const data = [
+    { 
+      name: "Ya", 
+      value: 75,
+      description: "Balita yang mendapat ASI Eklusif"
+    },
+    { 
+      name: "Tidak", 
+      value: 25,
+      description: "Balita yang tidak mendapat ASI Eklusif"
+    },
+  ];
 
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Warna yang ramah bagi tunanetra warna
+  // Menggunakan palet warna yang dirancang khusus untuk aksesibilitas
+  // Warna biru tua dan oranye tua yang kontras tinggi
+  const COLORS = ["#2b528a", "#d97706"]; 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`/balita?kabupaten_kota=${region}`);
-        const json = await res.json();
-
-        if (json.data) {
-          const mappedData = [
-            { name: "Stunting", value: json.data.total_stunting },
-            { name: "Wasting", value: json.data.total_wasting },
-            { name: "Underweight", value: json.data.total_underweight },
-          ];
-          setData(mappedData);
-        }
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (region) {
-      fetchData();
-    }
-  }, [region]);
-
-  if (loading) {
-    return (
-      <div className="text-center py-10 text-gray-500">
-        Memuat data {region}...
-      </div>
-    );
-  }
-
-  const allZero = data.every((item) => item.value === 0);
+  // Calculate total for display
+  const total = data.reduce((sum, entry) => sum + entry.value, 0);
 
   return (
     <div className="bg-white rounded-2xl shadow p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-        Status Gizi Balita {region}
+        Pemberian ASI Eksklusif {region}
       </h3>
 
-      {allZero ? (
-        <div className="text-center text-gray-600 py-10">
-          Tidak ada balita yang mengalami gizi buruk di {region}.
-        </div>
-      ) : (
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={data}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              label={({ name, value }) => `${name}: ${value}%`} 
-            >
-              {data.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <Tooltip formatter={(value) => `${value}%`} />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
-      )}
+      <ResponsiveContainer width="100%" height={300}>
+        <PieChart>
+          <Pie
+            data={data}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={100}
+            label={({ name, value, percent }) => 
+              `${name}: ${value} (${(percent * 100).toFixed(0)}%)`
+            }
+          >
+            {data.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+              />
+            ))}
+          </Pie>
+          <Tooltip 
+            formatter={(value, name, props) => {
+              const entry = data.find(d => d.name === props.name);
+              return [
+                `${value} balita (${((Number(value) / total) * 100).toFixed(1)}%)`, 
+                entry?.description || name
+              ];
+            }}
+          />
+          <Legend 
+            formatter={(value, entry, index) => {
+              const dataEntry = data.find(d => d.name === value);
+              return dataEntry ? `${value}: ${dataEntry.description}` : value;
+            }}
+          />
+        </PieChart>
+      </ResponsiveContainer>
+      
+      <div className="text-center mt-4 text-gray-600">
+        Total Balita: {total}
+      </div>
     </div>
   );
 };
 
-export default AsiEKlusifBwi ;
+export default AsiEklusifBwi ;
