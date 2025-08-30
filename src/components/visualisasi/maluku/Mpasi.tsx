@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   PieChart,
   Pie,
@@ -10,32 +10,97 @@ import {
 
 interface DataSectionProps {
   region: string;
+  desa?: string;
+  posyandu?: string;
 }
 
-const MpasiMlk: React.FC<DataSectionProps> = ({ region,  }) => {
-  
-  
-  
-  // Dummy data for "Ya" dan "Tidak" dengan penjelasan
-  const data = [
-    { 
-      name: "Ya", 
-      value: 65,
-      description: "Balita yang mendapat MPASI (Makanan Pendamping ASI)"
-    },
-    { 
-      name: "Tidak", 
-      value: 35,
-      description: "Balita yang tidak mendapat MPASI"
-    },
-  ];
+const MpasiMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
+  const [data, setData] = useState<any[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
 
-  // Warna yang ramah bagi tunanetra warna
-  // Menggunakan palet warna yang dirancang khusus untuk aksesibilitas
-  const COLORS = ["#1f77b4", "#ff7f0e"]; // Biru dan oranye yang kontras 
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const query = new URLSearchParams({
+          kabupaten_kota: region,
+          ...(desa ? { desa } : {}),
+          ...(posyandu ? { posyandu } : {}),
+        });
+        const res = await fetch(`/anak-mpasi?${query.toString()}`);
+        const json = await res.json();
 
-  // Calculate total for display
-  const total = data.reduce((sum, entry) => sum + entry.value, 0);
+        if (json.data) {
+          const mappedData = [
+            {
+              name: "Ya",
+              value: json.data.total_mpasi_iya,
+              description: "Balita yang mendapat MPASI (Makanan Pendamping ASI)",
+            },
+            {
+              name: "Tidak",
+              value: json.data.total_mpasi_tidak,
+              description: "Balita yang tidak mendapat MPASI",
+            },
+          ];
+          setData(mappedData);
+          setTotal(json.data.total_balita_mpasi);
+        } else {
+          setData([]);
+          setTotal(0);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setData([]);
+        setTotal(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (region) {
+      fetchData();
+    }
+  }, [region, desa, posyandu]);
+
+  if (loading) {
+    return (
+      <div className="text-center py-10 text-gray-500">
+        Memuat data {region} {desa ? `- ${desa}` : ""}{" "}
+        {posyandu ? `- ${posyandu}` : ""}...
+      </div>
+    );
+  }
+
+  // Warna ramah aksesibilitas
+  const COLORS = ["#1f77b4", "#ff7f0e"];
+
+  // Cek jika semua data bernilai 0
+  const isAllZero = data.length > 0 && data.every(item => item.value === 0);
+
+  if (isAllZero) {
+    return (
+      <div className="bg-white rounded-2xl shadow p-6 text-center">
+        <h3 className="text-xl font-semibold text-primary mb-4">
+          Pemberian MPASI {region}
+        </h3>
+        <div className="bg-gray-100 rounded-lg p-6 my-4">
+          <p className="text-gray-600 text-lg">
+            Tidak ada data pemberian MPASI yang tersedia untuk {region}
+            {desa ? ` - ${desa}` : ""}
+            {posyandu ? ` - ${posyandu}` : ""}
+          </p>
+          <p className="text-gray-500 text-sm mt-2">
+            Total Balita: {total}
+          </p>
+        </div>
+        <p className="text-gray-500 text-sm">
+          Data akan ditampilkan setelah ada informasi pemberian MPASI dari balita di wilayah ini.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow p-6">
@@ -52,9 +117,7 @@ const MpasiMlk: React.FC<DataSectionProps> = ({ region,  }) => {
             cx="50%"
             cy="50%"
             outerRadius={100}
-            label={({ name, value, percent }) => 
-              `${name}: ${value} (${(percent * 100).toFixed(0)}%)`
-            }
+            label={({ name, value }) => `${name}: ${value}%`}
           >
             {data.map((entry, index) => (
               <Cell
@@ -63,29 +126,26 @@ const MpasiMlk: React.FC<DataSectionProps> = ({ region,  }) => {
               />
             ))}
           </Pie>
-          <Tooltip 
+          <Tooltip
             formatter={(value, name, props) => {
-              const entry = data.find(d => d.name === props.name);
-              return [
-                `${value} balita (${((Number(value) / total) * 100).toFixed(1)}%)`, 
-                entry?.description || name
-              ];
+              const entry = data.find((d) => d.name === props.name);
+              return [`${value}%`, entry?.description || name];
             }}
           />
-          <Legend 
-            formatter={(value, entry, index) => {
-              const dataEntry = data.find(d => d.name === value);
-              return dataEntry ? `${value}: ${dataEntry.description}` : value;
+          <Legend
+            formatter={(value) => {
+              const dataEntry = data.find((d) => d.name === value);
+              return dataEntry
+                ? `${value}: ${dataEntry.description}`
+                : value;
             }}
           />
         </PieChart>
       </ResponsiveContainer>
-      
+
       <div className="text-center mt-4 text-gray-600">
         Total Balita: {total}
       </div>
-      
-
     </div>
   );
 };

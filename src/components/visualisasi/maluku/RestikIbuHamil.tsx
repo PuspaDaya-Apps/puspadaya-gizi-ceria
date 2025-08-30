@@ -16,6 +16,8 @@ import * as htmlToImage from "html-to-image";
 
 interface DataSectionProps {
   region: string;
+  desa?: string;
+  posyandu?: string;
 }
 
 interface RiskData {
@@ -23,21 +25,63 @@ interface RiskData {
   value: number;
 }
 
-const RestikIbuHamilMlk: React.FC<DataSectionProps> = ({ region }) => {
+interface ApiResponse {
+  data: {
+    kek: number;
+    anemia: number;
+    pendek: number;
+    terlalu_tua: number;
+    terlalu_muda: number;
+    total_pengukuran: number;
+  };
+}
+
+const RestikIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
   const barChartRef = useRef<HTMLDivElement>(null);
   const [riskData, setRiskData] = useState<RiskData[]>([]);
+  const [totalPengukuran, setTotalPengukuran] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
-  // Data dummy untuk risiko ibu hamil
-  const dummyData: RiskData[] = [
-    { name: "KEK", value: 45 },
-    { name: "Anemia", value: 62 },
-    { name: "Pendek", value: 28 },
-    { name: "Terlalu Tua", value: 15 },
-    { name: "Terlalu Muda", value: 32 },
-  ];
+  // Ambil data dari API
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const query = new URLSearchParams({
+          kabupaten_kota: region,
+          ...(desa ? { desa } : {}),
+          ...(posyandu ? { posyandu } : {}),
+        });
+        const res = await fetch(`/ibu-hamil?${query.toString()}`);
+        const json: ApiResponse = await res.json();
 
-  // Fungsi download chart sebagai PNG/JPEG
+        if (json.data) {
+          const mappedData: RiskData[] = [
+            { name: "KEK", value: json.data.kek },
+            { name: "Anemia", value: json.data.anemia },
+            { name: "Pendek", value: json.data.pendek },
+            { name: "Terlalu Tua", value: json.data.terlalu_tua },
+            { name: "Terlalu Muda", value: json.data.terlalu_muda },
+          ];
+          setRiskData(mappedData);
+          setTotalPengukuran(json.data.total_pengukuran);
+        } else {
+          setRiskData([]);
+          setTotalPengukuran(0);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setRiskData([]);
+        setTotalPengukuran(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (region) fetchData();
+  }, [region, desa, posyandu]);
+
+  // Download chart
   const handleDownload = async (format: "png" | "jpeg") => {
     if (!barChartRef.current) return;
 
@@ -57,27 +101,7 @@ const RestikIbuHamilMlk: React.FC<DataSectionProps> = ({ region }) => {
     link.click();
   };
 
-  // Simulasi pengambilan data
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        // Simulasi delay untuk loading
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setRiskData(dummyData);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-        // Gunakan data dummy jika terjadi error
-        setRiskData(dummyData);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (region) fetchData();
-  }, [region]);
-
-  const isAllZero = riskData.every(d => d.value === 0);
+  const isAllZero = riskData.every((d) => d.value === 0);
 
   if (loading) {
     return (
@@ -87,19 +111,14 @@ const RestikIbuHamilMlk: React.FC<DataSectionProps> = ({ region }) => {
     );
   }
 
-  // Jika semua 0
-  if (!loading && isAllZero) {
-    return (
-      <div className="bg-white rounded-2xl shadow p-6 text-center mb-8">
-        <h3 className="text-xl font-semibold text-primary mb-4">
-          Risiko Ibu Hamil
-        </h3>
-        <p className="text-gray-500">
-          Tidak ada data risiko ibu hamil.
-        </p>
-      </div>
-    );
-  }
+  // Tetap tampilkan grafik meskipun semua data 0
+  const displayData = riskData.length > 0 ? riskData : [
+    { name: "KEK", value: 0 },
+    { name: "Anemia", value: 0 },
+    { name: "Pendek", value: 0 },
+    { name: "Terlalu Tua", value: 0 },
+    { name: "Terlalu Muda", value: 0 },
+  ];
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
@@ -118,9 +137,7 @@ const RestikIbuHamilMlk: React.FC<DataSectionProps> = ({ region }) => {
               {({ active }) => (
                 <button
                   onClick={() => handleDownload("png")}
-                  className={`${
-                    active ? "bg-gray-100" : ""
-                  } w-full px-4 py-2 text-left text-sm text-gray-700`}
+                  className={`${active ? "bg-gray-100" : ""} w-full px-4 py-2 text-left text-sm text-gray-700`}
                 >
                   Download PNG
                 </button>
@@ -130,9 +147,7 @@ const RestikIbuHamilMlk: React.FC<DataSectionProps> = ({ region }) => {
               {({ active }) => (
                 <button
                   onClick={() => handleDownload("jpeg")}
-                  className={`${
-                    active ? "bg-gray-100" : ""
-                  } w-full px-4 py-2 text-left text-sm text-gray-700`}
+                  className={`${active ? "bg-gray-100" : ""} w-full px-4 py-2 text-left text-sm text-gray-700`}
                 >
                   Download JPG
                 </button>
@@ -142,40 +157,69 @@ const RestikIbuHamilMlk: React.FC<DataSectionProps> = ({ region }) => {
         </Menu>
       </div>
 
-      {/* Chart + Title dalam 1 ref supaya judul ikut ke gambar */}
+      {/* Chart + Title */}
       <div ref={barChartRef} className="bg-white p-6 rounded-lg">
-        <h3 className="text-xl font-semibold text-primary mb-4 text-center">
+        <h3 className="text-xl font-semibold text-primary mb-2 text-center">
           Risiko Ibu Hamil - {region}
         </h3>
 
         <ResponsiveContainer width="100%" height={400}>
           <BarChart
-            data={riskData}
+            data={displayData}
             layout="vertical"
-            margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
+            margin={{ top: 20, right: 30, left: 130, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis type="number" />
+            <XAxis 
+              type="number" 
+              tick={{ fontSize: 12 }}
+              tickFormatter={(value) => {
+                if (value % 1 !== 0) {
+                  return Math.ceil(value * 100) / 100;
+                }
+                return value;
+              }}
+            />
             <YAxis 
               dataKey="name" 
               type="category" 
               width={90}
+              tick={{ fontSize: 12 }}
             />
-            <Tooltip 
-              formatter={(value) => [`${value} `, "Jumlah"]}
+            <Tooltip
+              formatter={(value) => [`${value}`, "Jumlah"]}
               labelFormatter={(name) => `Risiko: ${name}`}
+              content={({ active, payload, label }) => {
+                if (active && payload && payload.length) {
+                  return (
+                    <div className="bg-white p-2 border border-gray-200 rounded shadow">
+                      <p className="font-semibold">{`Risiko: ${label}`}</p>
+                      <p>{`Jumlah: ${payload[0].value}`}</p>
+                    </div>
+                  );
+                }
+                return null;
+              }}
             />
             <Legend />
             <Bar dataKey="value" fill="#8884d8">
               <LabelList 
                 dataKey="value" 
                 position="right" 
-                formatter={(value) => `${value} `}
+                formatter={(value) => `${value}`}
+                fontSize={12}
               />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-        
+
+        {/* Total Pengukuran - Simple Style Below Chart */}
+        <div className="mt-6 bg-gray-100 rounded-lg p-4 text-center">
+          <p className="text-gray-600 font-medium">Total Pengukuran: 
+            <span className="text-gray-800 font-semibold ml-2">{totalPengukuran.toLocaleString()}</span>
+          </p>
+        </div>
+
         <div className="mt-6 p-4 bg-blue-50 rounded-lg">
           <h4 className="font-semibold text-blue-800 mb-2">Keterangan Risiko:</h4>
           <ul className="text-sm text-gray-700 list-disc pl-5 space-y-1">

@@ -26,7 +26,7 @@ interface WorkloadData {
   value: number;
 }
 
-const KompetensiBebanKerjaMlk : React.FC<DataSectionProps> = ({   region,
+const KompetensiBebanKerjaMlk: React.FC<DataSectionProps> = ({   region,
   desa,
   posyandu, }) => {
   const barChartRef = useRef<HTMLDivElement>(null);
@@ -112,7 +112,7 @@ useEffect(() => {
   if (loading) {
     return (
       <div className="text-center py-10 text-gray-500">
-        Memuat data {region || "Maluku"}...
+        Memuat data {region || "Banyuwangi"}...
       </div>
     );
   }
@@ -122,7 +122,7 @@ useEffect(() => {
     return (
       <div className="bg-white rounded-2xl shadow p-6 text-center mb-8">
         <h3 className="text-xl font-semibold text-primary mb-4">
-          Kompetensi Beban Kerja
+          Jumlah Kompetensi Beban Kerja
         </h3>
         <p className="text-gray-500">
           Tidak ada data kompetensi beban kerja.
@@ -132,25 +132,23 @@ useEffect(() => {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
+    <div className="bg-white rounded-2xl shadow p-4 md:p-6 relative mb-6 md:mb-8">
       {/* Header + menu download */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
-        <h3 className="text-xl font-semibold text-primary text-center w-full">
-          Kompetensi Beban Kerja
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-2">
+        <h3 className="text-lg md:text-xl font-semibold text-primary text-center w-full md:w-auto">
+          Jumlah Kompetensi Beban Kerja
         </h3>
 
         <Menu as="div" className="relative inline-block text-left">
           <MenuButton className="p-2 rounded-full hover:bg-gray-100">
             <MoreVertical className="w-5 h-5 text-gray-600" />
           </MenuButton>
-          <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right bg-white border border-gray-200 rounded-lg shadow-lg focus:outline-none">
+          <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right bg-white border border-gray-200 rounded-lg shadow-lg focus:outline-none z-10">
             <MenuItem>
               {({ active }) => (
                 <button
                   onClick={() => handleDownload("png")}
-                  className={`${
-                    active ? "bg-gray-100" : ""
-                  } w-full px-4 py-2 text-left text-sm text-gray-700`}
+                  className={`${active ? "bg-gray-100" : ""} w-full px-4 py-2 text-left text-sm text-gray-700`}
                 >
                   Download PNG
                 </button>
@@ -160,9 +158,7 @@ useEffect(() => {
               {({ active }) => (
                 <button
                   onClick={() => handleDownload("jpeg")}
-                  className={`${
-                    active ? "bg-gray-100" : ""
-                  } w-full px-4 py-2 text-left text-sm text-gray-700`}
+                  className={`${active ? "bg-gray-100" : ""} w-full px-4 py-2 text-left text-sm text-gray-700`}
                 >
                   Download JPG
                 </button>
@@ -173,9 +169,9 @@ useEffect(() => {
       </div>
 
       {/* Chart + Title dalam 1 ref supaya judul ikut ke gambar */}
-      <div ref={barChartRef} className="bg-white p-6 rounded-lg">
-        <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-          Kompetensi Beban Kerja - {region || "Maluku"}
+      <div ref={barChartRef} className="bg-white p-4 md:p-6 rounded-lg">
+        <h3 className="text-lg md:text-xl font-semibold text-primary mb-4 text-center">
+          Kompetensi Beban Kerja - {region || "Banyuwangi"}
         </h3>
 
         <ResponsiveContainer width="100%" height={400}>
@@ -185,11 +181,15 @@ useEffect(() => {
             margin={{ top: 20, right: 30, left: 150, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis type="number" />
+            <XAxis 
+              type="number" 
+              tick={{ fontSize: 12 }}
+            />
             <YAxis 
               dataKey="name" 
               type="category" 
               width={140}
+              tick={{ fontSize: 12 }}
             />
             <Tooltip 
               formatter={(value) => [`${value}`, "Kompetensi"]}
@@ -205,14 +205,15 @@ useEffect(() => {
                 dataKey="value" 
                 position="right" 
                 formatter={(value: number) => `${value}`}
+                fontSize={12}
               />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
         
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <h4 className="font-semibold text-blue-800 mb-2">Keterangan Kategori:</h4>
-          <ul className="text-sm text-gray-700 list-disc pl-5 space-y-1">
+        <div className="mt-4 md:mt-6 p-3 md:p-4 bg-blue-50 rounded-lg">
+          <h4 className="font-semibold text-blue-800 mb-2 text-sm md:text-base">Keterangan Kategori:</h4>
+          <ul className="text-xs md:text-sm text-gray-700 list-disc pl-5 space-y-1">
             <li>Posyandu Balita: Kegiatan pelayanan kesehatan untuk balita di posyandu</li>
             <li>Posyandu Ibu Hamil: Kegiatan pelayanan kesehatan untuk ibu hamil di posyandu</li>
             <li>Kunjungan Rumah: Kunjungan langsung ke rumah untuk pendampingan kesehatan</li>
@@ -224,4 +225,4 @@ useEffect(() => {
   );
 };
 
-export default KompetensiBebanKerjaMlk ;
+export default KompetensiBebanKerjaMlk;
