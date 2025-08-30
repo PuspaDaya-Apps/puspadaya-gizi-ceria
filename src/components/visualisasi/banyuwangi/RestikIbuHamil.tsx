@@ -25,9 +25,21 @@ interface RiskData {
   value: number;
 }
 
+interface ApiResponse {
+  data: {
+    kek: number;
+    anemia: number;
+    pendek: number;
+    terlalu_tua: number;
+    terlalu_muda: number;
+    total_pengukuran: number;
+  };
+}
+
 const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
   const barChartRef = useRef<HTMLDivElement>(null);
   const [riskData, setRiskData] = useState<RiskData[]>([]);
+  const [totalPengukuran, setTotalPengukuran] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   // Ambil data dari API
@@ -41,7 +53,7 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) 
           ...(posyandu ? { posyandu } : {}),
         });
         const res = await fetch(`/ibu-hamil?${query.toString()}`);
-        const json = await res.json();
+        const json: ApiResponse = await res.json();
 
         if (json.data) {
           const mappedData: RiskData[] = [
@@ -52,12 +64,15 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) 
             { name: "Terlalu Muda", value: json.data.terlalu_muda },
           ];
           setRiskData(mappedData);
+          setTotalPengukuran(json.data.total_pengukuran);
         } else {
           setRiskData([]);
+          setTotalPengukuran(0);
         }
       } catch (err) {
         console.error("Error fetching data:", err);
         setRiskData([]);
+        setTotalPengukuran(0);
       } finally {
         setLoading(false);
       }
@@ -146,7 +161,7 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) 
 
       {/* Chart + Title */}
       <div ref={barChartRef} className="bg-white p-6 rounded-lg">
-        <h3 className="text-xl font-semibold text-primary mb-4 text-center">
+        <h3 className="text-xl font-semibold text-primary mb-2 text-center">
           Risiko Ibu Hamil - {region}
         </h3>
 
@@ -169,6 +184,13 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) 
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+
+        {/* Total Pengukuran - Simple Style Below Chart */}
+        <div className="mt-6 bg-gray-100 rounded-lg p-4 text-center">
+          <p className="text-gray-600 font-medium">Total Pengukuran: 
+            <span className="text-gray-800 font-semibold ml-2">{totalPengukuran.toLocaleString()}</span>
+          </p>
+        </div>
 
         <div className="mt-6 p-4 bg-blue-50 rounded-lg">
           <h4 className="font-semibold text-blue-800 mb-2">Keterangan Risiko:</h4>

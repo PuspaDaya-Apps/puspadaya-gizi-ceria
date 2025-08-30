@@ -75,6 +75,32 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
 
   const COLORS = ["#2b528a", "#d97706"];
 
+  // Cek jika semua data bernilai 0
+  const isAllZero = data.length > 0 && data.every(item => item.value === 0);
+
+  if (isAllZero) {
+    return (
+      <div className="bg-white rounded-2xl shadow p-6 text-center">
+        <h3 className="text-xl font-semibold text-primary mb-4">
+          Pemberian ASI Eksklusif {region}
+        </h3>
+        <div className="bg-gray-100 rounded-lg p-6 my-4">
+          <p className="text-gray-600 text-lg">
+            Tidak ada data pemberian ASI Eksklusif yang tersedia untuk {region}
+            {desa ? ` - ${desa}` : ""}
+            {posyandu ? ` - ${posyandu}` : ""}
+          </p>
+          <p className="text-gray-500 text-sm mt-2">
+            Total Balita: {total}
+          </p>
+        </div>
+        <p className="text-gray-500 text-sm">
+          Data akan ditampilkan setelah ada informasi pemberian ASI Eksklusif dari balita di wilayah ini.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-2xl shadow p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
