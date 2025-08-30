@@ -172,15 +172,34 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) 
             margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis type="number" />
-            <YAxis dataKey="name" type="category" width={90} />
+            <XAxis 
+              type="number" 
+              tick={{ fontSize: 12 }}
+              tickFormatter={(value) => {
+                if (value % 1 !== 0) {
+                  return Math.ceil(value * 100) / 100;
+                }
+                return value;
+              }}
+            />
+            <YAxis 
+              dataKey="name" 
+              type="category" 
+              width={90}
+              tick={{ fontSize: 12 }}
+            />
             <Tooltip
               formatter={(value) => [`${value}`, "Jumlah"]}
               labelFormatter={(name) => `Risiko: ${name}`}
             />
             <Legend />
             <Bar dataKey="value" fill="#8884d8">
-              <LabelList dataKey="value" position="right" formatter={(value) => `${value}`} />
+              <LabelList 
+                dataKey="value" 
+                position="right" 
+                formatter={(value) => `${value}`}
+                fontSize={12}
+              />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
