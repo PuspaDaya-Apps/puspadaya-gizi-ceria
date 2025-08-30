@@ -46,26 +46,32 @@ export default defineConfig(({ mode }) => ({
           path.replace(/^\/anak-mpasi/, "/api/v1/public-dashboard/anak-mpasi"),
       },
 
-        "/asi-eksklusif": {
+      "/asi-eksklusif": {
         target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
-          path.replace(/^\/asi-eksklusif/, "/api/v1/public-dashboard/asi-eksklusif"),
+          path.replace(
+            /^\/asi-eksklusif/,
+            "/api/v1/public-dashboard/asi-eksklusif"
+          ),
       },
 
       // Ibu Hamil
-       "/ibu-hamil": {
+      "/ibu-hamil": {
         target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
           path.replace(/^\/ibu-hamil/, "/api/v1/public-dashboard/ibu-hamil"),
       },
 
-       "/ibu-hamil-periodik": {
+      "/ibu-hamil-periodik": {
         target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
-          path.replace(/^\/ibu-hamil-periodik/, "/api/v1/public-dashboard/ibu-hamil-periodik"),
+          path.replace(
+            /^\/ibu-hamil-periodik/,
+            "/api/v1/public-dashboard/ibu-hamil-periodik"
+          ),
       },
 
       // Beban Kerja
@@ -79,7 +85,7 @@ export default defineConfig(({ mode }) => ({
           ),
       },
 
-        "/waktu-kunjungan": {
+      "/waktu-kunjungan": {
         target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
@@ -89,7 +95,15 @@ export default defineConfig(({ mode }) => ({
           ),
       },
 
-
+        "/waktu-jadwal-posyandu": {
+        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        changeOrigin: true,
+        rewrite: (path) =>
+          path.replace(
+            /^\/waktu-jadwal-posyandu/,
+            "/api/v1/public-dashboard/waktu-jadwal-posyandu"
+          ),
+      },
     },
   },
 
