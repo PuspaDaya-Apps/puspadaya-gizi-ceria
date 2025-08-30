@@ -311,9 +311,9 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
       <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
         <div className="text-center">
           <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            Durasi Pelaksanaan Kunjungan Oleh Kader di {region}
+            Durasi Pelaksanaan Kunjungan Posyandu Oleh Kader di {region}
           </h3>
-          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan</p>
+          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Posyandu</p>
           <div className="bg-gray-50 rounded-xl p-8 text-center">
             <p className="text-gray-500">Data tidak valid untuk ditampilkan</p>
           </div>
@@ -328,7 +328,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
         <h3 className="text-2xl font-bold text-gray-800 mb-2">
           Durasi Pelaksanaan Kunjungan Oleh Kader di {region}
         </h3>
-        <p className="text-gray-600">Distribusi Waktu Kunjungan</p>
+        <p className="text-gray-600">Distribusi Waktu Kunjungan Posyandu</p>
       </div>
 
       <div className="bg-gray-50 rounded-xl p-4">
@@ -351,6 +351,13 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 12, fill: "#374151" }}
+              tickFormatter={(value) => {
+                // Bulatkan ke atas jika memiliki 2 angka di belakang koma
+                if (value % 1 !== 0) {
+                  return Math.ceil(value * 100) / 100;
+                }
+                return value;
+              }}
               label={{
                 value: "Durasi (menit)",
                 angle: -90,

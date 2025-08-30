@@ -351,6 +351,13 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 12, fill: "#374151" }}
+              tickFormatter={(value) => {
+                // Bulatkan ke atas jika memiliki 2 angka di belakang koma
+                if (value % 1 !== 0) {
+                  return Math.ceil(value * 100) / 100;
+                }
+                return value;
+              }}
               label={{
                 value: "Durasi (menit)",
                 angle: -90,

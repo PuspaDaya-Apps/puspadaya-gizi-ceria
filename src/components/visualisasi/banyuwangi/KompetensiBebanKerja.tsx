@@ -122,7 +122,7 @@ useEffect(() => {
     return (
       <div className="bg-white rounded-2xl shadow p-6 text-center mb-8">
         <h3 className="text-xl font-semibold text-primary mb-4">
-          Kompetensi Beban Kerja
+          Jumlah Kompetensi Beban Kerja
         </h3>
         <p className="text-gray-500">
           Tidak ada data kompetensi beban kerja.
@@ -136,7 +136,7 @@ useEffect(() => {
       {/* Header + menu download */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
-          Kompetensi Beban Kerja
+          Jumlah Kompetensi Beban Kerja
         </h3>
 
         <Menu as="div" className="relative inline-block text-left">
