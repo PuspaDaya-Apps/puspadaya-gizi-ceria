@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => ({
         rewrite: (path) =>
           path.replace(/^\/balita/, "/api/v1/public-dashboard/balita-status"),
       },
-        "/data-skdn": {
+      "/data-skdn": {
         target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
@@ -33,15 +33,39 @@ export default defineConfig(({ mode }) => ({
         target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
-          path.replace(/^\/progres-status-gizi/, "/api/v1/public-dashboard/balita-status-period"),
+          path.replace(
+            /^\/progres-status-gizi/,
+            "/api/v1/public-dashboard/balita-status-period"
+          ),
       },
 
-
-        "/anak-mpasi": {
+      "/anak-mpasi": {
         target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
-          path.replace(/^\/anak-mpasi/, "/api/v1/public-dashboard/anak-mpas"),
+          path.replace(/^\/anak-mpasi/, "/api/v1/public-dashboard/anak-mpasi"),
+      },
+
+        "/asi-eksklusif": {
+        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        changeOrigin: true,
+        rewrite: (path) =>
+          path.replace(/^\/asi-eksklusif/, "/api/v1/public-dashboard/asi-eksklusif"),
+      },
+
+      // Ibu Hamil
+       "/ibu-hamil": {
+        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        changeOrigin: true,
+        rewrite: (path) =>
+          path.replace(/^\/ibu-hamil/, "/api/v1/public-dashboard/ibu-hamil"),
+      },
+
+       "/ibu-hamil-periodik": {
+        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        changeOrigin: true,
+        rewrite: (path) =>
+          path.replace(/^\/ibu-hamil-periodik/, "/api/v1/public-dashboard/ibu-hamil-periodik"),
       },
 
       // Beban Kerja
@@ -49,10 +73,11 @@ export default defineConfig(({ mode }) => ({
         target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
-          path.replace(/^\/jenis-kompetensi/, "/api/v1/public-dashboard/jenis-kompetensi"),
+          path.replace(
+            /^\/jenis-kompetensi/,
+            "/api/v1/public-dashboard/jenis-kompetensi"
+          ),
       },
-      
-
     },
   },
 

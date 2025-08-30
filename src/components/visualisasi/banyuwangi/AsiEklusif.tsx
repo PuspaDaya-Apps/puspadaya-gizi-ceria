@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   PieChart,
   Pie,
@@ -10,30 +10,70 @@ import {
 
 interface DataSectionProps {
   region: string;
+  desa?: string;
+  posyandu?: string;
 }
 
-const AsiEklusifBwi : React.FC<DataSectionProps> = ({ region }) => {
-  // Dummy data for "Ya" dan "Tidak" dengan penjelasan
-  const data = [
-    { 
-      name: "Ya", 
-      value: 75,
-      description: "Balita yang mendapat ASI Eklusif"
-    },
-    { 
-      name: "Tidak", 
-      value: 25,
-      description: "Balita yang tidak mendapat ASI Eklusif"
-    },
-  ];
+const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
+  const [data, setData] = useState<any[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
 
-  // Warna yang ramah bagi tunanetra warna
-  // Menggunakan palet warna yang dirancang khusus untuk aksesibilitas
-  // Warna biru tua dan oranye tua yang kontras tinggi
-  const COLORS = ["#2b528a", "#d97706"]; 
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const query = new URLSearchParams({
+          kabupaten_kota: region,
+          ...(desa ? { desa } : {}),
+          ...(posyandu ? { posyandu } : {}),
+        });
+        const res = await fetch(`/asi-eksklusif?${query.toString()}`);
+        const json = await res.json();
 
-  // Calculate total for display
-  const total = data.reduce((sum, entry) => sum + entry.value, 0);
+        if (json.data) {
+          const mappedData = [
+            {
+              name: "Ya",
+              value: json.data.total_asi_eksklusif_iya,
+              description: "Balita yang mendapat ASI Eksklusif",
+            },
+            {
+              name: "Tidak",
+              value: json.data.total_asi_eksklusif_tidak,
+              description: "Balita yang tidak mendapat ASI Eksklusif",
+            },
+          ];
+          setData(mappedData);
+          setTotal(json.data.total_balita_asi_eksklusif);
+        } else {
+          setData([]);
+          setTotal(0);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setData([]);
+        setTotal(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (region) {
+      fetchData();
+    }
+  }, [region, desa, posyandu]);
+
+  if (loading) {
+    return (
+      <div className="text-center py-10 text-gray-500">
+        Memuat data {region} {desa ? `- ${desa}` : ""}{" "}
+        {posyandu ? `- ${posyandu}` : ""}...
+      </div>
+    );
+  }
+
+  const COLORS = ["#2b528a", "#d97706"];
 
   return (
     <div className="bg-white rounded-2xl shadow p-6">
@@ -50,35 +90,27 @@ const AsiEklusifBwi : React.FC<DataSectionProps> = ({ region }) => {
             cx="50%"
             cy="50%"
             outerRadius={100}
-            label={({ name, value, percent }) => 
-              `${name}: ${value} (${(percent * 100).toFixed(0)}%)`
-            }
+            label={({ name, value }) => `${name}: ${value}%`}
           >
             {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
-          <Tooltip 
+          <Tooltip
             formatter={(value, name, props) => {
-              const entry = data.find(d => d.name === props.name);
-              return [
-                `${value} balita (${((Number(value) / total) * 100).toFixed(1)}%)`, 
-                entry?.description || name
-              ];
+              const entry = data.find((d) => d.name === props.name);
+              return [`${value}%`, entry?.description || name];
             }}
           />
-          <Legend 
-            formatter={(value, entry, index) => {
-              const dataEntry = data.find(d => d.name === value);
+          <Legend
+            formatter={(value) => {
+              const dataEntry = data.find((d) => d.name === value);
               return dataEntry ? `${value}: ${dataEntry.description}` : value;
             }}
           />
         </PieChart>
       </ResponsiveContainer>
-      
+
       <div className="text-center mt-4 text-gray-600">
         Total Balita: {total}
       </div>
@@ -86,4 +118,4 @@ const AsiEklusifBwi : React.FC<DataSectionProps> = ({ region }) => {
   );
 };
 
-export default AsiEklusifBwi ;
+export default AsiEklusifBwi;
