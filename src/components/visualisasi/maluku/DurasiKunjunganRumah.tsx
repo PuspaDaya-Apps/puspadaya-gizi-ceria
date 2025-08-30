@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -27,40 +27,63 @@ interface BoxPlotData {
 
 const DurasiKunjunganRumahMlk: React.FC<DataSectionProps> = ({ region }) => {
   const regionName = region || "BWI";
+  const [loading, setLoading] = useState(true);
+  const [rawData, setRawData] = useState<BoxPlotData[]>([]);
   
-  // Box plot data for multiple months
-  const rawData: BoxPlotData[] = [
-    {
-      name: "Juni",
-      category: "Durasi Kunjungan",
-      min: 15,
-      q1: 25,
-      median: 35,
-      q3: 50,
-      max: 75,
-      outliers: [10, 80],
-    },
-    {
-      name: "Juli",
-      category: "Durasi Kunjungan",
-      min: 20,
-      q1: 30,
-      median: 40,
-      q3: 55,
-      max: 80,
-      outliers: [12, 85],
-    },
-    {
-      name: "Agustus",
-      category: "Durasi Kunjungan",
-      min: 18,
-      q1: 28,
-      median: 38,
-      q3: 52,
-      max: 78,
-      outliers: [14, 82],
-    },
-  ];
+  useEffect(() => {
+    // Simulate API call
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Set the data
+        const data: BoxPlotData[] = [
+          {
+            name: "Juni",
+            category: "Durasi Kunjungan",
+            min: 15,
+            q1: 25,
+            median: 35,
+            q3: 50,
+            max: 75,
+            outliers: [10, 80],
+          },
+          {
+            name: "Juli",
+            category: "Durasi Kunjungan",
+            min: 20,
+            q1: 30,
+            median: 40,
+            q3: 55,
+            max: 80,
+            outliers: [12, 85],
+          },
+          {
+            name: "Agustus",
+            category: "Durasi Kunjungan",
+            min: 18,
+            q1: 28,
+            median: 38,
+            q3: 52,
+            max: 78,
+            outliers: [14, 82],
+          },
+        ];
+        
+        setRawData(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Set empty data on error
+        setRawData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, [region]);
 
   // Categories for coloring
   const categoryColors = {
@@ -271,6 +294,56 @@ const DurasiKunjunganRumahMlk: React.FC<DataSectionProps> = ({ region }) => {
     }
     return null;
   };
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
+        <div className="animate-pulse">
+          {/* Header skeleton */}
+          <div className="text-center mb-6">
+            <div className="h-6 bg-gray-200 rounded w-3/4 mx-auto mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+          </div>
+
+          {/* Chart skeleton */}
+          <div className="bg-gray-50 rounded-xl p-4 mb-6">
+            <div className="h-80 bg-gray-200 rounded-lg w-full"></div>
+          </div>
+
+          {/* Legend skeleton */}
+          <div className="flex justify-center gap-8 flex-wrap mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded w-24"></div>
+            </div>
+          </div>
+
+          {/* Explanation skeleton */}
+          <div className="p-4 bg-gray-100 rounded-lg">
+            <div className="h-5 bg-gray-200 rounded w-1/3 mb-3"></div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-1 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-0.5 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-gray-200 rounded-full"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/5"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">

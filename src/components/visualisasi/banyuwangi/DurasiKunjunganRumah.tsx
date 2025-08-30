@@ -308,8 +308,44 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
   if (loading) {
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
-        <div className="text-center">
-          <p>Memuat data...</p>
+        <div className="animate-pulse">
+          {/* Header skeleton */}
+          <div className="text-center mb-6">
+            <div className="h-6 bg-gray-200 rounded w-3/4 mx-auto mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+          </div>
+
+          {/* Chart skeleton */}
+          <div className="bg-gray-50 rounded-xl p-4 mb-6">
+            <div className="h-80 bg-gray-200 rounded-lg w-full"></div>
+          </div>
+
+          {/* Legend skeleton */}
+          <div className="flex justify-center gap-8 flex-wrap mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded w-24"></div>
+            </div>
+          </div>
+
+          {/* Explanation skeleton */}
+          <div className="p-4 bg-gray-100 rounded-lg">
+            <div className="h-5 bg-gray-200 rounded w-1/3 mb-3"></div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-1 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-0.5 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
