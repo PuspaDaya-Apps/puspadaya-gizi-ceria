@@ -19,11 +19,8 @@ interface BoxPlotData {
   name: string;
   category: string;
   min: number;
-  q1: number;
   median: number;
-  q3: number;
   max: number;
-  outliers?: number[];
 }
 
 interface ApiResponse {
@@ -37,7 +34,6 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
   desa,
   posyandu,
 }) => {
-  const regionName = region || "BWI";
   const [loading, setLoading] = useState(true);
   const [apiData, setApiData] = useState<ApiResponse | null>(null);
   const [currentMonth, setCurrentMonth] = useState("");
@@ -83,30 +79,13 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
   const prepareBoxPlotData = (): BoxPlotData[] => {
     if (!apiData) return [];
 
-    // Untuk box plot sederhana, kita perlu membuat nilai Q1, median, dan Q3
-    // Karena API hanya memberikan min, max, dan rata-rata, kita akan menggunakan:
-    // - min sebagai minimum
-    // - rata-rata sebagai median (perkiraan)
-    // - max sebagai maksimum
-    // - Q1 dan Q3 akan dihitung sebagai titik antara min-median dan median-max
-    
-    const min = apiData.minimum;
-    const median = apiData.rata_rata;
-    const max = apiData.maksimum;
-    
-    // Hitung Q1 dan Q3 sebagai titik tengah
-    const q1 = min + (median - min) * 0.25;
-    const q3 = median + (max - median) * 0.75;
-
     return [
       {
         name: currentMonth,
         category: "Durasi Kunjungan",
-        min: min,
-        q1: q1,
-        median: median,
-        q3: q3,
-        max: max,
+        min: apiData.minimum,
+        median: apiData.rata_rata,
+        max: apiData.maksimum,
       },
     ];
   };
@@ -125,11 +104,8 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
     index,
     // Store all values for tooltip and reference lines
     min: item.min,
-    q1: item.q1,
     median: item.median,
-    q3: item.q3,
     max: item.max,
-    outliers: item.outliers,
     color: categoryColors[item.category as keyof typeof categoryColors],
   }));
 
@@ -148,30 +124,16 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
     const scale = height / 5; // Scale untuk menampilkan nilai hingga 5 menit
 
     const minY = chartBottom - payload.min * scale;
-    const q1Y = chartBottom - payload.q1 * scale;
     const medianY = chartBottom - payload.median * scale;
-    const q3Y = chartBottom - payload.q3 * scale;
     const maxY = chartBottom - payload.max * scale;
 
     return (
       <g>
-        {/* Main box (IQR) */}
-        <rect
-          x={centerX - boxWidth / 2}
-          y={q3Y}
-          width={boxWidth}
-          height={q1Y - q3Y}
-          fill={payload.color}
-          fillOpacity={0.7}
-          stroke={payload.color}
-          strokeWidth={2}
-        />
-
-        {/* Median line */}
+        {/* Median line (now spans the full width) */}
         <line
-          x1={centerX - boxWidth / 2}
+          x1={x}
           y1={medianY}
-          x2={centerX + boxWidth / 2}
+          x2={x + width}
           y2={medianY}
           stroke="#DC2626"
           strokeWidth={3}
@@ -182,7 +144,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
           x1={centerX}
           y1={minY}
           x2={centerX}
-          y2={q1Y}
+          y2={medianY}
           stroke="#374151"
           strokeWidth={2}
         />
@@ -198,7 +160,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
         {/* Top whisker */}
         <line
           x1={centerX}
-          y1={q3Y}
+          y1={medianY}
           x2={centerX}
           y2={maxY}
           stroke="#374151"
@@ -225,37 +187,14 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
           {payload.min.toFixed(2)}
         </text>
         <text
-          x={centerX - boxWidth / 2 - 5}
-          y={q1Y}
-          fontSize={10}
-          fill="#374151"
-          textAnchor="end"
-          dominantBaseline="middle"
-          fontWeight="bold"
-        >
-          {payload.q1.toFixed(2)}
-        </text>
-        <text
-          x={centerX - boxWidth / 2 - 5}
-          y={medianY}
+          x={centerX}
+          y={medianY - 5}
           fontSize={10}
           fill="#DC2626"
-          textAnchor="end"
-          dominantBaseline="middle"
+          textAnchor="middle"
           fontWeight="bold"
         >
           {payload.median.toFixed(2)}
-        </text>
-        <text
-          x={centerX - boxWidth / 2 - 5}
-          y={q3Y}
-          fontSize={10}
-          fill="#374151"
-          textAnchor="end"
-          dominantBaseline="middle"
-          fontWeight="bold"
-        >
-          {payload.q3.toFixed(2)}
         </text>
         <text
           x={centerX}
@@ -286,14 +225,8 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
               <span className="font-medium">Minimum:</span> {data.min.toFixed(2)} menit
             </p>
             <p>
-              <span className="font-medium">Q1 (25%):</span> {data.q1.toFixed(2)} menit
-            </p>
-            <p>
-              <span className="font-medium text-red-600">Median:</span>{" "}
+              <span className="font-medium text-red-600">Rata-rata:</span>{" "}
               {data.median.toFixed(2)} menit
-            </p>
-            <p>
-              <span className="font-medium">Q3 (75%):</span> {data.q3.toFixed(2)} menit
             </p>
             <p>
               <span className="font-medium">Maksimum:</span> {data.max.toFixed(2)} menit
@@ -333,15 +266,11 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
             <div className="h-5 bg-gray-200 rounded w-1/3 mb-3"></div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-4 bg-gray-200 rounded"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-1 bg-gray-200 rounded"></div>
+                <div className="w-6 h-1 bg-red-500"></div>
                 <div className="h-4 bg-gray-200 rounded w-1/3"></div>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-6 h-0.5 bg-gray-200 rounded"></div>
+                <div className="w-6 h-0.5 bg-gray-800"></div>
                 <div className="h-4 bg-gray-200 rounded w-1/4"></div>
               </div>
             </div>
@@ -365,7 +294,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
       <div className="text-center mb-6">
         <h3 className="text-2xl font-bold text-gray-800 mb-2">
-          Durasi Kunjungan Rumah Oleh Kader di {regionName}
+          Durasi Kunjungan Rumah Oleh Kader di {region}
         </h3>
         <p className="text-gray-600">Distribusi Waktu Kunjungan</p>
       </div>
@@ -438,20 +367,16 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
       {/* Enhanced Explanation */}
       <div className="mt-6 p-4 bg-blue-50 rounded-lg">
         <h4 className="font-semibold text-blue-800 mb-3">
-          Keterangan Box Plot:
+          Keterangan Visualisasi:
         </h4>
         <div className="space-y-2 text-sm text-gray-700">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-4 bg-green-600 opacity-70 rounded-sm"></div>
-            <span>Box = IQR (Q1–Q3)</span>
-          </div>
-          <div className="flex items-center gap-2">
             <div className="w-6 h-1 bg-red-500"></div>
-            <span>Garis merah = Median (Rata-rata)</span>
+            <span>Garis merah = Rata-rata</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-6 h-0.5 bg-gray-800"></div>
-            <span>Whisker = Min-Max</span>
+            <span>Whisker = Nilai Minimum dan Maksimum</span>
           </div>
         </div>
       </div>
