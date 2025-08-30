@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
 
-    // 🔥 Tambahin proxy di sini
+    //  Tambahin proxy di sini
     proxy: {
       "/api": {
         target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",

@@ -77,6 +77,9 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
 
   // Cek jika semua data bernilai 0
   const isAllZero = data.length > 0 && data.every(item => item.value === 0);
+  
+  // Cek jika ada data yang bernilai 0 (salah satu bernilai 0)
+  const hasZeroValue = data.length > 0 && data.some(item => item.value === 0);
 
   if (isAllZero) {
     return (
@@ -110,24 +113,41 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie
-            data={data}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            outerRadius={100}
-            label={({ name, value }) => `${name}: ${value}%`}
-          >
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius={100}
+              label={({ name, value, percent }) => {
+                // Tampilkan label hanya jika nilai tidak 0
+                if (value === 0) return "";
+                return `${name}: ${value}%`;
+              }}
+            >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip
-            formatter={(value, name, props) => {
-              const entry = data.find((d) => d.name === props.name);
-              return [`${value}%`, entry?.description || name];
-            }}
-          />
+              formatter={(value, name, props) => {
+                const entry = data.find((d) => d.name === props.name);
+                return [`${value}%`, entry?.description || name];
+              }}
+              // Sembunyikan tooltip jika nilai 0
+              content={({ active, payload }) => {
+                if (active && payload && payload.length && payload[0].value !== 0) {
+                  const entry = data.find((d) => d.name === payload[0].name);
+                  return (
+                    <div className="bg-white p-2 border border-gray-200 rounded shadow">
+                      <p className="font-semibold">{entry?.description || payload[0].name}</p>
+                      <p>{`${payload[0].value}%`}</p>
+                    </div>
+                  );
+                }
+                return null;
+              }}
+            />
           <Legend
             formatter={(value) => {
               const dataEntry = data.find((d) => d.name === value);
