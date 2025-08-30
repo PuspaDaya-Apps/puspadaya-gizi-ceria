@@ -78,6 +78,18 @@ export default defineConfig(({ mode }) => ({
             "/api/v1/public-dashboard/jenis-kompetensi"
           ),
       },
+
+        "/waktu-kunjungan": {
+        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        changeOrigin: true,
+        rewrite: (path) =>
+          path.replace(
+            /^\/waktu-kunjungan/,
+            "/api/v1/public-dashboard/waktu-kunjungan"
+          ),
+      },
+
+
     },
   },
 

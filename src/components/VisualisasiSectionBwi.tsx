@@ -40,19 +40,19 @@ const VisualisasiSectionBwi: React.FC<VisualisasiSectionBwiProps> = ({ region, d
       <div className="px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <MpasiBwi region={region} desa={desa} posyandu={posyandu} />
-          <AsiEKlusifBwi region="Banyuwangi" />
+          <AsiEKlusifBwi region={region} desa={desa} posyandu={posyandu}/>
 
         </div>
       </div>
 
-       <RestikIbuHamil region="Banyuwangi" />
-       <ProgresIbuHamilBwi region="Banyuwangi" />
+       <RestikIbuHamil region={region} desa={desa} posyandu={posyandu} />
+       <ProgresIbuHamilBwi region={region} desa={desa} posyandu={posyandu} />
 
        <KompetensiBebanKerja region={region} desa={desa} posyandu={posyandu}/>
 
       <div className="px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <DurasiKunjunganRumahBwi region="Banyuwangi" />
+          <DurasiKunjunganRumahBwi  region={region} desa={desa} posyandu={posyandu} />
           <DurasiPelaksanaanPosyanduBwi region="Banyuwangi" />
 
         </div>

@@ -151,7 +151,13 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
             margin={{ top: 20, right: 30, left: 10, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="bulan" />
+            <XAxis
+              dataKey="bulan"
+              interval={0} // pastikan semua bulan tampil
+              padding={{ left: 20, right: 20 }} // kasih space kanan-kiri
+              angle={-15} // opsional: miringin dikit biar gak tabrakan
+              textAnchor="end"
+            />
             <YAxis />
             <Tooltip />
             <Legend />
