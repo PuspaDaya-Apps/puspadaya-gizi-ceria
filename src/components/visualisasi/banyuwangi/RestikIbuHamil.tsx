@@ -111,16 +111,14 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) 
     );
   }
 
-  if (!loading && isAllZero) {
-    return (
-      <div className="bg-white rounded-2xl shadow p-6 text-center mb-8">
-        <h3 className="text-xl font-semibold text-primary mb-4">
-          Risiko Ibu Hamil
-        </h3>
-        <p className="text-gray-500">Tidak ada data risiko ibu hamil.</p>
-      </div>
-    );
-  }
+  // Tetap tampilkan grafik meskipun semua data 0
+  const displayData = riskData.length > 0 ? riskData : [
+    { name: "KEK", value: 0 },
+    { name: "Anemia", value: 0 },
+    { name: "Pendek", value: 0 },
+    { name: "Terlalu Tua", value: 0 },
+    { name: "Terlalu Muda", value: 0 },
+  ];
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
@@ -167,9 +165,9 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) 
 
         <ResponsiveContainer width="100%" height={400}>
           <BarChart
-            data={riskData}
+            data={displayData}
             layout="vertical"
-            margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
+            margin={{ top: 20, right: 30, left: 130, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
@@ -191,6 +189,17 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) 
             <Tooltip
               formatter={(value) => [`${value}`, "Jumlah"]}
               labelFormatter={(name) => `Risiko: ${name}`}
+              content={({ active, payload, label }) => {
+                if (active && payload && payload.length) {
+                  return (
+                    <div className="bg-white p-2 border border-gray-200 rounded shadow">
+                      <p className="font-semibold">{`Risiko: ${label}`}</p>
+                      <p>{`Jumlah: ${payload[0].value}`}</p>
+                    </div>
+                  );
+                }
+                return null;
+              }}
             />
             <Legend />
             <Bar dataKey="value" fill="#8884d8">

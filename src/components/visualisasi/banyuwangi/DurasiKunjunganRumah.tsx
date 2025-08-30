@@ -82,7 +82,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
     return [
       {
         name: currentMonth,
-        category: "Durasi Kunjungan Posyandu",
+        category: "Durasi Kunjungan Rumah",
         min: apiData.minimum,
         median: apiData.rata_rata,
         max: apiData.maksimum,
@@ -94,7 +94,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
 
   // Categories for coloring
   const categoryColors = {
-    "Durasi Kunjungan Posyandu": "#3D9970",
+    "Durasi Kunjungan Rumah": "#3D9970",
   };
 
   // Prepare data for chart
@@ -294,9 +294,9 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
       <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
         <div className="text-center">
           <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            Durasi Pelaksanaan Kunjungan Posyandu Oleh Kader di {region}
+            Durasi Kunjungan Rumah Oleh Kader di {region}
           </h3>
-          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Posyandu</p>
+          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Rumah</p>
           <div className="bg-gray-50 rounded-xl p-8 text-center">
             <p className="text-gray-500">Tidak ada data yang tersedia untuk ditampilkan</p>
           </div>
@@ -311,9 +311,9 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
       <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
         <div className="text-center">
           <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            Durasi Pelaksanaan Kunjungan Posyandu Oleh Kader di {region}
+            Durasi Kunjungan Rumah Oleh Kader di {region}
           </h3>
-          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Posyandu</p>
+          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Rumah</p>
           <div className="bg-gray-50 rounded-xl p-8 text-center">
             <p className="text-gray-500">Data tidak valid untuk ditampilkan</p>
           </div>
@@ -326,9 +326,9 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
       <div className="text-center mb-6">
         <h3 className="text-2xl font-bold text-gray-800 mb-2">
-          Durasi Pelaksanaan Kunjungan Oleh Kader di {region}
+          Durasi Kunjungan Rumah Oleh Kader di {region}
         </h3>
-        <p className="text-gray-600">Distribusi Waktu Kunjungan Posyandu</p>
+        <p className="text-gray-600">Distribusi Waktu Kunjungan Rumah</p>
       </div>
 
       <div className="bg-gray-50 rounded-xl p-4">
