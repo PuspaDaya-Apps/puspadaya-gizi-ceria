@@ -19,7 +19,7 @@ interface DataSectionProps {
 }
 
 const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
-  const COLORS = ["#ef4444", "#f59e0b", "#1e40af", "#22c55e"]; 
+  const COLORS = ["#ef4444", "#f59e0b", "#1e40af", "#22c55e"];
 
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +29,7 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
       setLoading(true);
       try {
         // Bangun query param dinamis
-         const query = new URLSearchParams({
+        const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
@@ -69,13 +69,8 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
     );
   }
 
-  // Menghitung total nilai
+  // Menghitung total nilai (opsional, kalau masih mau ditampilkan)
   const total = data.reduce((sum, item) => sum + item.value, 0);
-
-  // Fungsi untuk memformat tooltip
-  const formatTooltip = (value: number) => {
-    return [`${value}`, "Jumlah Balita"];
-  };
 
   return (
     <div className="bg-white rounded-2xl shadow p-6">
@@ -92,20 +87,24 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis
-            label={{ value: "Jumlah Balita", angle: -90, position: "insideLeft" }}
+            label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }}
           />
-          <Tooltip formatter={formatTooltip} />
+          <Tooltip formatter={(value: number) => [`${value}%`, "Persentase"]} />
           <Legend />
-          <Bar dataKey="value" name="Jumlah Balita">
+          <Bar dataKey="value" name="Persentase">
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
-            <LabelList dataKey="value" position="top" />
+            <LabelList
+              dataKey="value"
+              position="top"
+              formatter={(value: number) => `${value}%`}
+            />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
 
-      {/* Menampilkan informasi nilai total */}
+      {/* Menampilkan informasi nilai total (opsional, kalau masih dibutuhkan) */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg text-center">
         <p className="text-lg font-semibold text-gray-800">
           Total Balita: <span className="text-blue-600">{total}</span>
