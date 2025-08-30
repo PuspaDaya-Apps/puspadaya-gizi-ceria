@@ -12,25 +12,25 @@ export default defineConfig(({ mode }) => ({
     //  Tambahin proxy di sini
     proxy: {
       "/api": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, "/api/v1/public-dashboard"),
       },
 
       "/balita": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
           path.replace(/^\/balita/, "/api/v1/public-dashboard/balita-status"),
       },
       "/data-skdn": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
           path.replace(/^\/data-skdn/, "/api/v1/public-dashboard/skdn-data"),
       },
       "/progres-status-gizi": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
           path.replace(
@@ -40,14 +40,14 @@ export default defineConfig(({ mode }) => ({
       },
 
       "/anak-mpasi": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
           path.replace(/^\/anak-mpasi/, "/api/v1/public-dashboard/anak-mpasi"),
       },
 
       "/asi-eksklusif": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
           path.replace(
@@ -58,14 +58,14 @@ export default defineConfig(({ mode }) => ({
 
       // Ibu Hamil
       "/ibu-hamil": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
           path.replace(/^\/ibu-hamil/, "/api/v1/public-dashboard/ibu-hamil"),
       },
 
       "/ibu-hamil-periodik": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
           path.replace(
@@ -76,7 +76,7 @@ export default defineConfig(({ mode }) => ({
 
       // Beban Kerja
       "/jenis-kompetensi": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
           path.replace(
@@ -86,7 +86,7 @@ export default defineConfig(({ mode }) => ({
       },
 
       "/waktu-kunjungan": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
           path.replace(
@@ -96,7 +96,7 @@ export default defineConfig(({ mode }) => ({
       },
 
         "/waktu-jadwal-posyandu": {
-        target: "http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io",
+        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
         changeOrigin: true,
         rewrite: (path) =>
           path.replace(

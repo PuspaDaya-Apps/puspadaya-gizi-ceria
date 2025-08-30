@@ -1,11 +1,23 @@
-/api/*                    http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/:splat               200
-/balita/*                 http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/balita-status/:splat  200
-/data-skdn/*              http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/skdn-data/:splat     200
-/progres-status-gizi/*    http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/balita-status-period/:splat  200
-/anak-mpasi/*             http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/anak-mpasi/:splat   200
-/asi-eksklusif/*          http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/asi-eksklusif/:splat 200
-/ibu-hamil/*              http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/ibu-hamil/:splat    200
-/ibu-hamil-periodik/*     http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/ibu-hamil-periodik/:splat 200
-/jenis-kompetensi/*       http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/jenis-kompetensi/:splat 200
-/waktu-kunjungan/*        http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-kunjungan/:splat 200
-/waktu-jadwal-posyandu/*  http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-jadwal-posyandu/:splat 200
+/api/*                   http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/:splat               200
+/balita/*                http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/balita-status/:splat  200
+/data-skdn/*             http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/skdn-data/:splat     200
+/progres-status-gizi/*   http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/balita-status-period/:splat  200
+/anak-mpasi/*            http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/anak-mpasi/:splat   200
+/asi-eksklusif/*         http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/asi-eksklusif/:splat 200
+/ibu-hamil/*             http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/ibu-hamil/:splat    200
+/ibu-hamil-periodik/*    http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/ibu-hamil-periodik/:splat 200
+/jenis-kompetensi/*      http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/jenis-kompetensi/:splat 200
+/waktu-kunjungan/*       http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-kunjungan/:splat 200
+/waktu-jadwal-posyandu/* http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-jadwal-posyandu/:splat 200
+
+# /api/*                    http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/:splat               200
+# /balita/*                 http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/balita-status/:splat  200
+# /data-skdn/*              http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/skdn-data/:splat     200
+# /progres-status-gizi/*    http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/balita-status-period/:splat  200
+# /anak-mpasi/*             http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/anak-mpasi/:splat   200
+# /asi-eksklusif/*          http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/asi-eksklusif/:splat 200
+# /ibu-hamil/*              http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/ibu-hamil/:splat    200
+# /ibu-hamil-periodik/*     http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/ibu-hamil-periodik/:splat 200
+# /jenis-kompetensi/*       http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/jenis-kompetensi/:splat 200
+# /waktu-kunjungan/*        http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-kunjungan/:splat 200
+# /waktu-jadwal-posyandu/*  http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-jadwal-posyandu/:splat 200
