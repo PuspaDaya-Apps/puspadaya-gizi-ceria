@@ -82,7 +82,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
     return [
       {
         name: currentMonth,
-        category: "Durasi Kunjungan",
+        category: "Durasi Kunjungan Posyandu",
         min: apiData.minimum,
         median: apiData.rata_rata,
         max: apiData.maksimum,
@@ -94,7 +94,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
 
   // Categories for coloring
   const categoryColors = {
-    "Durasi Kunjungan": "#3D9970",
+    "Durasi Kunjungan Posyandu": "#3D9970",
   };
 
   // Prepare data for chart
@@ -121,20 +121,29 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
 
     // Calculate positions based on chart scaling
     const chartBottom = y + height;
-    const scale = height / 5; // Scale untuk menampilkan nilai hingga 5 menit
+    
+    // Gunakan domain yang dinamis berdasarkan data maksimum
+    const maxDataValue = Math.max(payload.max, payload.median, payload.min);
+    const domainMax = maxDataValue > 0 ? Math.ceil(maxDataValue * 1.2) : 5; // Fallback ke 5 jika data tidak valid
+    const scale = height / domainMax;
 
     const minY = chartBottom - payload.min * scale;
     const medianY = chartBottom - payload.median * scale;
     const maxY = chartBottom - payload.max * scale;
+
+    // Validasi nilai Y agar tidak keluar dari batas chart
+    const validatedMinY = Math.max(y, Math.min(minY, chartBottom));
+    const validatedMedianY = Math.max(y, Math.min(medianY, chartBottom));
+    const validatedMaxY = Math.max(y, Math.min(maxY, chartBottom));
 
     return (
       <g>
         {/* Median line (now spans the full width) */}
         <line
           x1={x}
-          y1={medianY}
+          y1={validatedMedianY}
           x2={x + width}
-          y2={medianY}
+          y2={validatedMedianY}
           stroke="#DC2626"
           strokeWidth={3}
         />
@@ -142,17 +151,17 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
         {/* Bottom whisker */}
         <line
           x1={centerX}
-          y1={minY}
+          y1={validatedMinY}
           x2={centerX}
-          y2={medianY}
+          y2={validatedMedianY}
           stroke="#374151"
           strokeWidth={2}
         />
         <line
           x1={centerX - whiskerWidth / 2}
-          y1={minY}
+          y1={validatedMinY}
           x2={centerX + whiskerWidth / 2}
-          y2={minY}
+          y2={validatedMinY}
           stroke="#374151"
           strokeWidth={2}
         />
@@ -160,17 +169,17 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
         {/* Top whisker */}
         <line
           x1={centerX}
-          y1={medianY}
+          y1={validatedMedianY}
           x2={centerX}
-          y2={maxY}
+          y2={validatedMaxY}
           stroke="#374151"
           strokeWidth={2}
         />
         <line
           x1={centerX - whiskerWidth / 2}
-          y1={maxY}
+          y1={validatedMaxY}
           x2={centerX + whiskerWidth / 2}
-          y2={maxY}
+          y2={validatedMaxY}
           stroke="#374151"
           strokeWidth={2}
         />
@@ -178,7 +187,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
         {/* Value labels */}
         <text
           x={centerX}
-          y={minY + 15}
+          y={validatedMinY + 15}
           fontSize={10}
           fill="#374151"
           textAnchor="middle"
@@ -188,7 +197,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
         </text>
         <text
           x={centerX}
-          y={medianY - 5}
+          y={validatedMedianY - 5}
           fontSize={10}
           fill="#DC2626"
           textAnchor="middle"
@@ -198,7 +207,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
         </text>
         <text
           x={centerX}
-          y={maxY - 10}
+          y={validatedMaxY - 10}
           fontSize={10}
           fill="#374151"
           textAnchor="middle"
@@ -284,7 +293,30 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
         <div className="text-center">
-          <p>Tidak ada data yang tersedia</p>
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">
+            Durasi Pelaksanaan Kunjungan Posyandu Oleh Kader di {region}
+          </h3>
+          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Posyandu</p>
+          <div className="bg-gray-50 rounded-xl p-8 text-center">
+            <p className="text-gray-500">Tidak ada data yang tersedia untuk ditampilkan</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Cek apakah data valid
+  if (apiData.minimum < 0 || apiData.maksimum < 0 || apiData.rata_rata < 0) {
+    return (
+      <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
+        <div className="text-center">
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">
+            Durasi Pelaksanaan Kunjungan Oleh Kader di {region}
+          </h3>
+          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan</p>
+          <div className="bg-gray-50 rounded-xl p-8 text-center">
+            <p className="text-gray-500">Data tidak valid untuk ditampilkan</p>
+          </div>
         </div>
       </div>
     );
@@ -294,7 +326,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
       <div className="text-center mb-6">
         <h3 className="text-2xl font-bold text-gray-800 mb-2">
-          Durasi Kunjungan Rumah Oleh Kader di {region}
+          Durasi Pelaksanaan Kunjungan Oleh Kader di {region}
         </h3>
         <p className="text-gray-600">Distribusi Waktu Kunjungan</p>
       </div>
@@ -315,7 +347,7 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
               label={{ value: "Bulan", position: "insideBottom", offset: -30 }}
             />
             <YAxis
-              domain={[0, 5]} // Domain disesuaikan dengan data (maksimum 5 menit)
+              domain={[0, 'dataMax + 1']} // Domain dinamis dengan padding
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 12, fill: "#374151" }}
