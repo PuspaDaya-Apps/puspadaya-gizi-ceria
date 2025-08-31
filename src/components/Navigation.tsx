@@ -66,7 +66,7 @@ const Navigation = () => {
             <Button variant="ghost" size="icon" className="btn-circle">
               <Menu size={24} />
             </Button>
-            <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+            <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-white rounded-box w-52 mt-4 right-0">
               <li><Link to="/">Beranda</Link></li>
               <li><a href="#features">Fitur</a></li>
               <li><a href="#demo">Demo</a></li>

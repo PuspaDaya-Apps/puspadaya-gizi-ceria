@@ -9,11 +9,11 @@ const DownloadSection = () => {
       <section id="download" className="py-20 bg-blue-50">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="w-full lg:w-1/2">
+            <div className="w-full lg:w-1/2 flex justify-center">
               <img 
                 src="/lovable-uploads/95e14473-190b-4fd1-8942-8b32f7627ce2.jpeg" 
                 alt="Logo Puspadaya" 
-                className="rounded-2xl shadow-lg max-w-md mx-auto"
+                className="rounded-2xl shadow-lg w-full max-w-md h-auto"
               />
             </div>
             
