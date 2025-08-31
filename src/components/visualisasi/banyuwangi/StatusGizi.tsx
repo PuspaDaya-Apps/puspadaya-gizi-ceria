@@ -90,7 +90,7 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
             label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }}
           />
           <Tooltip formatter={(value: number) => [`${value}%`, "Persentase"]} />
-          <Legend />
+        
           <Bar dataKey="value" name="Persentase">
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -110,6 +110,7 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
           Total Balita: <span className="text-blue-600">{total}</span>
         </p>
       </div>
+      
     </div>
   );
 };

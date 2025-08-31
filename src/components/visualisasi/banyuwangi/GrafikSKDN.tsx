@@ -89,7 +89,6 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
               return item ? `${name} (${item.fullName})` : name;
             }}
           />
-          <Legend />
           <Bar dataKey="value" fill="#2563eb" radius={[8, 8, 0, 0]}>
             <LabelList dataKey="value" position="top" />
           </Bar>

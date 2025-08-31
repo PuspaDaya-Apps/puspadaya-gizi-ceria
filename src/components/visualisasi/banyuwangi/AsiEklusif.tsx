@@ -35,12 +35,12 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
           const mappedData = [
             {
               name: "Ya",
-              value: json.data.total_asi_eksklusif_iya,
+              value: json.data.prevalensi_asi_eksklusif_iya,
               description: "Balita yang mendapat ASI Eksklusif",
             },
             {
               name: "Tidak",
-              value: json.data.total_asi_eksklusif_tidak,
+              value: json.data.prevalensi_asi_eksklusif_tidak,
               description: "Balita yang tidak mendapat ASI Eksklusif",
             },
           ];
@@ -85,11 +85,11 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
     return (
       <div className="bg-white rounded-2xl shadow p-6 text-center">
         <h3 className="text-xl font-semibold text-primary mb-4">
-          Pemberian ASI Eksklusif {region}
+          Persentase Balita ASI Ekslusif {region}
         </h3>
         <div className="bg-gray-100 rounded-lg p-6 my-4">
           <p className="text-gray-600 text-lg">
-            Tidak ada data pemberian ASI Eksklusif yang tersedia untuk {region}
+            Tidak ada data Persentase Balita ASI Ekslusif yang tersedia untuk {region}
             {desa ? ` - ${desa}` : ""}
             {posyandu ? ` - ${posyandu}` : ""}
           </p>
@@ -98,7 +98,7 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
           </p>
         </div>
         <p className="text-gray-500 text-sm">
-          Data akan ditampilkan setelah ada informasi pemberian ASI Eksklusif dari balita di wilayah ini.
+          Data akan ditampilkan setelah ada informasi Persentase Balita ASI Ekslusif dari balita di wilayah ini.
         </p>
       </div>
     );
@@ -107,7 +107,7 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
   return (
     <div className="bg-white rounded-2xl shadow p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-        Pemberian ASI Eksklusif {region}
+        Persentase Balita ASI Ekslusif {region}
       </h3>
 
       <ResponsiveContainer width="100%" height={300}>

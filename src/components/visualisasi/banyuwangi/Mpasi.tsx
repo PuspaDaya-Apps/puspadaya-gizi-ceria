@@ -35,12 +35,12 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
           const mappedData = [
             {
               name: "Ya",
-              value: json.data.total_mpasi_iya,
+              value: json.data.prevalensi_mpasi_iya,
               description: "Balita yang mendapat MPASI (Makanan Pendamping ASI)",
             },
             {
               name: "Tidak",
-              value: json.data.total_mpasi_tidak,
+              value: json.data.prevalensi_mpasi_tidak,
               description: "Balita yang tidak mendapat MPASI",
             },
           ];
@@ -86,11 +86,11 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
     return (
       <div className="bg-white rounded-2xl shadow p-6 text-center">
         <h3 className="text-xl font-semibold text-primary mb-4">
-          Pemberian MPASI {region}
+         Persentase Balita MPASI {region}
         </h3>
         <div className="bg-gray-100 rounded-lg p-6 my-4">
           <p className="text-gray-600 text-lg">
-            Tidak ada data pemberian MPASI yang tersedia untuk {region}
+            Tidak ada data Persentase Balita MPASI yang tersedia untuk {region}
             {desa ? ` - ${desa}` : ""}
             {posyandu ? ` - ${posyandu}` : ""}
           </p>
@@ -99,7 +99,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
           </p>
         </div>
         <p className="text-gray-500 text-sm">
-          Data akan ditampilkan setelah ada informasi pemberian MPASI dari balita di wilayah ini.
+          Data akan ditampilkan setelah ada informasi Persentase Balita MPASI dari balita di wilayah ini.
         </p>
       </div>
     );
@@ -108,7 +108,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
   return (
     <div className="bg-white rounded-2xl shadow p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-        Pemberian MPASI {region}
+       Persentase Balita MPASI {region}
       </h3>
 
       <ResponsiveContainer width="100%" height={300}>

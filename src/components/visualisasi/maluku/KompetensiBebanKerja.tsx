@@ -135,8 +135,8 @@ useEffect(() => {
     <div className="bg-white rounded-2xl shadow p-4 md:p-6 relative mb-6 md:mb-8">
       {/* Header + menu download */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-2">
-        <h3 className="text-lg md:text-xl font-semibold text-primary text-center w-full md:w-auto">
-          Jumlah Kompetensi Beban Kerja
+        <h3 className="text-xl font-semibold text-primary text-center w-full">
+          Jumlah Kompetensi Beban Kerja Kader
         </h3>
 
         <Menu as="div" className="relative inline-block text-left">
@@ -171,7 +171,7 @@ useEffect(() => {
       {/* Chart + Title dalam 1 ref supaya judul ikut ke gambar */}
       <div ref={barChartRef} className="bg-white p-4 md:p-6 rounded-lg">
         <h3 className="text-lg md:text-xl font-semibold text-primary mb-4 text-center">
-          Kompetensi Beban Kerja - {region || "Banyuwangi"}
+          Jumlah Kompetensi Beban Kerja Kader - {region || "Banyuwangi"}
         </h3>
 
         <ResponsiveContainer width="100%" height={400}>

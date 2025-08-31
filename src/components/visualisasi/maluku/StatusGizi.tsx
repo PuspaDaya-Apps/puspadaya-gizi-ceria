@@ -90,7 +90,6 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
             label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }}
           />
           <Tooltip formatter={(value: number) => [`${value}%`, "Persentase"]} />
-          <Legend />
           <Bar dataKey="value" name="Persentase">
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
