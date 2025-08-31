@@ -3,7 +3,7 @@ import React from 'react';
 
 const DemoSection = () => {
   return (
-    <section id="demo" className="py-20 bg-white">
+    <section id="demo" className=" bg-white">
       <div className="container mx-auto px-4">
         <div className="border-t-4 border-yellow-400 p-8 rounded-2xl shadow-md max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-primary mb-8 text-center">Cara Efektif Mengoperasikan Aplikasi Puspadaya</h2>
