@@ -125,8 +125,8 @@ const RestikIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu 
       {/* Header + menu download */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
-          Risiko Ibu Hamil
-        </h3>
+                   
+          </h3>
 
         <Menu as="div" className="relative inline-block text-left">
           <MenuButton className="p-2 rounded-full hover:bg-gray-100">
@@ -160,7 +160,7 @@ const RestikIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu 
       {/* Chart + Title */}
       <div ref={barChartRef} className="bg-white p-6 rounded-lg">
         <h3 className="text-xl font-semibold text-primary mb-2 text-center">
-          Risiko Ibu Hamil - {region}
+          Ibu Hamil Beresiko - {region}
         </h3>
 
         <ResponsiveContainer width="100%" height={400}>
@@ -201,7 +201,6 @@ const RestikIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu 
                 return null;
               }}
             />
-            <Legend />
             <Bar dataKey="value" fill="#8884d8">
               <LabelList 
                 dataKey="value" 
