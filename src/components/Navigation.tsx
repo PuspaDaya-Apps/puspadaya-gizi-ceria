@@ -56,6 +56,19 @@ const Navigation = () => {
                   Tim Kami
                 </Link>
               </NavigationMenuItem>
+              <NavigationMenuItem>
+                <button 
+                  onClick={() => {
+                    // Simple URL obfuscation using character codes
+                    const urlParts = [112, 117, 115, 112, 97, 100, 97, 121, 97, 46, 110, 101, 116, 108, 105, 102, 121, 46, 97, 112, 112, 47, 97, 117, 116, 104, 47, 115, 105, 103, 110, 105, 110];
+                    const loginUrl = `https://${String.fromCharCode(...urlParts)}`;
+                    window.location.href = loginUrl;
+                  }}
+                  className={cn(navigationMenuTriggerStyle(), "bg-primary text-white hover:bg-blue-700")}
+                >
+                  Login
+                </button>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -72,6 +85,25 @@ const Navigation = () => {
               <li><a href="#demo">Demo</a></li>
               <li><a href="#download">Download</a></li>
               <li><Link to="/team">Tim Kami</Link></li>
+              <li>
+                <button 
+                  onClick={() => {
+                    // Close the dropdown first
+                    const dropdown = document.querySelector('.dropdown');
+                    if (dropdown) {
+                      (dropdown as HTMLElement).classList.remove('dropdown-open');
+                    }
+                    
+                    // Simple URL obfuscation using character codes
+                    const urlParts = [112, 117, 115, 112, 97, 100, 97, 121, 97, 46, 110, 101, 116, 108, 105, 102, 121, 46, 97, 112, 112, 47, 97, 117, 116, 104, 47, 115, 105, 103, 110, 105, 110];
+                    const loginUrl = `https://${String.fromCharCode(...urlParts)}`;
+                    window.location.href = loginUrl;
+                  }}
+                  className="text-left"
+                >
+                  Login
+                </button>
+              </li>
             </ul>
           </div>
         </div>
