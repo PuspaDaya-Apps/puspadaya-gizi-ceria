@@ -7,7 +7,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   LabelList,
 } from "recharts";
@@ -22,13 +21,13 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
   const COLORS = ["#ef4444", "#f59e0b", "#1e40af", "#22c55e"];
 
   const [data, setData] = useState<any[]>([]);
+  const [totalBalitaSasaran, setTotalBalitaSasaran] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Bangun query param dinamis
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
@@ -45,8 +44,10 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
             { name: "Normal", value: json.data.total_normal },
           ];
           setData(mappedData);
+          setTotalBalitaSasaran(json.data.total_balita_sasaran || 0);
         } else {
           setData([]);
+          setTotalBalitaSasaran(0);
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -69,9 +70,6 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
     );
   }
 
-  // Menghitung total nilai (opsional, kalau masih mau ditampilkan)
-  const total = data.reduce((sum, item) => sum + item.value, 0);
-
   return (
     <div className="bg-white rounded-2xl shadow p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
@@ -90,6 +88,7 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
             label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }}
           />
           <Tooltip formatter={(value: number) => [`${value}%`, "Persentase"]} />
+
           <Bar dataKey="value" name="Persentase">
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -103,10 +102,11 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
         </BarChart>
       </ResponsiveContainer>
 
-      {/* Menampilkan informasi nilai total (opsional, kalau masih dibutuhkan) */}
+      {/* Menampilkan total balita sasaran dari API */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg text-center">
         <p className="text-lg font-semibold text-gray-800">
-          Total Balita: <span className="text-blue-600">{total}</span>
+          Total Balita Sasaran:{" "}
+          <span className="text-blue-600">{totalBalitaSasaran}</span>
         </p>
       </div>
     </div>

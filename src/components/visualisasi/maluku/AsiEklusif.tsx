@@ -43,6 +43,11 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
               value: json.data.total_asi_eksklusif_tidak,
               description: "Balita yang tidak mendapat ASI Eksklusif",
             },
+            {
+              name: "Tidak Tahu",
+              value: 0, // Nilai dummy
+              description: "Balita dengan status ASI Eksklusif tidak diketahui",
+            },
           ];
           setData(mappedData);
           setTotal(json.data.total_balita_asi_eksklusif);
@@ -73,7 +78,7 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
     );
   }
 
-  const COLORS = ["#2b528a", "#d97706"];
+  const COLORS = ["#2b528a", "#d97706", "#e63946"]; // Menambahkan warna merah untuk "Tidak Tahu"
 
   // Cek jika semua data bernilai 0
   const isAllZero = data.length > 0 && data.every(item => item.value === 0);

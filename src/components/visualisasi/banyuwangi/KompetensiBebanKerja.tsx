@@ -192,14 +192,14 @@ useEffect(() => {
               tick={{ fontSize: 12 }}
             />
             <Tooltip 
-              formatter={(value) => [`${value}`, "Kompetensi"]}
+              formatter={(value) => [`${value}`, "Jumlah Kader"]}
               labelFormatter={(name) => `Kategori: ${name}`}
             />
             <Legend />
             <Bar 
               dataKey="value" 
               fill="#2b528a" 
-              name="Tingkat Kompetensi"
+              name="Jumlah Kader"
             >
               <LabelList 
                 dataKey="value" 

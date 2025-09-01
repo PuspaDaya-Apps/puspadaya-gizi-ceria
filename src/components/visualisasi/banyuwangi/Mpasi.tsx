@@ -43,6 +43,11 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
               value: json.data.prevalensi_mpasi_tidak,
               description: "Balita yang tidak mendapat MPASI",
             },
+            {
+              name: "Tidak Tahu",
+              value: 0, // Nilai dummy
+              description: "Balita dengan status MPASI tidak diketahui",
+            },
           ];
           setData(mappedData);
           setTotal(json.data.total_balita_mpasi);
@@ -74,7 +79,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
   }
 
   // Warna ramah aksesibilitas
-  const COLORS = ["#1f77b4", "#ff7f0e"];
+  const COLORS = ["#1f77b4", "#ff7f0e", "#e63946"]; // Menambahkan warna merah untuk "Tidak Tahu"
 
   // Cek jika semua data bernilai 0
   const isAllZero = data.length > 0 && data.every(item => item.value === 0);
