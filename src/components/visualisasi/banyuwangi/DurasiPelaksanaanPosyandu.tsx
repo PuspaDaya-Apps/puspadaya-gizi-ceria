@@ -19,7 +19,9 @@ interface BoxPlotData {
   name: string;
   category: string;
   min: number;
+  q1: number;
   median: number;
+  q3: number;
   max: number;
 }
 
@@ -27,6 +29,9 @@ interface ApiResponse {
   rata_rata: number;
   minimum: number;
   maksimum: number;
+  median: number;
+  q1: number;
+  q3: number;
 }
 
 const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
@@ -84,7 +89,9 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
         name: currentMonth,
         category: "Durasi Posyandu",
         min: apiData.minimum,
-        median: apiData.rata_rata,
+        q1: apiData.q1,
+        median: apiData.median,
+        q3: apiData.q3,
         max: apiData.maksimum,
       },
     ];
@@ -104,7 +111,9 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
     index,
     // Store all values for tooltip and reference lines
     min: item.min,
+    q1: item.q1,
     median: item.median,
+    q3: item.q3,
     max: item.max,
     color: categoryColors[item.category as keyof typeof categoryColors],
   }));
@@ -123,37 +132,53 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
     const chartBottom = y + height;
     
     // Gunakan domain yang dinamis berdasarkan data maksimum
-    const maxDataValue = Math.max(payload.max, payload.median, payload.min);
+    const maxDataValue = Math.max(payload.max, payload.q3, payload.median, payload.q1, payload.min);
     const domainMax = maxDataValue > 0 ? Math.ceil(maxDataValue * 1.2) : 5; // Fallback ke 5 jika data tidak valid
     const scale = height / domainMax;
 
     const minY = chartBottom - payload.min * scale;
+    const q1Y = chartBottom - payload.q1 * scale;
     const medianY = chartBottom - payload.median * scale;
+    const q3Y = chartBottom - payload.q3 * scale;
     const maxY = chartBottom - payload.max * scale;
 
     // Validasi nilai Y agar tidak keluar dari batas chart
     const validatedMinY = Math.max(y, Math.min(minY, chartBottom));
+    const validatedQ1Y = Math.max(y, Math.min(q1Y, chartBottom));
     const validatedMedianY = Math.max(y, Math.min(medianY, chartBottom));
+    const validatedQ3Y = Math.max(y, Math.min(q3Y, chartBottom));
     const validatedMaxY = Math.max(y, Math.min(maxY, chartBottom));
 
     return (
       <g>
-        {/* Median line (now spans the full width) */}
+        {/* Box (interquartile range) */}
+        <rect
+          x={centerX - boxWidth / 2}
+          y={validatedQ3Y}
+          width={boxWidth}
+          height={validatedQ1Y - validatedQ3Y}
+          fill={payload.color}
+          opacity={0.6}
+          stroke="#374151"
+          strokeWidth={1}
+        />
+
+        {/* Median line */}
         <line
-          x1={x}
+          x1={centerX - boxWidth / 2}
           y1={validatedMedianY}
-          x2={x + width}
+          x2={centerX + boxWidth / 2}
           y2={validatedMedianY}
           stroke="#DC2626"
           strokeWidth={3}
         />
 
-        {/* Bottom whisker */}
+        {/* Bottom whisker (min to Q1) */}
         <line
           x1={centerX}
           y1={validatedMinY}
           x2={centerX}
-          y2={validatedMedianY}
+          y2={validatedQ1Y}
           stroke="#374151"
           strokeWidth={2}
         />
@@ -166,10 +191,10 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
           strokeWidth={2}
         />
 
-        {/* Top whisker */}
+        {/* Top whisker (Q3 to max) */}
         <line
           x1={centerX}
-          y1={validatedMedianY}
+          y1={validatedQ3Y}
           x2={centerX}
           y2={validatedMaxY}
           stroke="#374151"
@@ -187,13 +212,22 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
         {/* Value labels */}
         <text
           x={centerX}
-          y={validatedMinY + 15}
+          y={validatedMinY - 5}
           fontSize={10}
           fill="#374151"
           textAnchor="middle"
           fontWeight="bold"
         >
           {payload.min.toFixed(2)}
+        </text>
+        <text
+          x={centerX}
+          y={validatedQ1Y - 5}
+          fontSize={10}
+          fill="#374151"
+          textAnchor="middle"
+        >
+          Q1: {payload.q1.toFixed(2)}
         </text>
         <text
           x={centerX}
@@ -207,7 +241,16 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
         </text>
         <text
           x={centerX}
-          y={validatedMaxY - 10}
+          y={validatedQ3Y - 5}
+          fontSize={10}
+          fill="#374151"
+          textAnchor="middle"
+        >
+          Q3: {payload.q3.toFixed(2)}
+        </text>
+        <text
+          x={centerX}
+          y={validatedMaxY - 5}
           fontSize={10}
           fill="#374151"
           textAnchor="middle"
@@ -234,8 +277,14 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
               <span className="font-medium">Minimum:</span> {data.min.toFixed(2)} menit
             </p>
             <p>
-              <span className="font-medium text-red-600">Rata-rata:</span>{" "}
+              <span className="font-medium">Kuartil 1 (Q1):</span> {data.q1.toFixed(2)} menit
+            </p>
+            <p>
+              <span className="font-medium text-red-600">Median:</span>{" "}
               {data.median.toFixed(2)} menit
+            </p>
+            <p>
+              <span className="font-medium">Kuartil 3 (Q3):</span> {data.q3.toFixed(2)} menit
             </p>
             <p>
               <span className="font-medium">Maksimum:</span> {data.max.toFixed(2)} menit
@@ -306,7 +355,7 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
   }
 
   // Cek apakah data valid
-  if (apiData.minimum < 0 || apiData.maksimum < 0 || apiData.rata_rata < 0) {
+  if (apiData.minimum < 0 || apiData.maksimum < 0 || apiData.median < 0) {
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
         <div className="text-center">
@@ -404,18 +453,30 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
       </div>
 
       {/* Enhanced Explanation */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+     <div className="mt-6 p-4 bg-blue-50 rounded-lg">
         <h4 className="font-semibold text-blue-800 mb-3">
-          Keterangan Visualisasi:
+          Keterangan Visualisasi Box Plot:
         </h4>
         <div className="space-y-2 text-sm text-gray-700">
           <div className="flex items-center gap-2">
             <div className="w-6 h-1 bg-red-500"></div>
-            <span>Garis merah = Rata-rata</span>
+            <span>Garis merah = Nilai Median (titik tengah data)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 border-2 border-gray-800 bg-green-500 opacity-60"></div>
+            <span>Kotak = Rentang Interkuartil (Q1 hingga Q3) - 50% data tengah</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-6 h-0.5 bg-gray-800"></div>
-            <span>Whisker = Nilai Minimum dan Maksimum</span>
+            <span>Garis (whisker) = Rentang nilai minimum hingga maksimum</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="text-xs font-mono">Q1</div>
+            <span> = Kuartil 1 </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="text-xs font-mono">Q3</div>
+            <span> = Kuartil 3 </span>
           </div>
         </div>
       </div>
