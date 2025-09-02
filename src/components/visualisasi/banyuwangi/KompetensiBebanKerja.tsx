@@ -122,7 +122,7 @@ useEffect(() => {
     return (
       <div className="bg-white rounded-2xl shadow p-6 text-center mb-8">
         <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-          Jumlah Kader Betdasarkan Kompetensi Beban Keerja Kader
+          Jumlah Kader Berdasarkan Kompetensi Beban Kerja Kader
         </h3>
         <p className="text-gray-500">
           Tidak ada data kompetensi beban kerja.
@@ -171,7 +171,7 @@ useEffect(() => {
       {/* Chart + Title dalam 1 ref supaya judul ikut ke gambar */}
       <div ref={barChartRef} className="bg-white p-4 md:p-6 rounded-lg">
         <h3 className="text-lg md:text-xl font-semibold text-primary mb-4 text-center">
-         Jumlah Kader Betdasarkan Kompetensi Beban Keerja Kader - {region || "Banyuwangi"}
+         Jumlah Kader Berdasarkan Kompetensi Beban Kerja Kader - {region || "Banyuwangi"}
         </h3>
 
         <ResponsiveContainer width="100%" height={400}>
