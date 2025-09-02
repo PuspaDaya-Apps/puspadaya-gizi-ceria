@@ -32,25 +32,39 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
         const json = await res.json();
 
         if (json.data) {
+          const {
+            prevalensi_asi_eksklusif_iya,
+            prevalensi_asi_eksklusif_tidak,
+            prevalensi_asi_eksklusif_tidak_tahu,
+            prevalensi_asi_eksklusif_belum_diukur,
+            total_balita_asi_eksklusif,
+          } = json.data;
+
           const mappedData = [
             {
               name: "Ya",
-              value: json.data.total_asi_eksklusif_iya,
+              value: prevalensi_asi_eksklusif_iya,
               description: "Balita yang mendapat ASI Eksklusif",
             },
             {
               name: "Tidak",
-              value: json.data.total_asi_eksklusif_tidak,
+              value: prevalensi_asi_eksklusif_tidak,
               description: "Balita yang tidak mendapat ASI Eksklusif",
             },
             {
               name: "Tidak Tahu",
-              value: 0, // Nilai dummy
-              description: "Balita dengan status ASI Eksklusif tidak diketahui",
+              value: prevalensi_asi_eksklusif_tidak_tahu,
+              description: "Status ASI Eksklusif tidak diketahui",
+            },
+            {
+              name: "Belum Diukur",
+              value: prevalensi_asi_eksklusif_belum_diukur,
+              description: "Balita yang belum diukur ASI Eksklusif",
             },
           ];
+
           setData(mappedData);
-          setTotal(json.data.total_balita_asi_eksklusif);
+          setTotal(total_balita_asi_eksklusif);
         } else {
           setData([]);
           setTotal(0);
@@ -78,29 +92,26 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
     );
   }
 
-  const COLORS = ["#2b528a", "#d97706", "#e63946"]; // Menambahkan warna merah untuk "Tidak Tahu"
+  const COLORS = ["#2b528a", "#d97706", "#e63946", "#2ca02c"]; // tambah hijau utk "Belum Diukur"
 
-  // Cek jika semua data bernilai 0
-  const isAllZero = data.length > 0 && data.every(item => item.value === 0);
+  const isAllZero = data.length > 0 && data.every((item) => item.value === 0);
 
   if (isAllZero) {
     return (
       <div className="bg-white rounded-2xl shadow p-6 text-center">
         <h3 className="text-xl font-semibold text-primary mb-4">
-          Persentase Balita ASI Ekslusif {region}
+          Persentase Balita ASI Eksklusif {region}
         </h3>
         <div className="bg-gray-100 rounded-lg p-6 my-4">
           <p className="text-gray-600 text-lg">
-            Tidak ada data Persentase Balita ASI Ekslusif yang tersedia untuk {region}
+            Tidak ada data Persentase Balita ASI Eksklusif yang tersedia untuk {region}
             {desa ? ` - ${desa}` : ""}
             {posyandu ? ` - ${posyandu}` : ""}
           </p>
-          <p className="text-gray-500 text-sm mt-2">
-            Total Balita: {total}
-          </p>
+          <p className="text-gray-500 text-sm mt-2">Total Balita: {total}</p>
         </div>
         <p className="text-gray-500 text-sm">
-          Data akan ditampilkan setelah ada informasi Persentase Balita ASI Ekslusif dari balita di wilayah ini.
+          Data akan ditampilkan setelah ada informasi Persentase Balita ASI Eksklusif dari balita di wilayah ini.
         </p>
       </div>
     );
@@ -109,7 +120,7 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
   return (
     <div className="bg-white rounded-2xl shadow p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-        Persentase Balita ASI Ekslusif {region}
+        Persentase Balita ASI Eksklusif {region}
       </h3>
 
       <ResponsiveContainer width="100%" height={300}>
@@ -121,29 +132,42 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
             cx="50%"
             cy="50%"
             outerRadius={100}
-            label={({ name, value }) => `${name}: ${value}%`}
+            label={({ name, value, percent }) =>
+              `${name}: ${value} (${(percent * 100).toFixed(1)}%)`
+            }
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
+
           <Tooltip
-            formatter={(value, name, props) => {
-              const entry = data.find((d) => d.name === props.name);
-              return [`${value}%`, entry?.description || name];
+            formatter={(value, name) => {
+              const totalValue = data.reduce((sum, d) => sum + d.value, 0);
+              const percent = totalValue
+                ? ((Number(value) / totalValue) * 100).toFixed(1)
+                : "0";
+              const entry = data.find((d) => d.name === name);
+              return [`${value} (${percent}%)`, entry?.description || name];
             }}
           />
+
           <Legend
             formatter={(value) => {
               const dataEntry = data.find((d) => d.name === value);
-              return dataEntry ? `${value}: ${dataEntry.description}` : value;
+              return dataEntry
+                ? `${value}: ${dataEntry.description}`
+                : value;
             }}
           />
         </PieChart>
       </ResponsiveContainer>
 
-      <div className="text-center mt-4 text-gray-600">
-        Total Balita: {total}
+           <div className="mt-4 text-center">
+        <div className="inline-block bg-gray-200 rounded-lg px-4 py-2">
+          <span className="text-gray-700 font-medium">Total Balita: </span>
+          <span className="text-gray-800 font-semibold">{total}</span>
+        </div>
       </div>
     </div>
   );
