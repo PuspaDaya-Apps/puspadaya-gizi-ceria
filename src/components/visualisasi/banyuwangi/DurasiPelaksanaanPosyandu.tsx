@@ -85,16 +85,16 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
     if (!apiData) return [];
 
     return [
-      {
-        name: currentMonth,
-        category: "Durasi Posyandu",
-        min: apiData.minimum,
-        q1: apiData.q1,
-        median: apiData.median,
-        q3: apiData.q3,
-        max: apiData.maksimum,
-      },
-    ];
+    {
+      name: currentMonth,
+      category: "Durasi Posyandu",
+      min: apiData.minimum ?? 0,
+      q1: apiData.q1 ?? 0,        // handle null jadi 0
+      median: apiData.median ?? 0,
+      q3: apiData.q3 ?? 0,        // handle null jadi 0
+      max: apiData.maksimum ?? 0,
+    },
+  ];
   };
 
   const boxPlotData = prepareBoxPlotData();
