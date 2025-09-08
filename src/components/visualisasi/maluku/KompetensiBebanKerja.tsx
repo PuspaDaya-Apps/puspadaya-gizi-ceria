@@ -210,6 +210,12 @@ useEffect(() => {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+
+         <div className="mt-6 bg-gray-100 rounded-lg p-4 text-center">
+          <p className="text-gray-600 font-medium">Jumlah Kader Mengisi
+            <span className="text-gray-800 font-semibold ml-2">6</span>
+          </p>
+        </div>
         
         <div className="mt-4 md:mt-6 p-3 md:p-4 bg-blue-50 rounded-lg">
           <h4 className="font-semibold text-blue-800 mb-2 text-sm md:text-base">Keterangan Kategori:</h4>

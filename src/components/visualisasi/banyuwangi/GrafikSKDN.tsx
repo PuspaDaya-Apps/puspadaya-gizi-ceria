@@ -89,7 +89,25 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
               return item ? `${name} (${item.fullName})` : name;
             }}
           />
-          <Bar dataKey="value" fill="#2563eb" radius={[8, 8, 0, 0]}>
+          <Bar 
+            dataKey="value" 
+            radius={[8, 8, 0, 0]}
+            shape={(props) => {
+              const { name } = props.payload;
+              const colors = {
+                "S": "#ef4444", // merah
+                "K": "#f59e0b", // kuning
+                "D": "#10b981", // hijau
+                "N": "#3b82f6"  // biru
+              };
+              return (
+                <rect
+                  {...props}
+                  fill={colors[name] || "#8884d8"}
+                />
+              );
+            }}
+          >
             <LabelList dataKey="value" position="top" />
           </Bar>
         </BarChart>
@@ -97,20 +115,20 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
       
       {/* Penjelasan terpisah untuk S, K, D, N */}
       <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-        <div className="p-3 bg-blue-50 rounded-lg">
-          <div className="font-bold text-blue-800">S</div>
+        <div className="p-3 bg-red-50 rounded-lg">
+          <div className="font-bold text-red-800">S</div>
           <div className="text-sm text-gray-600">Sasaran</div>
         </div>
-        <div className="p-3 bg-green-50 rounded-lg">
-          <div className="font-bold text-green-800">K</div>
+        <div className="p-3 bg-yellow-50 rounded-lg">
+          <div className="font-bold text-yellow-800">K</div>
           <div className="text-sm text-gray-600">KMS</div>
         </div>
-        <div className="p-3 bg-yellow-50 rounded-lg">
-          <div className="font-bold text-yellow-800">D</div>
+        <div className="p-3 bg-green-50 rounded-lg">
+          <div className="font-bold text-green-800">D</div>
           <div className="text-sm text-gray-600">Ditimbang</div>
         </div>
-        <div className="p-3 bg-purple-50 rounded-lg">
-          <div className="font-bold text-purple-800">N</div>
+        <div className="p-3 bg-blue-50 rounded-lg">
+          <div className="font-bold text-blue-800">N</div>
           <div className="text-sm text-gray-600">Naik BB</div>
         </div>
       </div>

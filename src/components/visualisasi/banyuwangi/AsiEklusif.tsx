@@ -1,6 +1,3 @@
-// Visualisasi data ASI Eksklusif dalam pie chart
-// Menampilkan persentase balita berdasarkan status pemberian ASI Eksklusif
-
 import React, { useEffect, useState } from "react";
 import {
   PieChart,
@@ -129,7 +126,7 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
         Persentase Balita ASI Eksklusif {region}
       </h3>
 
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={500}>
         <PieChart>
           <Pie
             data={data}

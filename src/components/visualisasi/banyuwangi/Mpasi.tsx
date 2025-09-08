@@ -1,6 +1,3 @@
-// Visualisasi data MPASI (Makanan Pendamping ASI) dalam pie chart
-// Menampilkan persentase balita berdasarkan status penerimaan MPASI
-
 import React, { useEffect, useState } from "react";
 import {
   PieChart,
@@ -9,6 +6,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Label,
 } from "recharts";
 
 interface DataSectionProps {
@@ -43,26 +41,10 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
           } = json.data;
 
           const mappedData = [
-            {
-              name: "Ya",
-              value: prevalensi_mpasi_iya,
-              description: "Balita yang mendapat MPASI",
-            },
-            {
-              name: "Tidak",
-              value: prevalensi_mpasi_tidak,
-              description: "Balita yang tidak mendapat MPASI",
-            },
-            {
-              name: "Tidak Tahu",
-              value: prevalensi_mpasi_tidak_tahu,
-              description: "Status MPASI tidak diketahui",
-            },
-            {
-              name: "Belum Diukur",
-              value: prevalensi_mpasi_belum_diukur,
-              description: "Balita yang belum diukur MPASI",
-            },
+            { name: "Ya", value: prevalensi_mpasi_iya, description: "Balita yang mendapat MPASI" },
+            { name: "Tidak", value: prevalensi_mpasi_tidak, description: "Balita yang tidak mendapat MPASI" },
+            { name: "Tidak Tahu", value: prevalensi_mpasi_tidak_tahu, description: "Status MPASI tidak diketahui" },
+            { name: "Belum Diukur", value: prevalensi_mpasi_belum_diukur, description: "Balita yang belum diukur MPASI" },
           ];
 
           setData(mappedData);
@@ -85,23 +67,19 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
       }
     };
 
-    if (region) {
-      fetchData();
-    }
+    if (region) fetchData();
   }, [region, desa, posyandu]);
 
   if (loading) {
     return (
       <div className="text-center py-10 text-gray-500">
-        Memuat data {region} {desa ? `- ${desa}` : ""}{" "}
-        {posyandu ? `- ${posyandu}` : ""}...
+        Memuat data {region} {desa ? `- ${desa}` : ""} {posyandu ? `- ${posyandu}` : ""}...
       </div>
     );
   }
 
   const COLORS = ["#1f77b4", "#ff7f0e", "#e63946", "#2ca02c"];
 
-  // Semua data nol
   const isAllZero = data.length > 0 && data.every((item) => item.value === 0);
 
   if (isAllZero) {
@@ -118,15 +96,10 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
           </p>
           <p className="text-gray-500 text-sm mt-2">Total Balita: {total}</p>
         </div>
-        <p className="text-gray-500 text-sm">
-          Data akan ditampilkan setelah ada informasi Persentase Balita MPASI di
-          wilayah ini.
-        </p>
       </div>
     );
   }
 
-  // Hitung total untuk persentase
   const totalValue = data.reduce((sum, d) => sum + d.value, 0);
 
   return (
@@ -135,7 +108,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
         Persentase Balita MPASI {region}
       </h3>
 
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={500}>
         <PieChart>
           <Pie
             data={data}
@@ -143,13 +116,13 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
             nameKey="name"
             cx="50%"
             cy="50%"
-            outerRadius={100}
-            label={({ name, value, percent }) => {
-              const percentValue = totalValue 
+            outerRadius={110}
+            labelLine={true} // tarik garis keluar
+            label={({ name, value }) => {
+              const percentValue = totalValue
                 ? ((value / totalValue) * 100).toFixed(1)
                 : "0";
-              // Menampilkan hanya persentase tanpa nilai absolut
-              return `${name}: ${percentValue}%`;
+              return `${name} ${percentValue}%`;
             }}
           >
             {data.map((entry, index) => (
@@ -163,7 +136,6 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
                 ? ((Number(value) / totalValue) * 100).toFixed(1)
                 : "0";
               const entry = data.find((d) => d.name === name);
-              // Menampilkan nilai absolut dan persentase di tooltip
               return [`${value} (${percent}%)`, entry?.description || name];
             }}
           />
@@ -185,7 +157,6 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
           <span className="text-gray-800 font-semibold">{total}</span>
         </div>
       </div>
-      
     </div>
   );
 };
