@@ -36,10 +36,10 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
 
         if (json.data) {
           const mappedData = [
-            { name: "S", value: json.data.S, fullName: "Sasaran" },
-            { name: "K", value: json.data.K, fullName: "KMS" },
-            { name: "D", value: json.data.D, fullName: "Ditimbang" },
-            { name: "N", value: json.data.N, fullName: "Naik BB" },
+            { name: "S", value: json.data.S ?? 0, fullName: "Sasaran" },
+            { name: "K", value: json.data.K ?? 0, fullName: "KMS" },
+            { name: "D", value: json.data.D ?? 0, fullName: "Ditimbang" },
+            { name: "N", value: json.data.N ?? 0, fullName: "Naik BB" },
           ];
           setData(mappedData);
         } else {

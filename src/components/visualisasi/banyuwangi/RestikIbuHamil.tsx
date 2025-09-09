@@ -58,15 +58,15 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) 
 
         if (json.data) {
           const mappedData: RiskData[] = [
-            { name: "KEK", value: json.data.kek },
-            { name: "Anemia", value: json.data.anemia.jumlah },
-            { name: "Pendek", value: json.data.pendek },
-            { name: "Terlalu Tua", value: json.data.terlalu_tua },
-            { name: "Terlalu Muda", value: json.data.terlalu_muda },
-            { name: "Hb Belum Diketahui", value: json.data.anemia.hbb_tidak_diketahui },
+            { name: "KEK", value: json.data.kek ?? 0 },
+            { name: "Anemia", value: json.data.anemia.jumlah ?? 0 },
+            { name: "Pendek", value: json.data.pendek ?? 0 },
+            { name: "Terlalu Tua", value: json.data.terlalu_tua ?? 0 },
+            { name: "Terlalu Muda", value: json.data.terlalu_muda ?? 0 },
+            { name: "Hb Belum Diketahui", value: json.data.anemia.hbb_tidak_diketahui ?? 0 },
           ];
           setRiskData(mappedData);
-          setTotalPengukuran(json.data.total_sasaran);
+          setTotalPengukuran(json.data.total_sasaran ?? 0);
         } else {
           setRiskData([]);
           setTotalPengukuran(0);

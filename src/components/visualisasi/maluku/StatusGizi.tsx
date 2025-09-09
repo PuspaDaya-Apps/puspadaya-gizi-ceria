@@ -38,13 +38,13 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
 
         if (json.data) {
           const mappedData = [
-            { name: "Stunting", value: json.data.total_stunting },
-            { name: "Wasting", value: json.data.total_wasting },
-            { name: "Underweight", value: json.data.total_underweight },
-            { name: "Normal", value: json.data.total_normal },
+            { name: "Stunting", value: json.data.total_stunting ?? 0 },
+            { name: "Wasting", value: json.data.total_wasting ?? 0 },
+            { name: "Underweight", value: json.data.total_underweight ?? 0 },
+            { name: "Normal", value: json.data.total_normal ?? 0 },
           ];
           setData(mappedData);
-          setTotalBalitaSasaran(json.data.total_balita_sasaran || 0);
+          setTotalBalitaSasaran(json.data.total_balita_sasaran ?? 0);
         } else {
           setData([]);
           setTotalBalitaSasaran(0);

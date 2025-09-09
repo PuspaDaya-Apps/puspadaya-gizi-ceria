@@ -40,20 +40,20 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
             prevalensi_mpasi_belum_diukur,
           } = json.data;
 
+          const mpasiIya = prevalensi_mpasi_iya ?? 0;
+          const mpasiTidak = prevalensi_mpasi_tidak ?? 0;
+          const mpasiTidakTahu = prevalensi_mpasi_tidak_tahu ?? 0;
+          const mpasiBelumDiukur = prevalensi_mpasi_belum_diukur ?? 0;
+
           const mappedData = [
-            { name: "Ya", value: prevalensi_mpasi_iya, description: "Balita yang mendapat MPASI" },
-            { name: "Tidak", value: prevalensi_mpasi_tidak, description: "Balita yang tidak mendapat MPASI" },
-            { name: "Tidak Tahu", value: prevalensi_mpasi_tidak_tahu, description: "Status MPASI tidak diketahui" },
-            { name: "Belum Diukur", value: prevalensi_mpasi_belum_diukur, description: "Balita yang belum diukur MPASI" },
+            { name: "Ya", value: mpasiIya, description: "Balita yang mendapat MPASI" },
+            { name: "Tidak", value: mpasiTidak, description: "Balita yang tidak mendapat MPASI" },
+            { name: "Tidak Tahu", value: mpasiTidakTahu, description: "Status MPASI tidak diketahui" },
+            { name: "Belum Diukur", value: mpasiBelumDiukur, description: "Balita yang belum diukur MPASI" },
           ];
 
           setData(mappedData);
-          setTotal(
-            prevalensi_mpasi_iya +
-              prevalensi_mpasi_tidak +
-              prevalensi_mpasi_tidak_tahu +
-              prevalensi_mpasi_belum_diukur
-          );
+          setTotal(mpasiIya + mpasiTidak + mpasiTidakTahu + mpasiBelumDiukur);
         } else {
           setData([]);
           setTotal(0);

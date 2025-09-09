@@ -89,9 +89,9 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
       name: currentMonth,
       category: "Durasi Posyandu",
       min: apiData.minimum ?? 0,
-      q1: apiData.q1 ?? 0,        // handle null jadi 0
+      q1: apiData.q1 ?? 0,
       median: apiData.median ?? 0,
-      q3: apiData.q3 ?? 0,        // handle null jadi 0
+      q3: apiData.q3 ?? 0,
       max: apiData.maksimum ?? 0,
     },
   ];

@@ -43,28 +43,28 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
           const mappedData = [
             {
               name: "Ya",
-              value: prevalensi_asi_eksklusif_iya,
+              value: prevalensi_asi_eksklusif_iya ?? 0,
               description: "Balita yang mendapat ASI Eksklusif",
             },
             {
               name: "Tidak",
-              value: prevalensi_asi_eksklusif_tidak,
+              value: prevalensi_asi_eksklusif_tidak ?? 0,
               description: "Balita yang tidak mendapat ASI Eksklusif",
             },
             {
               name: "Tidak Tahu",
-              value: prevalensi_asi_eksklusif_tidak_tahu,
+              value: prevalensi_asi_eksklusif_tidak_tahu ?? 0,
               description: "Status ASI Eksklusif tidak diketahui",
             },
             {
               name: "Belum Diukur",
-              value: prevalensi_asi_eksklusif_belum_diukur,
+              value: prevalensi_asi_eksklusif_belum_diukur ?? 0,
               description: "Balita yang belum diukur ASI Eksklusif",
             },
           ];
 
           setData(mappedData);
-          setTotal(total_balita_asi_eksklusif);
+          setTotal(total_balita_asi_eksklusif ?? 0);
         } else {
           setData([]);
           setTotal(0);

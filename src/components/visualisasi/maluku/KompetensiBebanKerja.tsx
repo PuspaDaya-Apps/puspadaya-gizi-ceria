@@ -20,28 +20,21 @@ interface DataSectionProps {
   posyandu?: string;
 }
 
-// Interface untuk data kompetensi beban kerja
 interface WorkloadData {
   name: string;
   value: number;
 }
 
-const KompetensiBebanKerjaMlk: React.FC<DataSectionProps> = ({   region,
+const KompetensiBebanKerjaMlk: React.FC<DataSectionProps> = ({
+  region,
   desa,
-  posyandu, }) => {
+  posyandu,
+}) => {
   const barChartRef = useRef<HTMLDivElement>(null);
   const [workloadData, setWorkloadData] = useState<WorkloadData[]>([]);
+  const [jumlahKaderMengisi, setJumlahKaderMengisi] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
-  // Data dummy untuk kompetensi beban kerja
-  const dummyData: WorkloadData[] = [
-    { name: "Posyandu Balita", value: 75 },
-    { name: "Posyandu Ibu Hamil", value: 68 },
-    { name: "Kunjungan Rumah", value: 82 },
-    { name: "Tugas Tambahan", value: 55 },
-  ];
-
-  // Fungsi download chart sebagai PNG/JPEG
   const handleDownload = async (format: "png" | "jpeg") => {
     if (!barChartRef.current) return;
 
@@ -61,53 +54,57 @@ const KompetensiBebanKerjaMlk: React.FC<DataSectionProps> = ({   region,
     link.click();
   };
 
-useEffect(() => {
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const query = new URLSearchParams({
-        kabupaten_kota: region,
-        ...(desa ? { desa } : {}),
-        ...(posyandu ? { posyandu } : {}),
-      });
-      const res = await fetch(`/jenis-kompetensi?${query.toString()}`);
-      const json = await res.json();
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const query = new URLSearchParams({
+          kabupaten_kota: region,
+          ...(desa ? { desa } : {}),
+          ...(posyandu ? { posyandu } : {}),
+        });
+        const res = await fetch(`/jenis-kompetensi?${query.toString()}`);
+        const json = await res.json();
 
-      if (json.data) {
-        const mappedData: WorkloadData[] = Object.entries(json.data).map(
-          ([key, value]) => ({
-            name:
-              key === "Balita"
-                ? "Posyandu Balita"
-                : key === "Ibu_Hamil_dan_Menyusui"
-                ? "Posyandu Ibu Hamil"
-                : key === "Kunjungan_Rumah"
-                ? "Kunjungan Rumah"
-                : key === "Tugas_Tambahan"
-                ? "Tugas Tambahan"
-                : key, // fallback kalau ada kategori baru
-            value: value as number,
-          })
-        );
+        if (json.data) {
+          // mapping kompetensi
+          const mappedData: WorkloadData[] = Object.entries(json.data)
+            .filter(([key]) => key !== "jumlah_kader_mengisi") // buang field jumlah_kader_mengisi
+            .map(([key, value]) => ({
+              name:
+                key === "Balita"
+                  ? "Posyandu Balita"
+                  : key === "Ibu_Hamil_dan_Menyusui"
+                  ? "Posyandu Ibu Hamil"
+                  : key === "Kunjungan_Rumah"
+                  ? "Kunjungan Rumah"
+                  : key === "Tugas_Tambahan"
+                  ? "Tugas Tambahan"
+                  : key,
+              value: (value as number) ?? 0,
+            }));
 
-        setWorkloadData(mappedData);
-      } else {
-        setWorkloadData([]);
+          setWorkloadData(mappedData);
+
+          // set jumlah kader mengisi
+          setJumlahKaderMengisi(json.data.jumlah_kader_mengisi || 0);
+        } else {
+          setWorkloadData([]);
+          setJumlahKaderMengisi(0);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Error fetching data:", err);
-    } finally {
-      setLoading(false);
+    };
+
+    if (region) {
+      fetchData();
     }
-  };
+  }, [region, desa, posyandu]);
 
-  if (region) {
-    fetchData();
-  }
-}, [region, desa, posyandu]);
-
-
-  const isAllZero = workloadData.every(d => d.value === 0);
+  const isAllZero = workloadData.every((d) => d.value === 0);
 
   if (loading) {
     return (
@@ -117,16 +114,13 @@ useEffect(() => {
     );
   }
 
-  // Jika semua 0
   if (!loading && isAllZero) {
     return (
       <div className="bg-white rounded-2xl shadow p-6 text-center mb-8">
-        <h3 className="text-xl font-semibold text-primary mb-4">
-          Jumlah Kompetensi Beban Kerja
+        <h3 className="text-xl font-semibold text-primary mb-4 text-center">
+          Jumlah Kader Berdasarkan Kompetensi Beban Kerja Kader
         </h3>
-        <p className="text-gray-500">
-          Tidak ada data kompetensi beban kerja.
-        </p>
+        <p className="text-gray-500">Tidak ada data kompetensi beban kerja.</p>
       </div>
     );
   }
@@ -135,9 +129,7 @@ useEffect(() => {
     <div className="bg-white rounded-2xl shadow p-4 md:p-6 relative mb-6 md:mb-8">
       {/* Header + menu download */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-2">
-        <h3 className="text-xl font-semibold text-primary text-center w-full">
-           
-        </h3>
+        <h3 className="text-xl font-semibold text-primary text-center w-full"></h3>
 
         <Menu as="div" className="relative inline-block text-left">
           <MenuButton className="p-2 rounded-full hover:bg-gray-100">
@@ -148,7 +140,9 @@ useEffect(() => {
               {({ active }) => (
                 <button
                   onClick={() => handleDownload("png")}
-                  className={`${active ? "bg-gray-100" : ""} w-full px-4 py-2 text-left text-sm text-gray-700`}
+                  className={`${
+                    active ? "bg-gray-100" : ""
+                  } w-full px-4 py-2 text-left text-sm text-gray-700`}
                 >
                   Download PNG
                 </button>
@@ -158,7 +152,9 @@ useEffect(() => {
               {({ active }) => (
                 <button
                   onClick={() => handleDownload("jpeg")}
-                  className={`${active ? "bg-gray-100" : ""} w-full px-4 py-2 text-left text-sm text-gray-700`}
+                  className={`${
+                    active ? "bg-gray-100" : ""
+                  } w-full px-4 py-2 text-left text-sm text-gray-700`}
                 >
                   Download JPG
                 </button>
@@ -168,10 +164,11 @@ useEffect(() => {
         </Menu>
       </div>
 
-      {/* Chart + Title dalam 1 ref supaya judul ikut ke gambar */}
+      {/* Chart + Title */}
       <div ref={barChartRef} className="bg-white p-4 md:p-6 rounded-lg">
         <h3 className="text-lg md:text-xl font-semibold text-primary mb-4 text-center">
-           Jumlah Kader Berdasarkan Kompetensi Beban Kerja Kader - {region || "Banyuwangi"}
+          Jumlah Kader Berdasarkan Kompetensi Beban Kerja Kader -{" "}
+          {region || "Banyuwangi"}
         </h3>
 
         <ResponsiveContainer width="100%" height={400}>
@@ -181,29 +178,22 @@ useEffect(() => {
             margin={{ top: 20, right: 30, left: 150, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis 
-              type="number" 
-              tick={{ fontSize: 12 }}
-            />
-            <YAxis 
-              dataKey="name" 
-              type="category" 
+            <XAxis type="number" tick={{ fontSize: 12 }} />
+            <YAxis
+              dataKey="name"
+              type="category"
               width={140}
               tick={{ fontSize: 12 }}
             />
-            <Tooltip 
+            <Tooltip
               formatter={(value) => [`${value}`, "Jumlah Kader"]}
               labelFormatter={(name) => `Kategori: ${name}`}
             />
             <Legend />
-            <Bar 
-              dataKey="value" 
-              fill="#2b528a" 
-              name="Jumlah Kader"
-            >
-              <LabelList 
-                dataKey="value" 
-                position="right" 
+            <Bar dataKey="value" fill="#2b528a" name="Jumlah Kader">
+              <LabelList
+                dataKey="value"
+                position="right"
                 formatter={(value: number) => `${value}`}
                 fontSize={12}
               />
@@ -211,19 +201,36 @@ useEffect(() => {
           </BarChart>
         </ResponsiveContainer>
 
-         <div className="mt-6 bg-gray-100 rounded-lg p-4 text-center">
-          <p className="text-gray-600 font-medium">Jumlah Kader Mengisi
-            <span className="text-gray-800 font-semibold ml-2">6</span>
+        {/* Jumlah kader mengisi dari API */}
+        <div className="mt-6 bg-gray-100 rounded-lg p-4 text-center">
+          <p className="text-gray-600 font-medium">
+            Jumlah Kader Mengisi
+            <span className="text-gray-800 font-semibold ml-2">
+              {jumlahKaderMengisi}
+            </span>
           </p>
         </div>
-        
+
         <div className="mt-4 md:mt-6 p-3 md:p-4 bg-blue-50 rounded-lg">
-          <h4 className="font-semibold text-blue-800 mb-2 text-sm md:text-base">Keterangan Kategori:</h4>
+          <h4 className="font-semibold text-blue-800 mb-2 text-sm md:text-base">
+            Keterangan Kategori:
+          </h4>
           <ul className="text-xs md:text-sm text-gray-700 list-disc pl-5 space-y-1">
-            <li>Posyandu Balita: Kegiatan pelayanan kesehatan untuk balita di posyandu</li>
-            <li>Posyandu Ibu Hamil: Kegiatan pelayanan kesehatan untuk ibu hamil di posyandu</li>
-            <li>Kunjungan Rumah: Kunjungan langsung ke rumah untuk pendampingan kesehatan</li>
-            <li>Tugas Tambahan: Tugas lainnya yang berkaitan dengan program gizi</li>
+            <li>
+              Posyandu Balita: Kegiatan pelayanan kesehatan untuk balita di
+              posyandu
+            </li>
+            <li>
+              Posyandu Ibu Hamil: Kegiatan pelayanan kesehatan untuk ibu hamil
+              di posyandu
+            </li>
+            <li>
+              Kunjungan Rumah: Kunjungan langsung ke rumah untuk pendampingan
+              kesehatan
+            </li>
+            <li>
+              Tugas Tambahan: Tugas lainnya yang berkaitan dengan program gizi
+            </li>
           </ul>
         </div>
       </div>

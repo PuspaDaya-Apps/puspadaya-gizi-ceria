@@ -88,11 +88,11 @@ const DurasiKunjunganRumahBwi: React.FC<DataSectionProps> = ({
       {
         name: currentMonth,
         category: "Durasi Kunjungan Rumah",
-        min: apiData.minimum,
-        q1: apiData.q1,
-        median: apiData.median,
-        q3: apiData.q3,
-        max: apiData.maksimum,
+        min: apiData.minimum ?? 0,
+        q1: apiData.q1 ?? 0,
+        median: apiData.median ?? 0,
+        q3: apiData.q3 ?? 0,
+        max: apiData.maksimum ?? 0,
       },
     ];
   };

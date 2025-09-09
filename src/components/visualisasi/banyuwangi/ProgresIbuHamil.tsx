@@ -51,11 +51,11 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu
           const mappedData: IbuHamilData[] = Object.entries(json.data).map(
             ([bulan, values]: [string, any]) => ({
               bulan,
-              kek: values.kek,
-              anemia: values.anemia,
-              pendek: values.pendek,
-              terlaluTua: values.terlalu_tua,
-              terlaluMuda: values.terlalu_muda,
+              kek: values.kek ?? 0,
+              anemia: values.anemia ?? 0,
+              pendek: values.pendek ?? 0,
+              terlaluTua: values.terlalu_tua ?? 0,
+              terlaluMuda: values.terlalu_muda ?? 0,
             })
           );
           setIbuHamilData(mappedData);
