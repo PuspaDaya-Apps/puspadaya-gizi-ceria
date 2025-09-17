@@ -48,7 +48,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
           const mappedData = [
             { name: "Ya", value: mpasiIya, description: "Balita yang mendapat MPASI" },
             { name: "Tidak", value: mpasiTidak, description: "Balita yang tidak mendapat MPASI" },
-            { name: "Tidak Tahu", value: mpasiTidakTahu, description: "Status MPASI tidak diketahui" },
+            { name: "Tidak Diisi", value: mpasiTidakTahu, description: "Status MPASI tidak diketahui" },
             { name: "Belum Diukur", value: mpasiBelumDiukur, description: "Balita yang belum diukur MPASI" },
           ];
 
@@ -86,7 +86,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
     return (
       <div className="bg-white rounded-2xl shadow p-6 text-center">
         <h3 className="text-xl font-semibold text-primary mb-4">
-          Persentase Balita MPASI {region}
+          Persentase Balita Mendapatkan Makanan Selain ASI {region}
         </h3>
         <div className="bg-gray-100 rounded-lg p-6 my-4">
           <p className="text-gray-600 text-lg">
@@ -105,7 +105,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
   return (
     <div className="bg-white rounded-2xl shadow p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-        Persentase Balita MPASI {region}
+        Persentase Balita Mendapatkan Makanan Selain ASI {region}
       </h3>
 
       <ResponsiveContainer width="100%" height={500}>

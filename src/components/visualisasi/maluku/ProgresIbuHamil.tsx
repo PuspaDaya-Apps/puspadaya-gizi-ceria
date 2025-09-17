@@ -120,7 +120,7 @@ const ProgresIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
-          Progres Ibu Hamil - {region}
+          Progres Ibu Hamil Berisiko {region}
         </h3>
 
         <Menu as="div" className="relative inline-block text-left">

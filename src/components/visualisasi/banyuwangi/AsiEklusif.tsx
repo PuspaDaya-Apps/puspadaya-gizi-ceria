@@ -52,7 +52,7 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
               description: "Balita yang tidak mendapat ASI Eksklusif",
             },
             {
-              name: "Tidak Tahu",
+              name: "Tidak Diisi",
               value: prevalensi_asi_eksklusif_tidak_tahu ?? 0,
               description: "Status ASI Eksklusif tidak diketahui",
             },
