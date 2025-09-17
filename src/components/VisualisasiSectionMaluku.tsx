@@ -11,6 +11,8 @@ import KompetensiBebanKerjaMlk from "./visualisasi/maluku/KompetensiBebanKerja";
 import DurasiKunjunganRumahMlk from "./visualisasi/maluku/DurasiKunjunganRumah";
 import DurasiPelaksanaanPosyanduMlk from "./visualisasi/maluku/DurasiPelaksanaanPosyandu";
 import StatusGiziMlk from "./visualisasi/maluku/StatusGizi";
+import DurasiKunjunganAnakMlk from "./visualisasi/maluku/DurasiKunjunganAnak";
+import DurasiKunjunganIbuHamilMlk from "./visualisasi/maluku/DurasiKunjunganIbuHamil";
 
 
 
@@ -56,6 +58,8 @@ const VisualisasiSectionMaluku : React.FC<VisualisasiSectionMlkProps> = ({ regio
       <div className="px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <DurasiKunjunganRumahMlk region={region} desa={desa} posyandu={posyandu} />
+           <DurasiKunjunganAnakMlk  region={region} desa={desa} posyandu={posyandu} />
+          <DurasiKunjunganIbuHamilMlk  region={region} desa={desa} posyandu={posyandu} />
           <DurasiPelaksanaanPosyanduMlk region={region} desa={desa} posyandu={posyandu} />
 
         </div>

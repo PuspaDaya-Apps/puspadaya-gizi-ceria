@@ -3,113 +3,104 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
+// Konstanta untuk base URL API
+const API_BASE_URL = "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io";
+const API_PREFIX = "/api/v1/public-dashboard";
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
 
-    //  Tambahin proxy di sini
+    // Proxy configuration
     proxy: {
+      // Base API endpoint
       "/api": {
-        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
+        target: API_BASE_URL,
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, "/api/v1/public-dashboard"),
+        rewrite: (path) => path.replace(/^\/api/, API_PREFIX),
       },
 
+      // Balita endpoints
       "/balita": {
-        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
+        target: API_BASE_URL,
         changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(/^\/balita/, "/api/v1/public-dashboard/balita-status"),
+        rewrite: (path) => path.replace(/^\/balita/, `${API_PREFIX}/balita-status`),
       },
-      "/data-skdn": {
-        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
-        changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(/^\/data-skdn/, "/api/v1/public-dashboard/skdn-data"),
-      },
+
       "/progres-status-gizi": {
-        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
+        target: API_BASE_URL,
         changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(
-            /^\/progres-status-gizi/,
-            "/api/v1/public-dashboard/balita-status-period"
-          ),
+        rewrite: (path) => path.replace(/^\/progres-status-gizi/, `${API_PREFIX}/balita-status-period`),
       },
 
       "/anak-mpasi": {
-        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
+        target: API_BASE_URL,
         changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(/^\/anak-mpasi/, "/api/v1/public-dashboard/anak-mpasi"),
+        rewrite: (path) => path.replace(/^\/anak-mpasi/, `${API_PREFIX}/anak-mpasi`),
       },
 
       "/asi-eksklusif": {
-        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
+        target: API_BASE_URL,
         changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(
-            /^\/asi-eksklusif/,
-            "/api/v1/public-dashboard/asi-eksklusif"
-          ),
+        rewrite: (path) => path.replace(/^\/asi-eksklusif/, `${API_PREFIX}/asi-eksklusif`),
       },
 
-      // Ibu Hamil
-      "/ibu-hamil": {
-        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
+      // Data SKDN
+      "/data-skdn": {
+        target: API_BASE_URL,
         changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(/^\/ibu-hamil/, "/api/v1/public-dashboard/ibu-hamil"),
+        rewrite: (path) => path.replace(/^\/data-skdn/, `${API_PREFIX}/skdn-data`),
+      },
+
+      // Ibu Hamil endpoints
+      "/ibu-hamil": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ibu-hamil/, `${API_PREFIX}/ibu-hamil`),
       },
 
       "/ibu-hamil-periodik": {
-        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
+        target: API_BASE_URL,
         changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(
-            /^\/ibu-hamil-periodik/,
-            "/api/v1/public-dashboard/ibu-hamil-periodik"
-          ),
+        rewrite: (path) => path.replace(/^\/ibu-hamil-periodik/, `${API_PREFIX}/ibu-hamil-periodik`),
       },
 
-      // Beban Kerja
+      // Beban Kerja endpoints
       "/jenis-kompetensi": {
-        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
+        target: API_BASE_URL,
         changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(
-            /^\/jenis-kompetensi/,
-            "/api/v1/public-dashboard/jenis-kompetensi"
-          ),
+        rewrite: (path) => path.replace(/^\/jenis-kompetensi/, `${API_PREFIX}/jenis-kompetensi`),
       },
 
       "/waktu-kunjungan": {
-        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
+        target: API_BASE_URL,
         changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(
-            /^\/waktu-kunjungan/,
-            "/api/v1/public-dashboard/waktu-kunjungan"
-          ),
+        rewrite: (path) => path.replace(/^\/waktu-kunjungan/, `${API_PREFIX}/waktu-kunjungan-total`),
       },
 
-        "/waktu-jadwal-posyandu": {
-        target: "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io",
+      "/waktu-jadwal-posyandu": {
+        target: API_BASE_URL,
         changeOrigin: true,
-        rewrite: (path) =>
-          path.replace(
-            /^\/waktu-jadwal-posyandu/,
-            "/api/v1/public-dashboard/waktu-jadwal-posyandu"
-          ),
+        rewrite: (path) => path.replace(/^\/waktu-jadwal-posyandu/, `${API_PREFIX}/waktu-jadwal-posyandu`),
+      },
+
+      "/waktu-kunjungan-anak": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/waktu-kunjungan-anak/, `${API_PREFIX}/waktu-kunjungan-anak`),
+      },
+
+      "/waktu-kunjungan-ibu-hamil": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/waktu-kunjungan-ibu-hamil/, `${API_PREFIX}/waktu-kunjungan-ibu-hamil`),
       },
     },
   },
 
-  plugins: [react(), mode === "development" && componentTagger()].filter(
-    Boolean
-  ),
+  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
 
   resolve: {
     alias: {

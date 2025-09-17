@@ -391,9 +391,9 @@ const DurasiKunjunganRumahMlk: React.FC<DataSectionProps> = ({
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 12, fill: "#374151" }}
-              height={60}
-              label={{ value: "Bulan", position: "insideBottom", offset: -30 }}
+              tick={{ fontSize: 16, fill: "#374151" }}
+              height={80}
+              label={{ value: "Bulan", position: "insideBottom", offset: -40, fontSize: 14 }}
             />
             <YAxis
               domain={[0, 'dataMax + 1']} // Domain dinamis dengan padding

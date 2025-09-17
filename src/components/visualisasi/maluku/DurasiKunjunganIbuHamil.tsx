@@ -34,7 +34,7 @@ interface ApiResponse {
   q3: number;
 }
 
-const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
+const DurasiKunjunganIbuHamilMlk: React.FC<DataSectionProps> = ({
   region,
   desa,
   posyandu,
@@ -61,7 +61,7 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
           ...(posyandu ? { posyandu } : {}),
         });
         
-        const res = await fetch(`/waktu-jadwal-posyandu?${query.toString()}`);
+        const res = await fetch(`/api/waktu-kunjungan-ibu-hamil?${query.toString()}`);
         const json = await res.json();
 
         if (json.data) {
@@ -87,7 +87,7 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
     return [
       {
         name: currentMonth,
-        category: "Durasi Posyandu",
+        category: "Durasi Kunjungan Ibu Hamil",
         min: apiData.minimum ?? 0,
         q1: apiData.q1 ?? 0,
         median: apiData.median ?? 0,
@@ -101,7 +101,7 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
 
   // Categories for coloring
   const categoryColors = {
-    "Durasi Posyandu": "#3D9970",
+    "Durasi Kunjungan Ibu Hamil": "#3D9970",
   };
 
   // Prepare data for chart
@@ -151,12 +151,12 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
 
     return (
       <g>
-        {/* Box (interquartile range) */}
+        {/* Kotak untuk interquartile range (Q1 hingga Q3) */}
         <rect
           x={centerX - boxWidth / 2}
           y={validatedQ3Y}
           width={boxWidth}
-          height={validatedQ1Y - validatedQ3Y}
+          height={Math.max(0, validatedQ1Y - validatedQ3Y)}
           fill={payload.color}
           opacity={0.6}
           stroke="#374151"
@@ -170,7 +170,7 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
           x2={centerX + boxWidth / 2}
           y2={validatedMedianY}
           stroke="#DC2626"
-          strokeWidth={3}
+          strokeWidth={2}
         />
 
         {/* Bottom whisker (min to Q1) */}
@@ -222,12 +222,12 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
         </text>
         <text
           x={centerX}
-          y={validatedQ1Y - 5}
+          y={validatedQ1Y + 15}
           fontSize={10}
           fill="#374151"
           textAnchor="middle"
         >
-          Q1: {payload.q1.toFixed(2)}
+          {payload.q1.toFixed(2)}
         </text>
         <text
           x={centerX}
@@ -241,12 +241,12 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
         </text>
         <text
           x={centerX}
-          y={validatedQ3Y - 5}
+          y={validatedQ3Y + 15}
           fontSize={10}
           fill="#374151"
           textAnchor="middle"
         >
-          Q3: {payload.q3.toFixed(2)}
+          {payload.q3.toFixed(2)}
         </text>
         <text
           x={centerX}
@@ -343,9 +343,9 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
       <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
         <div className="text-center">
           <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            Durasi Pelaksanaan Posyandu Oleh Kader di {region}
+            Durasi Kunjungan Ibu Hamil Oleh Kader di {region}
           </h3>
-          <p className="text-gray-600 mb-6">Distribusi Waktu Posyandu</p>
+          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Ibu Hamil</p>
           <div className="bg-gray-50 rounded-xl p-8 text-center">
             <p className="text-gray-500">Tidak ada data yang tersedia untuk ditampilkan</p>
           </div>
@@ -355,14 +355,14 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
   }
 
   // Cek apakah data valid
-  if (apiData.minimum < 0 || apiData.maksimum < 0 || apiData.median < 0) {
+  if (apiData.minimum < 0 || apiData.maksimum < 0 || apiData.median < 0 || apiData.q1 < 0 || apiData.q3 < 0) {
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
         <div className="text-center">
           <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            Durasi Pelaksanaan Posyandu Oleh Kader di {region}
+            Durasi Kunjungan Ibu Hamil Oleh Kader di {region}
           </h3>
-          <p className="text-gray-600 mb-6">Distribusi Waktu Posyandu</p>
+          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Ibu Hamil</p>
           <div className="bg-gray-50 rounded-xl p-8 text-center">
             <p className="text-gray-500">Data tidak valid untuk ditampilkan</p>
           </div>
@@ -375,9 +375,9 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
       <div className="text-center mb-6">
         <h3 className="text-2xl font-bold text-gray-800 mb-2">
-          Durasi Pelaksanaan Posyandu Oleh Kader di {region}
+          Durasi Kunjungan Ibu Hamil Oleh Kader di {region}
         </h3>
-        <p className="text-gray-600">Distribusi Waktu Posyandu</p>
+        <p className="text-gray-600">Distribusi Waktu Kunjungan Ibu Hamil</p>
       </div>
 
       <div className="bg-gray-50 rounded-xl p-4">
@@ -453,7 +453,7 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
       </div>
 
       {/* Enhanced Explanation */}
-     <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
         <h4 className="font-semibold text-blue-800 mb-3">
           Keterangan Visualisasi Box Plot:
         </h4>
@@ -484,4 +484,4 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
   );
 };
 
-export default DurasiPelaksanaanPosyanduMlk;
+export default DurasiKunjunganIbuHamilMlk;

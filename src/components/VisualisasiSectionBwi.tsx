@@ -10,6 +10,8 @@ import KompetensiBebanKerja from "./visualisasi/banyuwangi/KompetensiBebanKerja"
 import DurasiKunjunganRumahBwi from "./visualisasi/banyuwangi/DurasiKunjunganRumah";
 import DurasiPelaksanaanPosyanduBwi from "./visualisasi/banyuwangi/DurasiPelaksanaanPosyandu";
 import MpasiBwi from "./visualisasi/banyuwangi/Mpasi";
+import DurasiKunjunganAnakBwi from "./visualisasi/banyuwangi/DurasiKunjunganAnak";
+import DurasiKunjunganIbuHamilBwi from "./visualisasi/banyuwangi/DurasiKunjunganIbuHamil";
 
 interface VisualisasiSectionBwiProps {
   region: string;
@@ -52,9 +54,10 @@ const VisualisasiSectionBwi: React.FC<VisualisasiSectionBwiProps> = ({ region, d
 
       <div className="px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <DurasiKunjunganRumahBwi  region={region} desa={desa} posyandu={posyandu} />
+          {/* <DurasiKunjunganRumahBwi  region={region} desa={desa} posyandu={posyandu} /> */}
+          <DurasiKunjunganAnakBwi  region={region} desa={desa} posyandu={posyandu} />
+          <DurasiKunjunganIbuHamilBwi  region={region} desa={desa} posyandu={posyandu} />
           <DurasiPelaksanaanPosyanduBwi region={region} desa={desa} posyandu={posyandu}  />
-
         </div>
       </div>
 

@@ -7,8 +7,11 @@
 /ibu-hamil/*             http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/ibu-hamil/:splat    200
 /ibu-hamil-periodik/*    http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/ibu-hamil-periodik/:splat 200
 /jenis-kompetensi/*      http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/jenis-kompetensi/:splat 200
-/waktu-kunjungan/*       http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-kunjungan/:splat 200
+/waktu-kunjungan/*       http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-kunjungan-total/:splat 200
 /waktu-jadwal-posyandu/* http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-jadwal-posyandu/:splat 200
+/waktu-kunjungan-anak/*  http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-kunjungan-anak/:splat 200
+/waktu-kunjungan-ibu-hamil/*   http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io/api/v1/public-dashboard/waktu-kunjungan-ibu-hamil/:splat 200
+
 
 # /api/*                    http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/:splat               200
 # /balita/*                 http://now4kswkgo4owoks884o0wc0.103.109.210.102.sslip.io/api/v1/public-dashboard/balita-status/:splat  200
