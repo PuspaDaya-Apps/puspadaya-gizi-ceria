@@ -46,10 +46,10 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
           const mpasiBelumDiukur = prevalensi_mpasi_belum_diukur ?? 0;
 
           const mappedData = [
-            { name: "Ya", value: mpasiIya, description: "Balita yang mendapat MPASI" },
-            { name: "Tidak", value: mpasiTidak, description: "Balita yang tidak mendapat MPASI" },
+            { name: "Ya", value: mpasiIya, description: "Balita yang mendapat selain ASI" },
+            { name: "Tidak", value: mpasiTidak, description: "Balita yang tidak mendapat selain ASI" },
             { name: "Tidak Diisi", value: mpasiTidakTahu, description: "Status MPASI tidak diketahui" },
-            { name: "Belum Diukur", value: mpasiBelumDiukur, description: "Balita yang belum diukur MPASI" },
+            { name: "Belum Diukur", value: mpasiBelumDiukur, description: "Balita yang belum diukur" },
           ];
 
           setData(mappedData);
