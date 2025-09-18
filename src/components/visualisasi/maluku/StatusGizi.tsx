@@ -18,7 +18,7 @@ interface DataSectionProps {
 }
 
 const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
-  const COLORS = ["#ef4444", "#f59e0b", "#1e40af", "#22c55e"];
+  const COLORS = ["#ef4444", "#f59e0b", "#1e40af"];
 
   const [data, setData] = useState<any[]>([]);
   const [totalBalitaSasaran, setTotalBalitaSasaran] = useState<number>(0);
@@ -41,8 +41,8 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
             { name: "Stunting", value: json.data.total_stunting ?? 0 },
             { name: "Wasting", value: json.data.total_wasting ?? 0 },
             { name: "Underweight", value: json.data.total_underweight ?? 0 },
-            { name: "Normal", value: json.data.total_normal ?? 0 },
-          ];
+            // Excluding Normal status as per requirement
+          ].filter(item => item.value > 0); // Only show categories with data
           setData(mappedData);
           setTotalBalitaSasaran(json.data.total_balita_sasaran ?? 0);
         } else {
@@ -68,6 +68,11 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
         {posyandu ? `- ${posyandu}` : ""}...
       </div>
     );
+  }
+
+  // Don't display component if there's no data or only normal status
+  if (data.length === 0) {
+    return null;
   }
 
   return (

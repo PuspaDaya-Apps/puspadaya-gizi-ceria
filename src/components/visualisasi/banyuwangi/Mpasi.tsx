@@ -49,11 +49,11 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
             { name: "Ya", value: mpasiIya, description: "Balita yang mendapat selain ASI" },
             { name: "Tidak", value: mpasiTidak, description: "Balita yang tidak mendapat selain ASI" },
             { name: "Tidak Diisi", value: mpasiTidakTahu, description: "Status MPASI tidak diketahui" },
-            { name: "Belum Diukur", value: mpasiBelumDiukur, description: "Balita yang belum diukur" },
-          ];
+            // Removed "Belum Diukur" as per requirement
+          ].filter(item => item.name === "Tidak Diisi" || item.value > 0); // Show "Tidak Diisi" even when 0, hide others when 0
 
           setData(mappedData);
-          setTotal(mpasiIya + mpasiTidak + mpasiTidakTahu + mpasiBelumDiukur);
+          setTotal(mpasiIya + mpasiTidak + mpasiTidakTahu);
         } else {
           setData([]);
           setTotal(0);
@@ -78,9 +78,14 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
     );
   }
 
-  const COLORS = ["#1f77b4", "#ff7f0e", "#e63946", "#2ca02c"];
+  const COLORS = ["#1f77b4", "#ff7f0e", "#e63946"];
 
   const isAllZero = data.length > 0 && data.every((item) => item.value === 0);
+
+  // Don't display component if there's no data
+  if (data.length === 0) {
+    return null;
+  }
 
   if (isAllZero) {
     return (
@@ -119,6 +124,8 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
             outerRadius={110}
             labelLine={true} // tarik garis keluar
             label={({ name, value }) => {
+              // Don't show label if value is 0 (except for "Tidak Diisi" we still want to see it even when 0)
+              if (value === 0 && name !== "Tidak Diisi") return "";
               const percentValue = totalValue
                 ? ((value / totalValue) * 100).toFixed(1)
                 : "0";

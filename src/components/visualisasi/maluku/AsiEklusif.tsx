@@ -56,12 +56,8 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
               value: prevalensi_asi_eksklusif_tidak_tahu ?? 0,
               description: "Status ASI Eksklusif tidak diketahui",
             },
-            {
-              name: "Belum Diukur",
-              value: prevalensi_asi_eksklusif_belum_diukur ?? 0,
-              description: "Balita yang belum diukur ASI Eksklusif",
-            },
-          ];
+            // Removed "Belum Diukur" as per requirement
+          ].filter(item => item.name === "Tidak Diisi" || item.value > 0); // Show "Tidak Diisi" even when 0, hide others when 0
 
           setData(mappedData);
           setTotal(total_balita_asi_eksklusif ?? 0);
@@ -92,7 +88,12 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
     );
   }
 
-  const COLORS = ["#2b528a", "#d97706", "#e63946", "#2ca02c"]; // tambah hijau utk "Belum Diukur"
+  const COLORS = ["#2b528a", "#d97706", "#e63946"]; // removed green color for "Belum Diukur"
+
+  // Don't display component if there's no data
+  if (data.length === 0) {
+    return null;
+  }
 
   const isAllZero = data.length > 0 && data.every((item) => item.value === 0);
 
@@ -132,9 +133,11 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
             cx="50%"
             cy="50%"
             outerRadius={100}
-            label={({ name, value, percent }) =>
-              `${name}: ${value} (${(percent * 100).toFixed(1)}%)`
-            }
+            label={({ name, value, percent }) => {
+              // Don't show label if value is 0 (except for "Tidak Diisi" we still want to see it even when 0)
+              if (value === 0 && name !== "Tidak Diisi") return "";
+              return `${name}: ${value} (${(percent * 100).toFixed(1)}%)`;
+            }}
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
