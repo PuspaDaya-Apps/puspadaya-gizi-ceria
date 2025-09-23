@@ -23,7 +23,6 @@ interface DataSectionProps {
 interface IbuHamilData {
   bulan: string;
   kek: number;
-  anemia: number;
   pendek: number;
   terlaluTua: number;
   terlaluMuda: number;
@@ -52,7 +51,6 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu
             ([bulan, values]: [string, any]) => ({
               bulan,
               kek: values.kek ?? 0,
-              anemia: values.anemia ?? 0,
               pendek: values.pendek ?? 0,
               terlaluTua: values.terlalu_tua ?? 0,
               terlaluMuda: values.terlalu_muda ?? 0,
@@ -100,7 +98,6 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu
   // Warna
   const COLORS = {
     kek: "#1f77b4",
-    anemia: "#ff7f0e",
     pendek: "#2ca02c",
     terlaluTua: "#d62728",
     terlaluMuda: "#9467bd",
@@ -109,7 +106,6 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu
   // Pola garis
   const LINE_STYLES = {
     kek: { strokeDasharray: "0" },
-    anemia: { strokeDasharray: "5 5" },
     pendek: { strokeDasharray: "10 5" },
     terlaluTua: { strokeDasharray: "3 3 9 3" },
     terlaluMuda: { strokeDasharray: "1 1" },
@@ -168,7 +164,6 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu
               formatter={(value, name) => {
                 const labels: Record<string, string> = {
                   kek: "KEK",
-                  anemia: "Anemia",
                   pendek: "Pendek",
                   terlaluTua: "Terlalu Tua",
                   terlaluMuda: "Terlalu Muda",
@@ -181,9 +176,6 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu
 
             <Line type="monotone" dataKey="kek" stroke={COLORS.kek} strokeWidth={2} {...LINE_STYLES.kek}>
               <LabelList dataKey="kek" position="top" formatter={(value: number) => `${value}`} />
-            </Line>
-            <Line type="monotone" dataKey="anemia" stroke={COLORS.anemia} strokeWidth={2} {...LINE_STYLES.anemia}>
-              <LabelList dataKey="anemia" position="top" formatter={(value: number) => `${value}`} />
             </Line>
             <Line type="monotone" dataKey="pendek" stroke={COLORS.pendek} strokeWidth={2} {...LINE_STYLES.pendek}>
               <LabelList dataKey="pendek" position="top" formatter={(value: number) => `${value}`} />
