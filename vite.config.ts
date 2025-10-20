@@ -4,7 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 // Konstanta untuk base URL API
-const API_BASE_URL = "http://ussk8o048swckkkc40go0skw.103.109.210.102.sslip.io";
+const API_BASE_URL = "http://ssc80wssow48gsgwwg8888s4.103.109.210.102.sslip.io";
 const API_PREFIX = "/api/v1/public-dashboard";
 
 // https://vitejs.dev/config/

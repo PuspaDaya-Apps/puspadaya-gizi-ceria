@@ -65,13 +65,16 @@ const DashboardTabs = () => {
       },
     },
     Maluku: {
-      desa: ["Ambon", "Tual", "Masohi"],
+      desa: ["Portho", "Haria", "Tiow", "Kulur", "Saparua"],
       posyandu: {
-        Ambon: ["Posyandu Bahari", "Posyandu Pattimura"],
-        Tual: ["Posyandu Kei Indah", "Posyandu Elat"],
-        Masohi: ["Posyandu Seram", "Posyandu Banda"],
-      },
-    },
+        Portho: ["Roos-Portho", "Cempaka-Portho", "Flamboyan", "Mawar-Portho"],
+        Haria: ["Sakura-Haria", "Teratai-Haria", "Anggrek-Haria", "Aster-Haria", "Dahlia-Haria", "Dalies-Haria", "Matahari-Haria", "Melati-Haria"],
+        Tiow: ["Kemiri-Tiow", "Kenari-Tiow"],
+        Kulur: ["Mawar-Kulur"],
+        Saparua: ["Melati-Saparua", "Anggrek-Saparua", "Kamboja-Saparua"]
+      }
+    }
+
   };
 
   const handleWilayahChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
