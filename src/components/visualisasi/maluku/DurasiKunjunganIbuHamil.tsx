@@ -60,7 +60,7 @@ const DurasiKunjunganIbuHamilMlk: React.FC<DataSectionProps> = ({
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
         });
-        
+
         const res = await fetch(`/api/waktu-kunjungan-ibu-hamil?${query.toString()}`);
         const json = await res.json();
 
@@ -130,7 +130,7 @@ const DurasiKunjunganIbuHamilMlk: React.FC<DataSectionProps> = ({
 
     // Calculate positions based on chart scaling
     const chartBottom = y + height;
-    
+
     // Gunakan domain yang dinamis berdasarkan data maksimum
     const maxDataValue = Math.max(payload.max, payload.q3, payload.median, payload.q1, payload.min);
     const domainMax = maxDataValue > 0 ? Math.ceil(maxDataValue * 1.2) : 5; // Fallback ke 5 jika data tidak valid
@@ -355,7 +355,13 @@ const DurasiKunjunganIbuHamilMlk: React.FC<DataSectionProps> = ({
   }
 
   // Cek apakah data valid
-  if (apiData.minimum < 0 || apiData.maksimum < 0 || apiData.median < 0 || apiData.q1 < 0 || apiData.q3 < 0) {
+  if (
+    apiData.minimum < 0 ||
+    apiData.maksimum < 0 ||
+    apiData.median < 0 ||
+    apiData.q1 < 0 ||
+    apiData.q3 < 0
+  ) {
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
         <div className="text-center">
@@ -370,6 +376,7 @@ const DurasiKunjunganIbuHamilMlk: React.FC<DataSectionProps> = ({
       </div>
     );
   }
+
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
