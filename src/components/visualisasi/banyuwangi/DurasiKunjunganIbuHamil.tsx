@@ -60,7 +60,7 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
         });
-        
+
         const res = await fetch(`/api/waktu-kunjungan-ibu-hamil?${query.toString()}`);
         const json = await res.json();
 
@@ -130,7 +130,7 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
 
     // Calculate positions based on chart scaling
     const chartBottom = y + height;
-    
+
     // Gunakan domain yang dinamis berdasarkan data maksimum
     const maxDataValue = Math.max(payload.max, payload.q3, payload.median, payload.q1, payload.min);
     const domainMax = maxDataValue > 0 ? Math.ceil(maxDataValue * 1.2) : 5; // Fallback ke 5 jika data tidak valid
@@ -354,8 +354,19 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
     );
   }
 
-  // Cek apakah data valid
-  if (apiData.minimum < 0 || apiData.maksimum < 0 || apiData.median < 0 || apiData.q1 < 0 || apiData.q3 < 0) {
+  // Cek apakah semua nilai kosong, nol, atau tidak valid
+  const values = [
+    apiData.minimum,
+    apiData.maksimum,
+    apiData.median,
+    apiData.q1,
+    apiData.q3,
+  ];
+  const allInvalid = values.every(
+    (v) => v === 0 || v === null || v === undefined || isNaN(v)
+  );
+
+  if (allInvalid) {
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
         <div className="text-center">
@@ -364,12 +375,13 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
           </h3>
           <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Ibu Hamil</p>
           <div className="bg-gray-50 rounded-xl p-8 text-center">
-            <p className="text-gray-500">Data tidak valid untuk ditampilkan</p>
+            <p className="text-gray-500">Data tidak valid atau kosong</p>
           </div>
         </div>
       </div>
     );
   }
+
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
