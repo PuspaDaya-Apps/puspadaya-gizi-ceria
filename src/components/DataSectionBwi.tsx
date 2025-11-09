@@ -17,11 +17,15 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
     const fetchData = async () => {
       setLoading(true);
       try {
+        // Get current year in YYYY format
+        const currentYear = new Date().getFullYear().toString();
+
         // bangun query string dinamis
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
+          tahun: currentYear, // Add current year in YYYY format
         });
 
         const res = await fetch(`/api?${query.toString()}`);
