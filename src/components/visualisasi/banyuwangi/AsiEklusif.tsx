@@ -23,10 +23,16 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
     const fetchData = async () => {
       setLoading(true);
       try {
+        // Get current month and year
+        const currentMonth = (new Date().getMonth() + 1).toString(); // Months are 0-indexed, so add 1
+        const currentYear = new Date().getFullYear().toString();
+
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
+          bulan: currentMonth,  // Add current month number (1-12)
+          tahun: currentYear,   // Add current year in YYYY format
         });
         const res = await fetch(`/asi-eksklusif?${query.toString()}`);
         const json = await res.json();
@@ -139,7 +145,7 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
             label={({ name, value, percent }) => {
               // Don't show label if value is 0 (except for "Tidak Diisi" we still want to see it even when 0)
               if (value === 0 && name !== "Tidak Diisi") return "";
-              const percentValue = totalValue 
+              const percentValue = totalValue
                 ? ((value / totalValue) * 100).toFixed(1)
                 : "0";
               // Menampilkan hanya persentase tanpa nilai absolut
