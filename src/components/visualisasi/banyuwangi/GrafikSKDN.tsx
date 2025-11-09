@@ -25,11 +25,17 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
     const fetchData = async () => {
       setLoading(true);
       try {
+        // Get current month and year
+        const currentMonth = (new Date().getMonth() + 1).toString(); // Months are 0-indexed, so add 1
+        const currentYear = new Date().getFullYear().toString();
+        
         // Bangun query param dinamis
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
+          bulan: currentMonth,  // Add current month number (1-12)
+          tahun: currentYear,   // Add current year in YYYY format
         });
         const res = await fetch(`/data-skdn?${query.toString()}`);
         const json = await res.json();
@@ -76,21 +82,21 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
         Grafik SKDN {region}
         {desa ? ` - ${desa}` : ""} {posyandu ? ` - ${posyandu}` : ""}
       </h3>
-      
+
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis domain={yDomain} />
-          <Tooltip 
-            formatter={(value: number) => [`${value}`, "Jumlah Balita"]} 
+          <Tooltip
+            formatter={(value: number) => [`${value}`, "Jumlah Balita"]}
             labelFormatter={(name, payload) => {
               const item = data.find(d => d.name === name);
               return item ? `${name} (${item.fullName})` : name;
             }}
           />
-          <Bar 
-            dataKey="value" 
+          <Bar
+            dataKey="value"
             radius={[8, 8, 0, 0]}
             shape={(props) => {
               const { name } = props.payload;
@@ -112,7 +118,7 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-      
+
       {/* Penjelasan terpisah untuk S, K, D, N */}
       <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
         <div className="p-3 bg-red-50 rounded-lg">

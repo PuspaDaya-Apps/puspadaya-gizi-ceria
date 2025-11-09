@@ -48,10 +48,16 @@ const RestikIbuHamilMlk : React.FC<DataSectionProps> = ({ region, desa, posyandu
     const fetchData = async () => {
       setLoading(true);
       try {
+        // Get current month and year
+        const currentMonth = (new Date().getMonth() + 1).toString(); // Months are 0-indexed, so add 1
+        const currentYear = new Date().getFullYear().toString();
+        
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
+          bulan: currentMonth,  // Add current month number (1-12)
+          tahun: currentYear,   // Add current year in YYYY format
         });
         const res = await fetch(`/ibu-hamil?${query.toString()}`);
         const json: ApiResponse = await res.json();

@@ -55,12 +55,18 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
     const fetchData = async () => {
       setLoading(true);
       try {
+        // Get current month and year
+        const currentMonth = (new Date().getMonth() + 1).toString(); // Months are 0-indexed, so add 1
+        const currentYear = new Date().getFullYear().toString();
+        
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
+          bulan: currentMonth,  // Add current month number (1-12)
+          tahun: currentYear,   // Add current year in YYYY format
         });
-        
+
         const res = await fetch(`/waktu-jadwal-posyandu?${query.toString()}`);
         const json = await res.json();
 
@@ -130,7 +136,7 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
 
     // Calculate positions based on chart scaling
     const chartBottom = y + height;
-    
+
     // Gunakan domain yang dinamis berdasarkan data maksimum
     const maxDataValue = Math.max(payload.max, payload.q3, payload.median, payload.q1, payload.min);
     const domainMax = maxDataValue > 0 ? Math.ceil(maxDataValue * 1.2) : 5; // Fallback ke 5 jika data tidak valid
