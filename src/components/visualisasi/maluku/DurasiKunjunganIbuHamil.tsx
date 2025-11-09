@@ -360,29 +360,6 @@ const DurasiKunjunganIbuHamilMlk: React.FC<DataSectionProps> = ({
     );
   }
 
-  // Cek apakah data valid
-  if (
-    apiData.minimum < 0 ||
-    apiData.maksimum < 0 ||
-    apiData.median < 0 ||
-    apiData.q1 < 0 ||
-    apiData.q3 < 0
-  ) {
-    return (
-      <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
-        <div className="text-center">
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            Durasi Kunjungan Ibu Hamil Oleh Kader di {region}
-          </h3>
-          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Ibu Hamil</p>
-          <div className="bg-gray-50 rounded-xl p-8 text-center">
-            <p className="text-gray-500">Data tidak valid untuk ditampilkan</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">

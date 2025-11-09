@@ -360,34 +360,6 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
     );
   }
 
-  // Cek apakah semua nilai kosong, nol, atau tidak valid
-  const values = [
-    apiData.minimum,
-    apiData.maksimum,
-    apiData.median,
-    apiData.q1,
-    apiData.q3,
-  ];
-  const allInvalid = values.every(
-    (v) => v === 0 || v === null || v === undefined || isNaN(v)
-  );
-
-  if (allInvalid) {
-    return (
-      <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
-        <div className="text-center">
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            Durasi Kunjungan Ibu Hamil Oleh Kader di {region}
-          </h3>
-          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Ibu Hamil</p>
-          <div className="bg-gray-50 rounded-xl p-8 text-center">
-            <p className="text-gray-500">Data tidak valid atau kosong</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
