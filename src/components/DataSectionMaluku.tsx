@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import DataCard from "./DataCard";
+import DataCard from "./cardcomponents/DataCard";
 import VisualisasiSectionMaluku from "./VisualisasiSectionMaluku";
 
 interface DataSectionProps {
@@ -8,11 +8,11 @@ interface DataSectionProps {
   posyandu?: string;
 }
 
-const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =>{
+const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
- useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -36,7 +36,7 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu
     if (region) {
       fetchData();
     }
-  }, [region, desa, posyandu]); 
+  }, [region, desa, posyandu]);
 
 
   if (loading) {
@@ -191,8 +191,8 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu
           />
         </div>
       </div>
-  
-       <VisualisasiSectionMaluku region={region} desa={desa} posyandu={posyandu} />
+
+      <VisualisasiSectionMaluku region={region} desa={desa} posyandu={posyandu} />
     </section>
   );
 };

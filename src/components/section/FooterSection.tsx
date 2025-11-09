@@ -1,8 +1,8 @@
 import React from "react";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
-import ContactForm from "./ContactForm";
+import ContactForm from "../ContactForm";
 import { Link } from "react-router-dom";
-import { navigationMenuTriggerStyle } from "./ui/navigation-menu";
+import { navigationMenuTriggerStyle } from "../ui/navigation-menu";
 import { cn } from "@/lib/utils";
 
 const FooterSection = () => {
@@ -82,11 +82,11 @@ const FooterSection = () => {
                     <ul className="space-y-2">
                       <li>
                         <Link
-                        to="/syaratdanketentuan"
-                        className="text-gray-600 hover:text-primary "
-                      >
-                       Syarat & Ketentuan
-                      </Link>
+                          to="/syaratdanketentuan"
+                          className="text-gray-600 hover:text-primary "
+                        >
+                          Syarat & Ketentuan
+                        </Link>
                       </li>
 
 

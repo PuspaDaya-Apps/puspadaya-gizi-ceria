@@ -1,6 +1,6 @@
 
 import React from 'react';
-import TestimonialCard from './TestimonialCard';
+import TestimonialCard from './cardcomponents/TestimonialCard';
 
 const TestimonialsSection = () => {
   const testimonials = [
@@ -33,7 +33,7 @@ const TestimonialsSection = () => {
             Lihat bagaimana Puspadaya telah membantu ribuan orang tua di Indonesia
           </p>
         </div>
-        
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
             <TestimonialCard
@@ -45,14 +45,14 @@ const TestimonialsSection = () => {
             />
           ))}
         </div>
-        
+
         <div className="mt-16">
           <h3 className="text-4xl font-bold text-center text-primary mb-8">Sponsor</h3>
           <div className="flex flex-wrap justify-center gap-8 items-center">
             <div className="h-16 flex items-center justify-center">
               <img src=" https://koneksi-kpp.id/images/logo.png" alt="logo koneksi" className="h-full" />
             </div>
-        
+
           </div>
         </div>
       </div>

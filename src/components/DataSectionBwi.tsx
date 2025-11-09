@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import DataCard from "./DataCard";
+import DataCard from "./cardcomponents/DataCard";
 import VisualisasiSectionBwi from "./VisualisasiSectionBwi";
 
 interface DataSectionProps {
@@ -9,12 +9,11 @@ interface DataSectionProps {
 }
 
 
-const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })  => 
-  {
+const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  
- useEffect(() => {
+
+  useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -38,7 +37,7 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
     if (region) {
       fetchData();
     }
-  }, [region, desa, posyandu]); 
+  }, [region, desa, posyandu]);
 
   if (loading) {
     return (
@@ -93,7 +92,7 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
               </svg>
             }
             title="Balita Terdaftar"
-            description= {data?.total_balita??  "-"}
+            description={data?.total_balita ?? "-"}
           />
 
           {/* 2. Ibu Hamil */}
@@ -119,7 +118,7 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
               </svg>
             }
             title="Ibu Hamil Terdaftar"
-            description={data?.total_ibu_hamil ??  "-"}
+            description={data?.total_ibu_hamil ?? "-"}
           />
 
           {/* 3. Posyandu */}
@@ -144,7 +143,7 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
               </svg>
             }
             title="Posyandu Terdaftar"
-            description={data?.total_posyandu ??  "-"}
+            description={data?.total_posyandu ?? "-"}
           />
 
           {/* 4. Kader */}
@@ -188,7 +187,7 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
               </svg>
             }
             title="Kader Terdaftar"
-            description={data?.total_kader ??  "-"}
+            description={data?.total_kader ?? "-"}
           />
         </div>
       </div>
