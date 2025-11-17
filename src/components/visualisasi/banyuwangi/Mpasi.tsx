@@ -27,7 +27,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
         // Get current month and year
         const currentMonth = (new Date().getMonth() + 1).toString(); // Months are 0-indexed, so add 1
         const currentYear = new Date().getFullYear().toString();
-        
+
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
@@ -44,6 +44,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
             prevalensi_mpasi_tidak,
             prevalensi_mpasi_tidak_tahu,
             prevalensi_mpasi_belum_diukur,
+            total_balita_mpasi,
           } = json.data;
 
           const mpasiIya = prevalensi_mpasi_iya ?? 0;
@@ -59,7 +60,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
           ].filter(item => item.name === "Tidak Diisi" || item.value > 0); // Show "Tidak Diisi" even when 0, hide others when 0
 
           setData(mappedData);
-          setTotal(mpasiIya + mpasiTidak + mpasiTidakTahu);
+          setTotal(total_balita_mpasi ?? 0);
         } else {
           setData([]);
           setTotal(0);
