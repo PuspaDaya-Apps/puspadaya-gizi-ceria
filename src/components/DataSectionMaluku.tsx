@@ -30,8 +30,11 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu
         const res = await fetch(`/api?${query.toString()}`);
         const json = await res.json();
 
-        // If posyandu filter is filled, set total_posyandu to 1
-        const processedData = posyandu ? { ...json.data, total_posyandu: 1 } : json.data;
+        // If posyandu filter is filled and json.data exists, set total_posyandu to 1
+        let processedData = json.data;
+        if (posyandu && json.data) {
+          processedData = { ...json.data, total_posyandu: 1 };
+        }
         setData(processedData);
       } catch (err) {
         console.error("Error fetching data:", err);
