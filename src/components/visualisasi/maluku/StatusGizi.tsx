@@ -48,15 +48,29 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
             { name: "Wasting", value: json.data.total_wasting ?? 0 },
             { name: "Underweight", value: json.data.total_underweight ?? 0 },
             // Excluding Normal status as per requirement
-          ].filter(item => item.value > 0); // Only show categories with data
+          ]; // Show all categories even when value is 0
           setData(mappedData);
           setTotalBalitaSasaran(json.data.total_balita_sasaran ?? 0);
         } else {
-          setData([]);
+          // When json.data is null, set default values with 0
+          const defaultData = [
+            { name: "Stunting", value: 0 },
+            { name: "Wasting", value: 0 },
+            { name: "Underweight", value: 0 },
+          ];
+          setData(defaultData);
           setTotalBalitaSasaran(0);
         }
       } catch (err) {
         console.error("Error fetching data:", err);
+        // Set default values with 0 when there's an error
+        const defaultData = [
+          { name: "Stunting", value: 0 },
+          { name: "Wasting", value: 0 },
+          { name: "Underweight", value: 0 },
+        ];
+        setData(defaultData);
+        setTotalBalitaSasaran(0);
       } finally {
         setLoading(false);
       }
@@ -76,10 +90,7 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
     );
   }
 
-  // Don't display component if there's no data or only normal status
-  if (data.length === 0) {
-    return null;
-  }
+  // Always display component even if all values are 0
 
   return (
     <div className="bg-white rounded-2xl shadow p-6">
