@@ -102,7 +102,7 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu
               </svg>
             }
             title="Balita Terdaftar"
-            description={data?.total_balita || "-"}
+            description={data?.total_balita || "0"}
           />
 
           {/* 2. Ibu Hamil */}
@@ -128,7 +128,7 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu
               </svg>
             }
             title="Ibu Hamil Terdaftar"
-            description={data?.total_ibu_hamil || "-"}
+            description={data?.total_ibu_hamil || "0"}
           />
 
           {/* 3. Posyandu */}
@@ -153,7 +153,7 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu
               </svg>
             }
             title="Posyandu Terdaftar"
-            description={data?.total_posyandu || "-"}
+            description={data?.total_posyandu || "0"}
           />
 
           {/* 4. Kader */}
@@ -197,7 +197,7 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu
               </svg>
             }
             title="Kader Terdaftar"
-            description={data?.total_kader || "-"}
+            description={data?.total_kader || "0"}
           />
         </div>
       </div>
