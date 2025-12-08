@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // Konstanta untuk base URL API
 const API_BASE_URL = "http://ssc80wssow48gsgwwg8888s4.103.109.210.102.sslip.io";
@@ -100,11 +101,48 @@ export default defineConfig(({ mode }) => ({
     },
   },
 
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [
+    react(),
+    mode === "development" && componentTagger(),
+    mode === "report" && visualizer({
+      filename: "dist/stats.html",
+      template: "treemap", // sunburst, treemap, circlepacking, network
+      open: true,
+    })
+  ].filter(Boolean),
 
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split vendor chunks for better caching
+          'react-vendor': ['react', 'react-dom'],
+          'ui-vendor': ['@radix-ui/react-*', '@headlessui/react'],
+          'chart-vendor': ['recharts', 'react-plotly.js'],
+          'utils': ['date-fns', 'clsx', 'tailwind-merge'],
+        },
+      },
+    },
+    // Enable compression in production
+    cssCodeSplit: true,
+    sourcemap: mode !== 'production', // Only generate source maps in development
+  },
+
+  // Performance optimizations
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'recharts',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-accordion',
+    ],
   },
 }));

@@ -21,6 +21,12 @@
     "noImplicitAny": false,
     "noFallthroughCasesInSwitch": false,
 
+    /* Optimization settings */
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": false,
+    "declaration": false,
+
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
