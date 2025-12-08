@@ -57,17 +57,29 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
             { name: "Tidak", value: mpasiTidak, description: "Balita yang tidak mendapat selain ASI" },
             { name: "Tidak Diisi", value: mpasiTidakTahu, description: "Status MPASI tidak diketahui" },
             // Removed "Belum Diukur" as per requirement
-          ].filter(item => item.name === "Tidak Diisi" || item.value > 0); // Show "Tidak Diisi" even when 0, hide others when 0
+          ]; // Show all categories even when value is 0
 
           setData(mappedData);
           setTotal(total_balita_mpasi ?? 0);
         } else {
-          setData([]);
+          // When json.data is null, set default values with 0
+          const defaultData = [
+            { name: "Ya", value: 0, description: "Balita yang mendapat selain ASI" },
+            { name: "Tidak", value: 0, description: "Balita yang tidak mendapat selain ASI" },
+            { name: "Tidak Diisi", value: 0, description: "Status MPASI tidak diketahui" },
+          ];
+          setData(defaultData);
           setTotal(0);
         }
       } catch (err) {
         console.error("Error fetching data:", err);
-        setData([]);
+        // Set default values with 0 when there's an error
+        const defaultData = [
+          { name: "Ya", value: 0, description: "Balita yang mendapat selain ASI" },
+          { name: "Tidak", value: 0, description: "Balita yang tidak mendapat selain ASI" },
+          { name: "Tidak Diisi", value: 0, description: "Status MPASI tidak diketahui" },
+        ];
+        setData(defaultData);
         setTotal(0);
       } finally {
         setLoading(false);
@@ -87,38 +99,25 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
 
   const COLORS = ["#1f77b4", "#ff7f0e", "#e63946"];
 
-  const isAllZero = data.length > 0 && data.every((item) => item.value === 0);
-
-  // Don't display component if there's no data
-  if (data.length === 0) {
-    return null;
-  }
-
-  if (isAllZero) {
-    return (
-      <div className="bg-white rounded-2xl shadow p-6 text-center">
-        <h3 className="text-xl font-semibold text-primary mb-4">
-          Persentase Balita Mendapatkan Makanan Selain ASI {region}
-        </h3>
-        <div className="bg-gray-100 rounded-lg p-6 my-4">
-          <p className="text-gray-600 text-lg">
-            Tidak ada data Persentase Balita MPASI yang tersedia untuk {region}
-            {desa ? ` - ${desa}` : ""}
-            {posyandu ? ` - ${posyandu}` : ""}
-          </p>
-          <p className="text-gray-500 text-sm mt-2">Total Balita: {total}</p>
-        </div>
-      </div>
-    );
-  }
 
   const totalValue = data.reduce((sum, d) => sum + d.value, 0);
+
+  // Check if all values are zero
+  const isAllZero = data.length > 0 && data.every((item) => item.value === 0);
 
   return (
     <div className="bg-white rounded-2xl shadow p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
         Persentase Balita Mendapatkan Makanan Selain ASI {region}
       </h3>
+
+      {isAllZero && (
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
+          <p className="text-blue-700 font-medium">
+            Saat ini belum ada data yang masuk untuk wilayah ini.
+          </p>
+        </div>
+      )}
 
       <ResponsiveContainer width="100%" height={500}>
         <PieChart>
@@ -131,8 +130,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
             outerRadius={110}
             labelLine={true} // tarik garis keluar
             label={({ name, value }) => {
-              // Don't show label if value is 0 (except for "Tidak Diisi" we still want to see it even when 0)
-              if (value === 0 && name !== "Tidak Diisi") return "";
+              // When value is 0 but total is also 0, we show the label with 0%
               const percentValue = totalValue
                 ? ((value / totalValue) * 100).toFixed(1)
                 : "0";

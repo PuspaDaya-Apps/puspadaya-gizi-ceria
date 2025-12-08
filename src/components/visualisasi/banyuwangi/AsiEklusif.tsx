@@ -63,17 +63,53 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
               description: "Status ASI Eksklusif tidak diketahui",
             },
             // Removed "Belum Diukur" as per requirement
-          ].filter(item => item.name === "Tidak Diisi" || item.value > 0); // Show "Tidak Diisi" even when 0, hide others when 0
+          ]; // Show all categories even when value is 0
 
           setData(mappedData);
           setTotal(total_balita_asi_eksklusif ?? 0);
         } else {
-          setData([]);
+          // When json.data is null, set default values with 0
+          const defaultData = [
+            {
+              name: "Ya",
+              value: 0,
+              description: "Balita yang mendapat ASI Eksklusif",
+            },
+            {
+              name: "Tidak",
+              value: 0,
+              description: "Balita yang tidak mendapat ASI Eksklusif",
+            },
+            {
+              name: "Tidak Diisi",
+              value: 0,
+              description: "Status ASI Eksklusif tidak diketahui",
+            },
+          ];
+          setData(defaultData);
           setTotal(0);
         }
       } catch (err) {
         console.error("Error fetching data:", err);
-        setData([]);
+        // Set default values with 0 when there's an error
+        const defaultData = [
+          {
+            name: "Ya",
+            value: 0,
+            description: "Balita yang mendapat ASI Eksklusif",
+          },
+          {
+            name: "Tidak",
+            value: 0,
+            description: "Balita yang tidak mendapat ASI Eksklusif",
+          },
+          {
+            name: "Tidak Diisi",
+            value: 0,
+            description: "Status ASI Eksklusif tidak diketahui",
+          },
+        ];
+        setData(defaultData);
         setTotal(0);
       } finally {
         setLoading(false);
@@ -96,42 +132,27 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
 
   const COLORS = ["#2b528a", "#d97706", "#e63946"]; // removed green color for "Belum Diukur"
 
-  // Don't display component if there's no data
-  if (data.length === 0) {
-    return null;
-  }
-
-  const isAllZero = data.length > 0 && data.every((item) => item.value === 0);
-
-  if (isAllZero) {
-    return (
-      <div className="bg-white rounded-2xl shadow p-6 text-center">
-        <h3 className="text-xl font-semibold text-primary mb-4">
-          Persentase Balita ASI Eksklusif {region}
-        </h3>
-        <div className="bg-gray-100 rounded-lg p-6 my-4">
-          <p className="text-gray-600 text-lg">
-            Tidak ada data Persentase Balita ASI Eksklusif yang tersedia untuk {region}
-            {desa ? ` - ${desa}` : ""}
-            {posyandu ? ` - ${posyandu}` : ""}
-          </p>
-          <p className="text-gray-500 text-sm mt-2">Total Balita: {total}</p>
-        </div>
-        <p className="text-gray-500 text-sm">
-          Data akan ditampilkan setelah ada informasi Persentase Balita ASI Eksklusif dari balita di wilayah ini.
-        </p>
-      </div>
-    );
-  }
+  // Always show the chart, even if data is empty or all values are zero
 
   // Hitung total untuk persentase
   const totalValue = data.reduce((sum, d) => sum + d.value, 0);
+
+  // Check if all values are zero
+  const isAllZero = data.length > 0 && data.every((item) => item.value === 0);
 
   return (
     <div className="bg-white rounded-2xl shadow p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
         Persentase Balita ASI Eksklusif {region}
       </h3>
+
+      {isAllZero && (
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
+          <p className="text-blue-700 font-medium">
+            Saat ini belum ada data yang masuk untuk wilayah ini.
+          </p>
+        </div>
+      )}
 
       <ResponsiveContainer width="100%" height={500}>
         <PieChart>
@@ -143,8 +164,7 @@ const AsiEklusifBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
             cy="50%"
             outerRadius={100}
             label={({ name, value, percent }) => {
-              // Don't show label if value is 0 (except for "Tidak Diisi" we still want to see it even when 0)
-              if (value === 0 && name !== "Tidak Diisi") return "";
+              // When value is 0 but total is also 0, we show the label with 0%
               const percentValue = totalValue
                 ? ((value / totalValue) * 100).toFixed(1)
                 : "0";
