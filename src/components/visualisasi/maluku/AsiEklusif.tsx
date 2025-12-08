@@ -138,16 +138,26 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
   const isAllZero = data.length > 0 && data.every((item) => item.value === 0);
 
   return (
-    <div className="bg-white rounded-2xl shadow p-6">
+    <div className="bg-white rounded-2xl shadow-lg p-6">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-        Persentase Balita ASI Eksklusif {region}
+        Persentase Balita Mendapatkan ASI Eksklusif
+        <h3>{region}</h3>
       </h3>
 
       {isAllZero && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
-          <p className="text-blue-700 font-medium">
+        <div className="mb-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100 flex flex-col items-center justify-center text-center">
+          <div className="mb-4 p-3 bg-blue-100 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h4 className="text-lg font-semibold text-gray-800 mb-2">Data Masih Kosong</h4>
+          <p className="text-gray-600 mb-3">
             Saat ini belum ada data yang masuk untuk wilayah ini.
           </p>
+          <div className="text-sm text-gray-500 italic">
+            Tidak ada data yang masuk pada saat ini. Sistem akan menampilkan data secara otomatis ketika tersedia.
+          </div>
         </div>
       )}
 
@@ -159,7 +169,7 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
             nameKey="name"
             cx="50%"
             cy="50%"
-            outerRadius={100}
+            outerRadius={isAllZero ? 80 : 100}
             label={({ name, value, percent }) => {
               // When value is 0 but total is also 0, we show the label with 0%
               const totalValue = data.reduce((sum, d) => sum + d.value, 0);
@@ -198,7 +208,7 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) =
       </ResponsiveContainer>
 
       <div className="mt-4 text-center">
-        <div className="inline-block bg-gray-200 rounded-lg px-4 py-2">
+        <div className="inline-block bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg px-4 py-2 border border-gray-300">
           <span className="text-gray-700 font-medium">Total Balita: </span>
           <span className="text-gray-800 font-semibold">{total}</span>
         </div>
