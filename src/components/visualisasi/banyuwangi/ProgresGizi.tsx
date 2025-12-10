@@ -220,7 +220,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
               strokeWidth={2}
               name="Stunting"
             >
-              <LabelList dataKey="stunting" position="top" />
+              <LabelList dataKey="stunting" position="top" formatter={(value: number) => `${value}%`} />
             </Line>
             <Line
               type="monotone"
@@ -229,7 +229,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
               strokeWidth={2}
               name="Wasting"
             >
-              <LabelList dataKey="wasting" position="top" />
+              <LabelList dataKey="wasting" position="top" formatter={(value: number) => `${value}%`} />
             </Line>
             <Line
               type="monotone"
@@ -238,7 +238,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
               strokeWidth={2}
               name="Underweight"
             >
-              <LabelList dataKey="underweight" position="top" />
+              <LabelList dataKey="underweight" position="top" formatter={(value: number) => `${value}%`} />
             </Line>
             <Line
               type="monotone"
@@ -247,7 +247,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
               strokeWidth={2}
               name="Normal"
             >
-              <LabelList dataKey="normal" position="top" />
+              <LabelList dataKey="normal" position="top" formatter={(value: number) => `${value}%`} />
             </Line>
           </LineChart>
         </ResponsiveContainer>
