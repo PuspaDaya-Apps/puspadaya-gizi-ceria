@@ -31,10 +31,6 @@ interface GiziData {
 // Global cache untuk data
 const dataCache = new Map<string, { data: any; timestamp: number }>();
 
-// Konstanta untuk base URL API
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://ssc80wssow48gsgwwg8888s4.103.109.210.102.sslip.io';
-const API_PREFIX = "/api/v1/public-dashboard";
-
 const ProgresGiziBwi: React.FC<DataSectionProps> = ({
   region,
   desa,
@@ -89,19 +85,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
         ...(posyandu ? { posyandu } : {}),
       });
 
-      // Tentukan URL berdasarkan mode development atau production
-      const isDevelopment = import.meta.env.DEV;
-
-      let apiUrl;
-      if (isDevelopment) {
-        // Di development, gunakan path relatif agar menggunakan proxy Vite
-        apiUrl = `/progres-status-gizi?${query.toString()}`;
-      } else {
-        // Di production, gunakan URL lengkap
-        apiUrl = `${API_BASE_URL}${API_PREFIX}/balita-status-period?${query.toString()}`;
-      }
-
-      const res = await fetch(apiUrl);
+      const res = await fetch(`/progres-status-gizi?${query.toString()}`);
 
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -224,8 +208,8 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
               angle={-15} // opsional: miringin dikit biar gak tabrakan
               textAnchor="end"
             />
-            <YAxis tickFormatter={(value) => `${value}%`} />
-            <Tooltip formatter={(value, name) => [`${value}%`, name]} />
+            <YAxis />
+            <Tooltip />
             <Legend />
             <Line
               type="monotone"
@@ -234,7 +218,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
               strokeWidth={2}
               name="Stunting"
             >
-              <LabelList dataKey="stunting" position="top" formatter={(value: number) => `${value}%`} />
+              <LabelList dataKey="stunting" position="top" />
             </Line>
             <Line
               type="monotone"
@@ -243,7 +227,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
               strokeWidth={2}
               name="Wasting"
             >
-              <LabelList dataKey="wasting" position="top" formatter={(value: number) => `${value}%`} />
+              <LabelList dataKey="wasting" position="top" />
             </Line>
             <Line
               type="monotone"
@@ -252,7 +236,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
               strokeWidth={2}
               name="Underweight"
             >
-              <LabelList dataKey="underweight" position="top" formatter={(value: number) => `${value}%`} />
+              <LabelList dataKey="underweight" position="top" />
             </Line>
             <Line
               type="monotone"
@@ -261,7 +245,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
               strokeWidth={2}
               name="Normal"
             >
-              <LabelList dataKey="normal" position="top" formatter={(value: number) => `${value}%`} />
+              <LabelList dataKey="normal" position="top" />
             </Line>
           </LineChart>
         </ResponsiveContainer>
