@@ -31,10 +31,6 @@ interface GiziData {
 // Global cache untuk data
 const dataCache = new Map<string, { data: any; timestamp: number }>();
 
-// Konstanta untuk base URL API
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://ssc80wssow48gsgwwg8888s4.103.109.210.102.sslip.io';
-const API_PREFIX = "/api/v1/public-dashboard";
-
 const ProgresGiziBwi: React.FC<DataSectionProps> = ({
   region,
   desa,
@@ -89,19 +85,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
         ...(posyandu ? { posyandu } : {}),
       });
 
-      // Tentukan URL berdasarkan mode development atau production
-      const isDevelopment = import.meta.env.DEV;
-
-      let apiUrl;
-      if (isDevelopment) {
-        // Di development, gunakan path relatif agar menggunakan proxy Vite
-        apiUrl = `/progres-status-gizi?${query.toString()}`;
-      } else {
-        // Di production, gunakan URL lengkap
-        apiUrl = `${API_BASE_URL}${API_PREFIX}/balita-status-period?${query.toString()}`;
-      }
-
-      const res = await fetch(apiUrl);
+      const res = await fetch(`/progres-status-gizi?${query.toString()}`);
 
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -219,53 +203,53 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="bulan"
-              interval={0} // pastikan semua bulan tampil
-              padding={{ left: 20, right: 20 }} // kasih space kanan-kiri
-              angle={-15} // opsional: miringin dikit biar gak tabrakan
+              interval={0}
+              padding={{ left: 20, right: 20 }}
+              angle={-15}
               textAnchor="end"
             />
             <YAxis tickFormatter={(value) => `${value}%`} />
-            <Tooltip formatter={(value, name) => [`${value}%`, name]} />
+
+            <Tooltip
+              formatter={(value) => `${value}%`}
+            />
             <Legend />
-            <Line
-              type="monotone"
-              dataKey="stunting"
-              stroke="#ef4444"
-              strokeWidth={2}
-              name="Stunting"
-            >
-              <LabelList dataKey="stunting" position="top" formatter={(value: number) => `${value}%`} />
+            <Line type="monotone" dataKey="stunting" stroke="#ef4444" strokeWidth={2} name="Stunting">
+              <LabelList
+                dataKey="stunting"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
             </Line>
-            <Line
-              type="monotone"
-              dataKey="wasting"
-              stroke="#3b82f6"
-              strokeWidth={2}
-              name="Wasting"
-            >
-              <LabelList dataKey="wasting" position="top" formatter={(value: number) => `${value}%`} />
+
+            <Line type="monotone" dataKey="wasting" stroke="#3b82f6" strokeWidth={2} name="Wasting">
+              <LabelList
+                dataKey="wasting"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
             </Line>
-            <Line
-              type="monotone"
-              dataKey="underweight"
-              stroke="#8B4513"
-              strokeWidth={2}
-              name="Underweight"
-            >
-              <LabelList dataKey="underweight" position="top" formatter={(value: number) => `${value}%`} />
+
+            <Line type="monotone" dataKey="underweight" stroke="#8B4513" strokeWidth={2} name="Underweight">
+              <LabelList
+                dataKey="underweight"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
             </Line>
-            <Line
-              type="monotone"
-              dataKey="normal"
-              stroke="#16a34a"
-              strokeWidth={2}
-              name="Normal"
-            >
-              <LabelList dataKey="normal" position="top" formatter={(value: number) => `${value}%`} />
+
+            <Line type="monotone" dataKey="normal" stroke="#16a34a" strokeWidth={2} name="Normal">
+              <LabelList
+                dataKey="normal"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
             </Line>
+
           </LineChart>
         </ResponsiveContainer>
       </div>
+
     </div>
   );
 };

@@ -13,7 +13,6 @@ import {
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { MoreVertical } from "lucide-react";
 import * as htmlToImage from "html-to-image";
-import { fetchDataWithCache } from "../../../services/api";
 
 interface DataSectionProps {
   region: string;
@@ -79,13 +78,20 @@ const ProgresGiziMlk: React.FC<DataSectionProps> = ({
     setError(null);
 
     try {
-      const params = {
+      // Bangun query param dinamis
+      const query = new URLSearchParams({
         kabupaten_kota: region,
         ...(desa ? { desa } : {}),
         ...(posyandu ? { posyandu } : {}),
-      };
+      });
 
-      const json = await fetchDataWithCache('/progres-status-gizi', params);
+      const res = await fetch(`/progres-status-gizi?${query.toString()}`);
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const json = await res.json();
 
       if (json.data) {
         // Mapping data response ke array untuk recharts
@@ -197,53 +203,54 @@ const ProgresGiziMlk: React.FC<DataSectionProps> = ({
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="bulan"
-              interval={0} // pastikan semua bulan tampil
-              padding={{ left: 20, right: 20 }} // kasih space kanan-kiri
-              angle={-15} // opsional: miringin dikit biar gak tabrakan
+              interval={0}
+              padding={{ left: 20, right: 20 }}
+              angle={-15}
               textAnchor="end"
             />
-            <YAxis />
-            <Tooltip />
+            <YAxis tickFormatter={(value) => `${value}%`} />
+
+            <Tooltip
+              formatter={(value) => `${value}%`}
+            />
             <Legend />
-            <Line
-              type="monotone"
-              dataKey="stunting"
-              stroke="#ef4444"
-              strokeWidth={2}
-              name="Stunting"
-            >
-              <LabelList dataKey="stunting" position="top" />
+            <Line type="monotone" dataKey="stunting" stroke="#ef4444" strokeWidth={2} name="Stunting">
+              <LabelList
+                dataKey="stunting"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
             </Line>
-            <Line
-              type="monotone"
-              dataKey="wasting"
-              stroke="#3b82f6"
-              strokeWidth={2}
-              name="Wasting"
-            >
-              <LabelList dataKey="wasting" position="top" />
+
+            <Line type="monotone" dataKey="wasting" stroke="#3b82f6" strokeWidth={2} name="Wasting">
+              <LabelList
+                dataKey="wasting"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
             </Line>
-            <Line
-              type="monotone"
-              dataKey="underweight"
-              stroke="#8B4513"
-              strokeWidth={2}
-              name="Underweight"
-            >
-              <LabelList dataKey="underweight" position="top" />
+
+            <Line type="monotone" dataKey="underweight" stroke="#8B4513" strokeWidth={2} name="Underweight">
+              <LabelList
+                dataKey="underweight"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
             </Line>
-            <Line
-              type="monotone"
-              dataKey="normal"
-              stroke="#16a34a"
-              strokeWidth={2}
-              name="Normal"
-            >
-              <LabelList dataKey="normal" position="top" />
+
+            <Line type="monotone" dataKey="normal" stroke="#16a34a" strokeWidth={2} name="Normal">
+              <LabelList
+                dataKey="normal"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
             </Line>
+
           </LineChart>
         </ResponsiveContainer>
       </div>
+
+
     </div>
   );
 };
