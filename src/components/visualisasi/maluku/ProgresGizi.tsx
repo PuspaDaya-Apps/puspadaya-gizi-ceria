@@ -210,8 +210,8 @@ const ProgresGiziMlk: React.FC<DataSectionProps> = ({
               angle={-15} // opsional: miringin dikit biar gak tabrakan
               textAnchor="end"
             />
-            <YAxis />
-            <Tooltip />
+            <YAxis tickFormatter={(value) => `${value}%`} />
+            <Tooltip formatter={(value, name) => [`${value}%`, name]} />
             <Legend />
             <Line
               type="monotone"

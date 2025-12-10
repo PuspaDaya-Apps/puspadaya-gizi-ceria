@@ -48,9 +48,9 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
       format === "png"
         ? await htmlToImage.toPng(chartRef.current, options)
         : await htmlToImage.toJpeg(chartRef.current, {
-            quality: 0.95,
-            backgroundColor: "#ffffff",
-          });
+          quality: 0.95,
+          backgroundColor: "#ffffff",
+        });
     const link = document.createElement("a");
     link.href = dataUrl;
     link.download = `ProgresGizi.${format}`;
@@ -171,9 +171,8 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
               {({ active }) => (
                 <button
                   onClick={() => handleDownload("png")}
-                  className={`${
-                    active ? "bg-gray-100" : ""
-                  } w-full px-4 py-2 text-left text-sm text-gray-700`}
+                  className={`${active ? "bg-gray-100" : ""
+                    } w-full px-4 py-2 text-left text-sm text-gray-700`}
                 >
                   Download PNG
                 </button>
@@ -183,9 +182,8 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
               {({ active }) => (
                 <button
                   onClick={() => handleDownload("jpeg")}
-                  className={`${
-                    active ? "bg-gray-100" : ""
-                  } w-full px-4 py-2 text-left text-sm text-gray-700`}
+                  className={`${active ? "bg-gray-100" : ""
+                    } w-full px-4 py-2 text-left text-sm text-gray-700`}
                 >
                   Download JPG
                 </button>
@@ -210,8 +208,8 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
               angle={-15} // opsional: miringin dikit biar gak tabrakan
               textAnchor="end"
             />
-            <YAxis />
-            <Tooltip />
+            <YAxis tickFormatter={(value) => `${value}%`} />
+            <Tooltip formatter={(value, name) => [`${value}%`, name]} />
             <Legend />
             <Line
               type="monotone"
