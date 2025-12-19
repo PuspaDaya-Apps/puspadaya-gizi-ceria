@@ -30,6 +30,25 @@ interface GiziData {
   normal: number;
 }
 
+// Helper untuk mengubah nama bulan menjadi angka (untuk sorting & filtering)
+const getMonthNumber = (monthName: string): number => {
+  const months = [
+    "januari", "februari", "maret", "april", "mei", "juni",
+    "juli", "agustus", "september", "oktober", "november", "desember"
+  ];
+  const monthsEn = [
+    "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november", "december"
+  ];
+  
+  const lowerName = monthName.toLowerCase();
+  let index = months.indexOf(lowerName);
+  if (index === -1) {
+    index = monthsEn.indexOf(lowerName);
+  }
+  return index + 1; // Return 1-12, atau 0 jika tidak ditemukan
+};
+
 // Global cache untuk data
 const dataCache = new Map<string, { data: any; timestamp: number }>();
 
@@ -37,8 +56,8 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
   region,
   desa,
   posyandu,
-  month, // Props ini tetap ada tapi tidak digunakan di logic fetch
-  year,  // Props ini tetap ada tapi tidak digunakan di logic fetch
+  month, // Digunakan untuk filter batas tampilan
+  year,  // Digunakan untuk fetch data tahunan
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [giziData, setGiziData] = useState<GiziData[]>([]);
@@ -61,72 +80,94 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
     link.click();
   };
 
-  // Membuat cache key untuk identifikasi unik data
-  // UPDATE: Hardcoded 0 untuk month dan year agar cache konsisten
+  // UPDATE: Cache key sekarang menyertakan YEAR karena kita mengambil data per tahun
   const cacheKey = useMemo(() => {
-    return `${region}-${desa || 'all'}-${posyandu || 'all'}-0-0`;
-  }, [region, desa, posyandu]); 
+    return `${region}-${desa || 'all'}-${posyandu || 'all'}-0-${year}`;
+  }, [region, desa, posyandu, year]);
 
   const fetchData = useCallback(async () => {
-    // Cek apakah data sudah ada di cache dan belum kadaluarsa (10 menit)
+    // Cek cache
     const cached = dataCache.get(cacheKey);
     const now = Date.now();
-    const tenMinutes = 10 * 60 * 1000; // 10 menit dalam milidetik
+    const tenMinutes = 10 * 60 * 1000;
+
+    // Jika ada di cache, gunakan data cache, TAPI tetap jalankan logic filtering di bawah
+    let rawData = null;
 
     if (cached && (now - cached.timestamp) < tenMinutes) {
-      setGiziData(cached.data);
+      rawData = cached.data;
       setLoading(false);
-      return;
-    }
+    } else {
+      setLoading(true);
+      setError(null);
 
-    setLoading(true);
-    setError(null);
+      try {
+        // UPDATE: Fetch menggunakan tahun yang dipilih, tapi bulan "0" (ambil semua bulan di tahun itu)
+        const query = new URLSearchParams({
+          kabupaten_kota: region,
+          ...(desa ? { desa } : {}),
+          ...(posyandu ? { posyandu } : {}),
+          bulan: "0", 
+          tahun: year.toString(), // Ambil data setahun penuh sesuai tahun yang dipilih
+        });
 
-    try {
-      // Bangun query param dinamis
-      // UPDATE: Bulan dan Tahun di-set constant "0"
-      const query = new URLSearchParams({
-        kabupaten_kota: region,
-        ...(desa ? { desa } : {}),
-        ...(posyandu ? { posyandu } : {}),
-        bulan: "0", 
-        tahun: "0",
-      });
+        const res = await fetch(`/progres-status-gizi?${query.toString()}`);
 
-      const res = await fetch(`/progres-status-gizi?${query.toString()}`);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const json = await res.json();
-
-      if (json.data) {
-        // Mapping data response ke array untuk recharts
-        const mappedData: GiziData[] = Object.entries(json.data).map(
-          ([bulan, values]: any) => ({
-            bulan,
-            stunting: values.total_stunting ?? 0,
-            wasting: values.total_wasting ?? 0,
-            underweight: values.total_underweight ?? 0,
-            normal: values.total_normal ?? 0,
-          })
-        );
-
-        setGiziData(mappedData);
-        // Simpan ke cache
-        dataCache.set(cacheKey, { data: mappedData, timestamp: now });
-      } else {
+        const json = await res.json();
+        
+        if (json.data) {
+          // Mapping object ke array
+          rawData = Object.entries(json.data).map(
+            ([bulan, values]: any) => ({
+              bulan,
+              stunting: values.total_stunting ?? 0,
+              wasting: values.total_wasting ?? 0,
+              underweight: values.total_underweight ?? 0,
+              normal: values.total_normal ?? 0,
+            })
+          );
+          
+          // Simpan raw data setahun penuh ke cache
+          dataCache.set(cacheKey, { data: rawData, timestamp: now });
+        } else {
+          setGiziData([]);
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(err instanceof Error ? err.message : "Terjadi kesalahan saat mengambil data");
         setGiziData([]);
+        setLoading(false);
+        return;
       }
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan saat mengambil data");
-      setGiziData([]);
-    } finally {
+    }
+
+    // --- LOGIC FILTERING & SORTING (Dijalankan baik data dari fetch maupun cache) ---
+    if (rawData) {
+      let processedData = [...rawData];
+
+      // 1. Sorting agar bulan urut (Jan -> Des)
+      processedData.sort((a, b) => getMonthNumber(a.bulan) - getMonthNumber(b.bulan));
+
+      // 2. FILTERING: Jika bulan dipilih (month > 0), hide bulan setelahnya
+      if (month > 0) {
+        processedData = processedData.filter((item) => {
+          const itemMonthNum = getMonthNumber(item.bulan);
+          // Tampilkan jika bulan data <= bulan yang dipilih
+          return itemMonthNum > 0 && itemMonthNum <= month;
+        });
+      }
+
+      setGiziData(processedData);
       setLoading(false);
     }
-  }, [region, desa, posyandu, cacheKey]);
+
+  }, [region, desa, posyandu, year, month, cacheKey]); // Month masuk dependency agar men-trigger filter ulang
 
   useEffect(() => {
     if (region) {
@@ -167,7 +208,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
-          Progres Status Gizi - {region}
+          Progres Status Gizi - {region} ({year})
         </h3>
 
         <Menu as="div" className="relative inline-block text-left">

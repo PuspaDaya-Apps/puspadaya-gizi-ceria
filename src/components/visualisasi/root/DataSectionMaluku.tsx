@@ -18,6 +18,14 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({
   month,
   year
 }) => {
+  // Handle case where month and year are 0 - use current date
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-11, so add 1
+  const currentYear = currentDate.getFullYear();
+
+  const displayMonth = month === 0 ? currentMonth : month;
+  const displayYear = year === 0 ? currentYear : year;
+
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -30,8 +38,8 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          tahun: year.toString(),   // Menggunakan prop year
-          bulan: month.toString(),  // Menggunakan prop month (number dikonversi ke string untuk URL)
+          tahun: displayYear.toString(),   // Menggunakan displayYear yang bisa jadi nilai saat ini
+          bulan: displayMonth.toString(),  // Menggunakan displayMonth yang bisa jadi nilai saat ini
         });
 
         const res = await fetch(`/api?${query.toString()}`);
@@ -53,9 +61,9 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({
     if (region) {
       fetchData();
     }
-    // 3. Tambahkan month dan year ke dependency array
+    // 3. Tambahkan displayMonth dan displayYear ke dependency array
     // Agar fetch ulang dijalankan ketika bulan/tahun berubah
-  }, [region, desa, posyandu, month, year]);
+  }, [region, desa, posyandu, displayMonth, displayYear]);
 
   if (loading) {
     return (
@@ -65,6 +73,20 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({
     );
   }
 
+  // Helper function to convert month number to month name in Indonesian
+  const getMonthName = (monthNumber: number): string => {
+    const monthNames = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+
+    // Ensure monthNumber is between 1-12
+    if (monthNumber >= 1 && monthNumber <= 12) {
+      return monthNames[monthNumber - 1]; // Array index starts at 0
+    }
+    return "Invalid Month"; // Fallback for invalid values
+  };
+
   return (
     <section id="features" className="py-0">
       <div className="container mx-auto px-4 py-1">
@@ -72,9 +94,12 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Informasi Data Pengguna Banyuwangi
           </h2>
-          {/* Opsional: Menampilkan periode yang sedang aktif */}
+          {/* Helper function to convert month number to month name */}
+          {/*
+          Month names in Indonesian
+          */}
           <p className="text-sm font-semibold text-indigo-600 mb-2">
-            Periode: Bulan {month} Tahun {year}
+            Periode: Bulan {getMonthName(displayMonth)} Tahun {displayYear}
           </p>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Fitur ini menyajikan berbagai data penting terkait informasi gizi,
@@ -218,8 +243,8 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({
         region={region}
         desa={desa}
         posyandu={posyandu}
-        month={month}
-        year={year}
+        month={displayMonth}
+        year={displayYear}
       />
     </section>
   );
