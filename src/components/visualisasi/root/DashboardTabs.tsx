@@ -24,7 +24,6 @@ const ChevronDownIcon = ({ className }: { className?: string }) => (
 );
 
 const DashboardTabs = () => {
-  // 1. Setup Time
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonthStr = String(now.getMonth() + 1).padStart(2, '0');
@@ -32,13 +31,11 @@ const DashboardTabs = () => {
 
   const dateInputRef = useRef<HTMLInputElement>(null);
 
-  // 2. States
   const [selectedWilayah, setSelectedWilayah] = useState("Banyuwangi");
   const [selectedDesa, setSelectedDesa] = useState("");
   const [selectedPosyandu, setSelectedPosyandu] = useState("");
   const [selectedPeriod, setSelectedPeriod] = useState(currentPeriodValue);
 
-  // 3. Data Definition
   type DataWilayahType = {
     [key: string]: {
       desa: string[];
@@ -68,7 +65,6 @@ const DashboardTabs = () => {
     },
   };
 
-  // 4. Handlers
   const handleWilayahChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedWilayah(e.target.value);
     setSelectedDesa("");
@@ -91,19 +87,17 @@ const DashboardTabs = () => {
     setSelectedPeriod(currentPeriodValue);
   }, [selectedWilayah]);
 
-  // 5. Logic: Get Values to Send
   const getValuesToSend = () => {
     if (!selectedPeriod) return { month: 0, year: 0 };
 
-    // Jika periode SAMA dengan Date Now -> Kirim 0
     if (selectedPeriod === currentPeriodValue) {
-      return { month: 0, year: 0 }; 
+      return { month: 0, year: 0 };
     }
 
     const [yearStr, monthStr] = selectedPeriod.split("-");
-    return { 
-        month: parseInt(monthStr), 
-        year: parseInt(yearStr) 
+    return {
+        month: parseInt(monthStr),
+        year: parseInt(yearStr)
     };
   };
 

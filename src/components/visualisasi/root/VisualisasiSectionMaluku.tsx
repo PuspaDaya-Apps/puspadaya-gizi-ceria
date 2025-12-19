@@ -29,26 +29,21 @@ const VisualisasiSectionMaluku: React.FC<VisualisasiSectionMalukuProps> = ({ reg
 
   return (
     <section id="visualisasi" className="py-10">
-      {/* Chart Atas */}
       <div className="px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Pie Chart Gizi */}
 
           <StatusGiziMlk region={region} desa={desa} posyandu={posyandu} month={month} year={year} />
 
-          {/* Pie Chart User */}
           <GrafikSKDNMlk region={region} desa={desa} posyandu={posyandu} month={month} year={year} />
         </div>
       </div>
 
-      {/* Bar Chart Distribusi Balita */}
       <ProgresGiziMlk region={region} desa={desa} posyandu={posyandu} month={month} year={year} />
 
       <div className="px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <MpasiMlk region={region} desa={desa} posyandu={posyandu} month={month} year={year} />
           <AsiEklusifMlk region={region} desa={desa} posyandu={posyandu} month={month} year={year} />
-
         </div>
       </div>
 
@@ -62,7 +57,6 @@ const VisualisasiSectionMaluku: React.FC<VisualisasiSectionMalukuProps> = ({ reg
           <DurasiKunjunganAnakMlk region={region} desa={desa} posyandu={posyandu} month={month} year={year} />
           <DurasiKunjunganIbuHamilMlk region={region} desa={desa} posyandu={posyandu} month={month} year={year} />
           <DurasiPelaksanaanPosyanduMlk region={region} desa={desa} posyandu={posyandu} month={month} year={year} />
-
         </div>
       </div>
 

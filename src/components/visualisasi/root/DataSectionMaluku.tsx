@@ -10,7 +10,6 @@ interface DataSectionProps {
   year: number;
 }
 
-// 1. Tambahkan month dan year di sini (destructuring)
 const DatasSectionMaluku: React.FC<DataSectionProps> = ({
   region,
   desa,
@@ -45,7 +44,6 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({
         const res = await fetch(`/api?${query.toString()}`);
         const json = await res.json();
 
-        // Logika pemrosesan data (tetap sama)
         let processedData = json.data;
         if (posyandu && json.data) {
           processedData = { ...json.data, total_posyandu: 1 };
@@ -61,8 +59,6 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({
     if (region) {
       fetchData();
     }
-    // 3. Tambahkan displayMonth dan displayYear ke dependency array
-    // Agar fetch ulang dijalankan ketika bulan/tahun berubah
   }, [region, desa, posyandu, displayMonth, displayYear]);
 
   if (loading) {
@@ -94,10 +90,6 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Informasi Data Pengguna Banyuwangi
           </h2>
-          {/* Helper function to convert month number to month name */}
-          {/*
-          Month names in Indonesian
-          */}
           <p className="text-sm font-semibold text-indigo-600 mb-2">
             Periode: Bulan {getMonthName(displayMonth)} Tahun {displayYear}
           </p>
@@ -238,7 +230,6 @@ const DatasSectionMaluku: React.FC<DataSectionProps> = ({
           />
         </div>
       </div>
-      {/* 4. Pass props ke komponen visualisasi agar sinkron */}
       <VisualisasiSectionMaluku
         region={region}
         desa={desa}
