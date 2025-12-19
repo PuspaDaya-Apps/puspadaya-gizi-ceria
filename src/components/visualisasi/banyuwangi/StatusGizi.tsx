@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   LabelList,
 } from "recharts";
+import FunLoading from '@/components/ui/FunLoading';
 
 interface DataSectionProps {
   region: string;
@@ -78,9 +79,11 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
 
   if (loading) {
     return (
-      <div className="text-center py-10 text-gray-500">
-        Memuat data {region} {desa ? `- ${desa}` : ""}{" "}
-        {posyandu ? `- ${posyandu}` : ""}...
+      <div className="text-center py-10">
+        <FunLoading
+          variant="baby-bounce"
+          message={`Memuat data ${region} ${desa ? `- ${desa}` : ""} ${posyandu ? `- ${posyandu}` : ""}...`}
+        />
       </div>
     );
   }

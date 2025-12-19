@@ -9,13 +9,13 @@ interface FeatureCardProps {
 
 const FeatureCard = ({ icon, title, description }: FeatureCardProps) => {
   return (
-    <div className="card bg-white shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-      <div className="card-body items-center text-center">
-        <div className="text-primary text-4xl mb-4">
+    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200 group">
+      <div className="p-6 flex flex-col items-center text-center">
+        <div className="mb-4 group-hover:scale-110 transition-transform duration-300">
           {icon}
         </div>
-        <h3 className="card-title text-blue-600 text-xl font-bold">{title}</h3>
-        <p className="text-gray-600">{description}</p>
+        <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">{title}</h3>
+        <p className="text-gray-600 text-sm">{description}</p>
       </div>
     </div>
   );

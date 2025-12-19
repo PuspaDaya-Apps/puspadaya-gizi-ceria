@@ -45,15 +45,24 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
 }) => {
   const [loading, setLoading] = useState(true);
   const [apiData, setApiData] = useState<ApiResponse | null>(null);
-  const [currentMonth, setCurrentMonth] = useState("");
 
-  useEffect(() => {
+  // --- LOGIKA PENENTUAN TANGGAL ---
+  const now = new Date();
+  // Jika month 0, gunakan bulan sekarang
+  const effectiveMonth = month === 0 ? now.getMonth() + 1 : month;
+  // Jika year 0, gunakan tahun sekarang
+  const effectiveYear = year === 0 ? now.getFullYear() : year;
+
+  // Helper: Nama Bulan
+  const getMonthName = (m: number) => {
     const months = [
       "Januari", "Februari", "Maret", "April", "Mei", "Juni",
       "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     ];
-    setCurrentMonth(months[month - 1]);
+    return months[m - 1] || "";
+  };
 
+  useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -61,15 +70,22 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: month.toString(),
-          tahun: year.toString(),
+          bulan: effectiveMonth.toString(),
+          tahun: effectiveYear.toString(),
         });
 
-        const res = await fetch(`/waktu-kunjungan-ibu-hamil?${query.toString()}`);
+        const res = await fetch(`/api/waktu-kunjungan-ibu-hamil?${query.toString()}`);
+        
+        if (!res.ok) {
+           throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
         const json = await res.json();
 
         if (json.data) {
           setApiData(json.data);
+        } else if (json.rata_rata !== undefined || json.minimum !== undefined) {
+           setApiData(json);
         } else {
           setApiData(null);
         }
@@ -82,14 +98,15 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
     };
 
     if (region) fetchData();
-  }, [region, desa, posyandu, month, year]);
+  }, [region, desa, posyandu, effectiveMonth, effectiveYear]);
 
+  // Prepare Data
   const prepareBoxPlotData = (): BoxPlotData[] => {
     if (!apiData) return [];
 
     return [
       {
-        name: currentMonth,
+        name: `${getMonthName(effectiveMonth)} ${effectiveYear}`,
         category: "Durasi Kunjungan Ibu Hamil",
         min: apiData.minimum ?? 0,
         q1: apiData.q1 ?? 0,
@@ -118,6 +135,7 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
     color: categoryColors[item.category as keyof typeof categoryColors],
   }));
 
+  // Custom Chart Component
   const CustomBoxPlot = (props: any) => {
     const { payload, x, y, width, height } = props;
 
@@ -126,7 +144,6 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
     const centerX = x + width / 2;
     const boxWidth = width * 0.6;
     const whiskerWidth = width * 0.3;
-
     const chartBottom = y + height;
 
     const maxDataValue = Math.max(payload.max, payload.q3, payload.median, payload.q1, payload.min);
@@ -157,7 +174,6 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
           stroke="#374151"
           strokeWidth={1}
         />
-
         <line
           x1={centerX - boxWidth / 2}
           y1={validatedMedianY}
@@ -166,7 +182,6 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
           stroke="#DC2626"
           strokeWidth={2}
         />
-
         <line
           x1={centerX}
           y1={validatedMinY}
@@ -183,7 +198,6 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
           stroke="#374151"
           strokeWidth={2}
         />
-
         <line
           x1={centerX}
           y1={validatedQ3Y}
@@ -200,53 +214,19 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
           stroke="#374151"
           strokeWidth={2}
         />
-
-        <text
-          x={centerX}
-          y={validatedMinY - 5}
-          fontSize={10}
-          fill="#374151"
-          textAnchor="middle"
-          fontWeight="bold"
-        >
+        <text x={centerX} y={validatedMinY - 5} fontSize={10} fill="#374151" textAnchor="middle" fontWeight="bold">
           {payload.min.toFixed(2)}
         </text>
-        <text
-          x={centerX}
-          y={validatedQ1Y + 15}
-          fontSize={10}
-          fill="#374151"
-          textAnchor="middle"
-        >
+        <text x={centerX} y={validatedQ1Y + 15} fontSize={10} fill="#374151" textAnchor="middle">
           {payload.q1.toFixed(2)}
         </text>
-        <text
-          x={centerX}
-          y={validatedMedianY - 5}
-          fontSize={10}
-          fill="#DC2626"
-          textAnchor="middle"
-          fontWeight="bold"
-        >
+        <text x={centerX} y={validatedMedianY - 5} fontSize={10} fill="#DC2626" textAnchor="middle" fontWeight="bold">
           {payload.median.toFixed(2)}
         </text>
-        <text
-          x={centerX}
-          y={validatedQ3Y + 15}
-          fontSize={10}
-          fill="#374151"
-          textAnchor="middle"
-        >
+        <text x={centerX} y={validatedQ3Y + 15} fontSize={10} fill="#374151" textAnchor="middle">
           {payload.q3.toFixed(2)}
         </text>
-        <text
-          x={centerX}
-          y={validatedMaxY - 5}
-          fontSize={10}
-          fill="#374151"
-          textAnchor="middle"
-          fontWeight="bold"
-        >
+        <text x={centerX} y={validatedMaxY - 5} fontSize={10} fill="#374151" textAnchor="middle" fontWeight="bold">
           {payload.max.toFixed(2)}
         </text>
       </g>
@@ -256,29 +236,17 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
-
       return (
         <div className="bg-white p-4 border border-gray-300 rounded-lg shadow-lg text-sm max-w-xs">
           <p className="font-semibold text-gray-800 border-b pb-2 mb-2">
             {data.name} - {data.category}
           </p>
           <div className="space-y-1">
-            <p>
-              <span className="font-medium">Minimum:</span> {data.min.toFixed(2)} menit
-            </p>
-            <p>
-              <span className="font-medium">Kuartil 1 (Q1):</span> {data.q1.toFixed(2)} menit
-            </p>
-            <p>
-              <span className="font-medium text-red-600">Median:</span>{" "}
-              {data.median.toFixed(2)} menit
-            </p>
-            <p>
-              <span className="font-medium">Kuartil 3 (Q3):</span> {data.q3.toFixed(2)} menit
-            </p>
-            <p>
-              <span className="font-medium">Maksimum:</span> {data.max.toFixed(2)} menit
-            </p>
+            <p><span className="font-medium">Minimum:</span> {data.min.toFixed(2)} menit</p>
+            <p><span className="font-medium">Kuartil 1 (Q1):</span> {data.q1.toFixed(2)} menit</p>
+            <p><span className="font-medium text-red-600">Median:</span> {data.median.toFixed(2)} menit</p>
+            <p><span className="font-medium">Kuartil 3 (Q3):</span> {data.q3.toFixed(2)} menit</p>
+            <p><span className="font-medium">Maksimum:</span> {data.max.toFixed(2)} menit</p>
           </div>
         </div>
       );
@@ -286,62 +254,7 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
     return null;
   };
 
-  if (loading) {
-    return (
-      <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
-        <div className="animate-pulse">
-          <div className="text-center mb-6">
-            <div className="h-6 bg-gray-200 rounded w-3/4 mx-auto mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
-          </div>
-
-          <div className="bg-gray-50 rounded-xl p-4 mb-6">
-            <div className="h-80 bg-gray-200 rounded-lg w-full"></div>
-          </div>
-
-          <div className="flex justify-center gap-8 flex-wrap mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-5 h-5 bg-gray-200 rounded"></div>
-              <div className="h-4 bg-gray-200 rounded w-24"></div>
-            </div>
-          </div>
-
-          <div className="p-4 bg-gray-100 rounded-lg">
-            <div className="h-5 bg-gray-200 rounded w-1/3 mb-3"></div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-1 bg-red-500"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/3"></div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-0.5 bg-gray-800"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!apiData) {
-    return (
-      <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
-        <div className="text-center">
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            Durasi Kunjungan Ibu Hamil Oleh Kader di {region}
-          </h3>
-          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Ibu Hamil</p>
-          <div className="bg-gray-50 rounded-xl p-8 text-center">
-            <p className="text-gray-500">Tidak ada data yang tersedia untuk ditampilkan</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-
-  return (
+  const renderContainer = (content: React.ReactNode) => (
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
       <div className="text-center mb-6">
         <h3 className="text-2xl font-bold text-gray-800 mb-2">
@@ -349,7 +262,39 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
         </h3>
         <p className="text-gray-600">Distribusi Waktu Kunjungan Ibu Hamil</p>
       </div>
+      {content}
+    </div>
+  );
 
+  if (loading) {
+    return renderContainer(
+      <div className="animate-pulse">
+        <div className="bg-gray-50 rounded-xl p-4 mb-6">
+          <div className="h-80 bg-gray-200 rounded-lg w-full"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!apiData) {
+    return renderContainer(
+      <div className="bg-gray-50 rounded-xl p-8 text-center">
+        <p className="text-gray-500">Tidak ada data yang tersedia untuk ditampilkan</p>
+      </div>
+    );
+  }
+
+  // Cek validitas data
+  if (apiData.minimum < 0 || apiData.maksimum < 0 || apiData.median < 0 || apiData.q1 < 0 || apiData.q3 < 0) {
+    return renderContainer(
+      <div className="bg-gray-50 rounded-xl p-8 text-center">
+        <p className="text-gray-500">Data tidak valid untuk ditampilkan.</p>
+      </div>
+    );
+  }
+
+  return renderContainer(
+    <>
       <div className="bg-gray-50 rounded-xl p-4">
         <ResponsiveContainer width="100%" height={400}>
           <ComposedChart
@@ -361,9 +306,14 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 16, fill: "#374151" }}
-              height={80}
-              label={{ value: "Bulan", position: "insideBottom", offset: -40, fontSize: 14 }}
+              tick={false} // MENYEMBUNYIKAN NAMA BULAN DI GARIS AXIS
+              height={50}
+              label={{ 
+                value: `Periode ${getMonthName(effectiveMonth)} ${effectiveYear}`, // Label Dinamis
+                position: "insideBottom", 
+                offset: -40, 
+                fontSize: 14 
+              }}
             />
             <YAxis
               domain={[0, 'dataMax + 1']}
@@ -446,7 +396,7 @@ const DurasiKunjunganIbuHamilBwi: React.FC<DataSectionProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

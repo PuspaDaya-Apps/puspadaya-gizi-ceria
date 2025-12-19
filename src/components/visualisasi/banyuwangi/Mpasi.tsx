@@ -30,8 +30,8 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, y
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: month.toString(),
-          tahun: year.toString(),
+          bulan: month.toString(),  // Add specified month number (1-12)
+          tahun: year.toString(),   // Add specified year in YYYY format
         });
         const res = await fetch(`/anak-mpasi?${query.toString()}`);
         const json = await res.json();
@@ -52,13 +52,15 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, y
 
           const mappedData = [
             { name: "Ya", value: mpasiIya, description: "Balita yang mendapat selain ASI" },
-            { name: "Tidak", value: mpasiIbu, description: "Balita yang tidak mendapat selain ASI" },
+            { name: "Tidak", value: mpasiTidak, description: "Balita yang tidak mendapat selain ASI" },
             { name: "Tidak Diisi", value: mpasiTidakTahu, description: "Status MPASI tidak diketahui" },
-          ];
+            // Removed "Belum Diukur" as per requirement
+          ]; // Show all categories even when value is 0
 
           setData(mappedData);
           setTotal(total_balita_mpasi ?? 0);
         } else {
+          // When json.data is null, set default values with 0
           const defaultData = [
             { name: "Ya", value: 0, description: "Balita yang mendapat selain ASI" },
             { name: "Tidak", value: 0, description: "Balita yang tidak mendapat selain ASI" },
@@ -69,6 +71,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, y
         }
       } catch (err) {
         console.error("Error fetching data:", err);
+        // Set default values with 0 when there's an error
         const defaultData = [
           { name: "Ya", value: 0, description: "Balita yang mendapat selain ASI" },
           { name: "Tidak", value: 0, description: "Balita yang tidak mendapat selain ASI" },
@@ -97,6 +100,7 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, y
 
   const totalValue = data.reduce((sum, d) => sum + d.value, 0);
 
+  // Check if all values are zero
   const isAllZero = data.length > 0 && data.every((item) => item.value === 0);
 
   return (
@@ -131,8 +135,9 @@ const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, y
                 cx="50%"
                 cy="50%"
                 outerRadius={110}
-                labelLine={true}
+                labelLine={true} // tarik garis keluar
                 label={({ name, value }) => {
+                  // When value is 0 but total is also 0, we show the label with 0%
                   const percentValue = totalValue
                     ? ((value / totalValue) * 100).toFixed(1)
                     : "0";
