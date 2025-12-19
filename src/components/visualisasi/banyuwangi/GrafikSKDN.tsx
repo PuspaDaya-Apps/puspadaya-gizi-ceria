@@ -27,13 +27,12 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Bangun query param dinamis
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: month.toString(),  // Add current month number (1-12)
-          tahun: year.toString(),   // Add current year in YYYY format
+          bulan: month.toString(),
+          tahun: year.toString(),
         });
         const res = await fetch(`/data-skdn?${query.toString()}`);
         const json = await res.json();
@@ -70,7 +69,6 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
     );
   }
 
-  // Menentukan domain sumbu Y dengan menambahkan margin 10% dari nilai maksimum
   const maxValue = data.length > 0 ? Math.max(...data.map((item) => item.value)) : 0;
   const yDomain = [0, Math.ceil(maxValue + maxValue * 0.1)];
 
@@ -99,10 +97,10 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
             shape={(props) => {
               const { name } = props.payload;
               const colors = {
-                "S": "#ef4444", // merah
-                "K": "#f59e0b", // kuning
-                "D": "#10b981", // hijau
-                "N": "#3b82f6"  // biru
+                "S": "#ef4444",
+                "K": "#f59e0b",
+                "D": "#10b981",
+                "N": "#3b82f6"
               };
               return (
                 <rect
@@ -117,7 +115,6 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
         </BarChart>
       </ResponsiveContainer>
 
-      {/* Penjelasan terpisah untuk S, K, D, N */}
       <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
         <div className="p-3 bg-red-50 rounded-lg">
           <div className="font-bold text-red-800">S</div>

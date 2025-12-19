@@ -54,8 +54,8 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu, mo
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: month.toString(),  // Add specified month number (1-12)
-          tahun: year.toString(),   // Add specified year in YYYY format
+          bulan: month.toString(),
+          tahun: year.toString(),
         });
         const res = await fetch(`/ibu-hamil?${query.toString()}`);
         const json: ApiResponse = await res.json();
@@ -128,7 +128,6 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu, mo
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
           Jumlah Ibu Hamil Berisiko - {region}
@@ -162,7 +161,6 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu, mo
         </Menu>
       </div>
 
-      {/* Chart */}
       <div ref={barChartRef} className="bg-white p-6 rounded-lg">
         <ResponsiveContainer width="100%" height={400}>
           <BarChart

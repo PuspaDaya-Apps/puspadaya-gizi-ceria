@@ -66,16 +66,15 @@ const KompetensiBebanKerja: React.FC<DataSectionProps> = ({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: month.toString(),  // Add specified month number (1-12)
-          tahun: year.toString(),   // Add specified year in YYYY format
+          bulan: month.toString(),
+          tahun: year.toString(),
         });
         const res = await fetch(`/jenis-kompetensi?${query.toString()}`);
         const json = await res.json();
 
         if (json.data) {
-          // mapping kompetensi
           const mappedData: WorkloadData[] = Object.entries(json.data)
-            .filter(([key]) => key !== "jumlah_kader_mengisi") // buang field jumlah_kader_mengisi
+            .filter(([key]) => key !== "jumlah_kader_mengisi")
             .map(([key, value]) => ({
               name:
                 key === "Balita"
@@ -92,7 +91,6 @@ const KompetensiBebanKerja: React.FC<DataSectionProps> = ({
 
           setWorkloadData(mappedData);
 
-          // set jumlah kader mengisi
           setJumlahKaderMengisi(json.data.jumlah_kader_mengisi || 0);
         } else {
           setWorkloadData([]);
@@ -133,7 +131,6 @@ const KompetensiBebanKerja: React.FC<DataSectionProps> = ({
 
   return (
     <div className="bg-white rounded-2xl shadow p-4 md:p-6 relative mb-6 md:mb-8">
-      {/* Header + menu download */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-2">
         <h3 className="text-xl font-semibold text-primary text-center w-full"></h3>
 
@@ -170,7 +167,6 @@ const KompetensiBebanKerja: React.FC<DataSectionProps> = ({
         </Menu>
       </div>
 
-      {/* Chart + Title */}
       <div ref={barChartRef} className="bg-white p-4 md:p-6 rounded-lg">
         <h3 className="text-lg md:text-xl font-semibold text-primary mb-4 text-center">
           Jumlah Kader Berdasarkan Kompetensi Beban Kerja Kader -{" "}
@@ -207,7 +203,6 @@ const KompetensiBebanKerja: React.FC<DataSectionProps> = ({
           </BarChart>
         </ResponsiveContainer>
 
-        {/* Jumlah kader mengisi dari API */}
         <div className="mt-6 bg-gray-100 rounded-lg p-4 text-center">
           <p className="text-gray-600 font-medium">
             Jumlah Kader Mengisi
