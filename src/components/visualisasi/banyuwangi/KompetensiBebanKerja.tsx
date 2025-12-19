@@ -18,6 +18,8 @@ interface DataSectionProps {
   region: string;
   desa?: string;
   posyandu?: string;
+  month: number;
+  year: number;
 }
 
 interface WorkloadData {
@@ -29,6 +31,8 @@ const KompetensiBebanKerja: React.FC<DataSectionProps> = ({
   region,
   desa,
   posyandu,
+  month,
+  year,
 }) => {
   const barChartRef = useRef<HTMLDivElement>(null);
   const [workloadData, setWorkloadData] = useState<WorkloadData[]>([]);
@@ -58,16 +62,12 @@ const KompetensiBebanKerja: React.FC<DataSectionProps> = ({
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Get current month and year
-        const currentMonth = (new Date().getMonth() + 1).toString(); // Months are 0-indexed, so add 1
-        const currentYear = new Date().getFullYear().toString();
-        
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: currentMonth,  // Add current month number (1-12)
-          tahun: currentYear,   // Add current year in YYYY format
+          bulan: month.toString(),  // Add specified month number (1-12)
+          tahun: year.toString(),   // Add specified year in YYYY format
         });
         const res = await fetch(`/jenis-kompetensi?${query.toString()}`);
         const json = await res.json();
@@ -108,7 +108,7 @@ const KompetensiBebanKerja: React.FC<DataSectionProps> = ({
     if (region) {
       fetchData();
     }
-  }, [region, desa, posyandu]);
+  }, [region, desa, posyandu, month, year]);
 
   const isAllZero = workloadData.every((d) => d.value === 0);
 

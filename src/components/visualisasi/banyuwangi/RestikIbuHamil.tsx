@@ -17,6 +17,8 @@ interface DataSectionProps {
   region: string;
   desa?: string;
   posyandu?: string;
+  month: number;
+  year: number;
 }
 
 interface RiskData {
@@ -38,7 +40,7 @@ interface ApiResponse {
   };
 }
 
-const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
+const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, year }) => {
   const barChartRef = useRef<HTMLDivElement>(null);
   const [riskData, setRiskData] = useState<RiskData[]>([]);
   const [totalPengukuran, setTotalPengukuran] = useState<number>(0);
@@ -48,16 +50,12 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) 
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Get current month and year
-        const currentMonth = (new Date().getMonth() + 1).toString(); // Months are 0-indexed, so add 1
-        const currentYear = new Date().getFullYear().toString();
-        
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: currentMonth,  // Add current month number (1-12)
-          tahun: currentYear,   // Add current year in YYYY format
+          bulan: month.toString(),  // Add specified month number (1-12)
+          tahun: year.toString(),   // Add specified year in YYYY format
         });
         const res = await fetch(`/ibu-hamil?${query.toString()}`);
         const json: ApiResponse = await res.json();
@@ -87,7 +85,7 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu }) 
     };
 
     if (region) fetchData();
-  }, [region, desa, posyandu]);
+  }, [region, desa, posyandu, month, year]);
 
   const handleDownload = async (format: "png" | "jpeg") => {
     if (!barChartRef.current) return;
