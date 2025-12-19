@@ -2,10 +2,10 @@ import React from "react";
 import FeatureCard from "./cardcomponents/FeatureCard";
 import { BarChart3, Calendar } from "lucide-react";
 import DataCard from "./cardcomponents/DataCard";
-import DatasSection from "./DataSectionBwi";
-import DatasSectionBwi from "./DataSectionBwi";
-import DatasSectionMaluku from "./DataSectionMaluku";
-import DashboardTabs from "./DashboardTabs";
+import DatasSection from "./visualisasi/root/DataSectionBwi";
+import DatasSectionBwi from "./visualisasi/root/DataSectionBwi";
+import DatasSectionMaluku from "./visualisasi/root/DataSectionMaluku";
+import DashboardTabs from "./visualisasi/root/DashboardTabs";
 
 const FeaturesSection = () => {
   return (

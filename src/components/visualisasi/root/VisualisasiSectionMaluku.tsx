@@ -1,28 +1,30 @@
 import React, { useRef } from "react";
-import GeafikSkdnMlk from "./visualisasi/maluku/GrafikSKDN";
+import GeafikSkdnMlk from "../maluku/GrafikSKDN";
 
-import GrafikSKDNMlk from "./visualisasi/maluku/GrafikSKDN";
-import ProgresGiziMlk from "./visualisasi/maluku/ProgresGizi";
-import MpasiMlk from "./visualisasi/maluku/Mpasi";
-import AsiEklusifMlk from "./visualisasi/maluku/AsiEklusif";
-import RestikIbuHamilMlk from "./visualisasi/maluku/RestikIbuHamil";
-import ProgresIbuHamilMlk from "./visualisasi/maluku/ProgresIbuHamil";
-import KompetensiBebanKerjaMlk from "./visualisasi/maluku/KompetensiBebanKerja";
-import DurasiKunjunganRumahMlk from "./visualisasi/maluku/DurasiKunjunganRumahOld";
-import StatusGiziMlk from "./visualisasi/maluku/StatusGizi";
-import DurasiKunjunganAnakMlk from "./visualisasi/maluku/DurasiKunjunganAnak";
-import DurasiKunjunganIbuHamilMlk from "./visualisasi/maluku/DurasiKunjunganIbuHamil";
-import DurasiPelaksanaanPosyanduMlk from "./visualisasi/maluku/DurasiPelaksanaanPosyandu";
+import GrafikSKDNMlk from "../maluku/GrafikSKDN";
+import ProgresGiziMlk from "../maluku/ProgresGizi";
+import MpasiMlk from "../maluku/Mpasi";
+import AsiEklusifMlk from "../maluku/AsiEklusif";
+import RestikIbuHamilMlk from "../maluku/RestikIbuHamil";
+import ProgresIbuHamilMlk from "../maluku/ProgresIbuHamil";
+import KompetensiBebanKerjaMlk from "../maluku/KompetensiBebanKerja";
+import DurasiKunjunganRumahMlk from "../maluku/DurasiKunjunganRumahOld";
+import StatusGiziMlk from "../maluku/StatusGizi";
+import DurasiKunjunganAnakMlk from "../maluku/DurasiKunjunganAnak";
+import DurasiKunjunganIbuHamilMlk from "../maluku/DurasiKunjunganIbuHamil";
+import DurasiPelaksanaanPosyanduMlk from "../maluku/DurasiPelaksanaanPosyandu";
 
 
 
-interface VisualisasiSectionMlkProps {
+interface VisualisasiSectionBwiProps {
   region: string;
-  desa?: string;
-  posyandu?: string;
+  desa: string;
+  posyandu: string;
+  month: number;
+  year: number;
 }
 
-const VisualisasiSectionMaluku: React.FC<VisualisasiSectionMlkProps> = ({ region, desa, posyandu }) => {
+const VisualisasiSectionMaluku: React.FC<VisualisasiSectionBwiProps> = ({ region, desa, posyandu, month, year }) => {
   const barChartRef = useRef<HTMLDivElement>(null);
 
   return (

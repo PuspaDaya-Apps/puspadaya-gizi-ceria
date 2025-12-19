@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from "react";
-import DataCard from "./cardcomponents/DataCard";
+import DataCard from "../../cardcomponents/DataCard";
 import VisualisasiSectionBwi from "./VisualisasiSectionBwi";
 
 interface DataSectionProps {
   region: string;
-  desa?: string;
-  posyandu?: string;
+  desa: string;
+  posyandu: string;
+  month: number;
+  year: number;
 }
 
-
-const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
+// 1. Tambahkan month dan year di sini (destructuring)
+const DatasSectionBwi: React.FC<DataSectionProps> = ({
+  region,
+  desa,
+  posyandu,
+  month,
+  year,
+}) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -17,21 +25,19 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Get current year in YYYY format
-        const currentYear = new Date().getFullYear().toString();
-
-        // bangun query string dinamis
+        // 2. Bangun query string menggunakan props year dan month
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          tahun: currentYear, // Add current year in YYYY format
+          tahun: year.toString(), // Menggunakan prop year
+          bulan: month.toString(), // Menggunakan prop month (number dikonversi ke string untuk URL)
         });
 
         const res = await fetch(`/api?${query.toString()}`);
         const json = await res.json();
 
-        // If posyandu filter is filled and json.data exists, set total_posyandu to 1
+        // Logika pemrosesan data (tetap sama)
         let processedData = json.data;
         if (posyandu && json.data) {
           processedData = { ...json.data, total_posyandu: 1 };
@@ -47,7 +53,9 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
     if (region) {
       fetchData();
     }
-  }, [region, desa, posyandu]);
+    // 3. Tambahkan month dan year ke dependency array
+    // Agar fetch ulang dijalankan ketika bulan/tahun berubah
+  }, [region, desa, posyandu, month, year]);
 
   if (loading) {
     return (
@@ -64,6 +72,10 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Informasi Data Pengguna Banyuwangi
           </h2>
+          {/* Opsional: Menampilkan periode yang sedang aktif */}
+          <p className="text-sm font-semibold text-indigo-600 mb-2">
+            Periode: Bulan {month} Tahun {year}
+          </p>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Fitur ini menyajikan berbagai data penting terkait informasi gizi,
             kesehatan, serta tumbuh kembang anak secara lengkap dan mudah
@@ -116,14 +128,14 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
               >
                 <path
                   d="M140.841,200.131c0.26,0.893,0.21,1.866-0.183,2.749c-0.644,1.442-2.075,2.37-3.653,2.37H50.912
-	c-1.174,0-2.289-0.516-3.048-1.41c-0.34-0.4-8.32-10.042-8.32-31.65c0-8.972,6.328-19.153,12.447-28.999
-	c4.757-7.654,9.676-15.568,9.817-20.519c0.136-4.751-3.612-11.48-7.952-19.273c-5.414-9.721-12.151-21.818-13.816-35.339
-	c-2.972-24.15,8.364-63.513,8.848-65.176C49.385,1.175,50.95,0,52.729,0h37.416c1.667,0,3.16,1.034,3.745,2.595
-	c0.075,0.199,7.532,19.973,14.403,29.593c3.211,4.496,12.474,9.417,25.414,13.5c5.752,1.814,9.021,7.809,7.443,13.646
-	c-0.592,2.186-1.36,4.387-2.285,6.543c-1.888,4.404-5.275,8.499-8.146,11.457c3.875,1.686,9.032,4.381,14.2,8.428
-	c9.482,7.425,20.786,20.947,20.786,43.199c0,27.873-16.767,45.585-28.513,54.578c-5.285-5.874-11.615-12.391-17.541-17.157
-	c-13.153-10.577-16.98-13.432-17.137-13.548c-1.772-1.318-4.277-0.95-5.596,0.822c-1.318,1.772-0.951,4.277,0.82,5.597
-	c0.038,0.028,3.925,2.932,16.898,13.364C124.555,180.591,136.139,194.352,140.841,200.131z"
+  c-1.174,0-2.289-0.516-3.048-1.41c-0.34-0.4-8.32-10.042-8.32-31.65c0-8.972,6.328-19.153,12.447-28.999
+  c4.757-7.654,9.676-15.568,9.817-20.519c0.136-4.751-3.612-11.48-7.952-19.273c-5.414-9.721-12.151-21.818-13.816-35.339
+  c-2.972-24.15,8.364-63.513,8.848-65.176C49.385,1.175,50.95,0,52.729,0h37.416c1.667,0,3.16,1.034,3.745,2.595
+  c0.075,0.199,7.532,19.973,14.403,29.593c3.211,4.496,12.474,9.417,25.414,13.5c5.752,1.814,9.021,7.809,7.443,13.646
+  c-0.592,2.186-1.36,4.387-2.285,6.543c-1.888,4.404-5.275,8.499-8.146,11.457c3.875,1.686,9.032,4.381,14.2,8.428
+  c9.482,7.425,20.786,20.947,20.786,43.199c0,27.873-16.767,45.585-28.513,54.578c-5.285-5.874-11.615-12.391-17.541-17.157
+  c-13.153-10.577-16.98-13.432-17.137-13.548c-1.772-1.318-4.277-0.95-5.596,0.822c-1.318,1.772-0.951,4.277,0.82,5.597
+  c0.038,0.028,3.925,2.932,16.898,13.364C124.555,180.591,136.139,194.352,140.841,200.131z"
                 />
               </svg>
             }
@@ -143,8 +155,8 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
                 <path
                   d="M18.5 9.00002H16.5M16.5 9.00002L14.5 9.00002M16.5 9.00002L16.5 7M16.5 9.00002L16.5 11"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
                 />
                 <path
                   d="M8.96173 19.3786L9.43432 18.7963L8.96173 19.3786ZM12 5.57412L11.4522 6.08635C11.594 6.23803 11.7923 6.32412 12 6.32412C12.2077 6.32412 12.406 6.23803 12.5478 6.08635L12 5.57412ZM15.0383 19.3787L15.5109 19.961L15.0383 19.3787ZM12 21L12 20.25L12 21ZM2.65159 13.6821C2.86595 14.0366 3.32705 14.1501 3.68148 13.9358C4.03591 13.7214 4.14946 13.2603 3.9351 12.9059L2.65159 13.6821ZM6.53733 16.1707C6.24836 15.8739 5.77352 15.8676 5.47676 16.1566C5.18 16.4455 5.17369 16.9204 5.46267 17.2171L6.53733 16.1707ZM2.75 9.3175C2.75 6.41289 4.01766 4.61731 5.58602 4.00319C7.15092 3.39043 9.34039 3.82778 11.4522 6.08635L12.5478 5.06189C10.1598 2.50784 7.34924 1.70187 5.0391 2.60645C2.73242 3.50967 1.25 5.99209 1.25 9.3175H2.75ZM15.5109 19.961C17.0033 18.7499 18.7914 17.1268 20.2127 15.314C21.6196 13.5196 22.75 11.4354 22.75 9.31747H21.25C21.25 10.9289 20.3707 12.6814 19.0323 14.3884C17.7084 16.077 16.0156 17.6197 14.5657 18.7963L15.5109 19.961ZM22.75 9.31747C22.75 5.99208 21.2676 3.50966 18.9609 2.60645C16.6508 1.70187 13.8402 2.50784 11.4522 5.06189L12.5478 6.08635C14.6596 3.82778 16.8491 3.39042 18.414 4.00319C19.9823 4.6173 21.25 6.41287 21.25 9.31747H22.75ZM8.48914 19.961C9.76058 20.9928 10.6423 21.75 12 21.75L12 20.25C11.2771 20.25 10.8269 19.9263 9.43432 18.7963L8.48914 19.961ZM14.5657 18.7963C13.1731 19.9263 12.7229 20.25 12 20.25L12 21.75C13.3577 21.75 14.2394 20.9928 15.5109 19.961L14.5657 18.7963ZM3.9351 12.9059C3.18811 11.6708 2.75 10.455 2.75 9.3175H1.25C1.25 10.8297 1.82646 12.3179 2.65159 13.6821L3.9351 12.9059ZM9.43432 18.7963C8.51731 18.0521 7.49893 17.1582 6.53733 16.1707L5.46267 17.2171C6.47548 18.2572 7.53996 19.1908 8.48914 19.961L9.43432 18.7963Z"
@@ -168,31 +180,31 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
                 <path
                   d="M19.8978 16H7.89778C6.96781 16 6.50282 16 6.12132 16.1022C5.08604 16.3796 4.2774 17.1883 4 18.2235"
                   stroke="currentColor"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                 />
                 <path
                   d="M8 7H16"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
                 />
                 <path
                   d="M8 10.5H13"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
                 />
                 <path
                   d="M19.5 19H8"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
                 />
                 <path
                   d="M10 22C7.17157 22 5.75736 22 4.87868 21.1213C4 20.2426 4 18.8284 4 16V8C4 5.17157 4 3.75736 4.87868 2.87868C5.75736 2 7.17157 2 10 2H14C16.8284 2 18.2426 2 19.1213 2.87868C20 3.75736 20 5.17157 20 8M14 22C16.8284 22 18.2426 22 19.1213 21.1213C20 20.2426 20 18.8284 20 16V12"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
                 />
               </svg>
             }
@@ -201,7 +213,14 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu })
           />
         </div>
       </div>
-      <VisualisasiSectionBwi region={region} desa={desa} posyandu={posyandu} />
+      {/* 4. Pass props ke komponen visualisasi agar sinkron */}
+      <VisualisasiSectionBwi
+        region={region}
+        desa={desa}
+        posyandu={posyandu}
+        month={month}
+        year={year}
+      />
     </section>
   );
 };
