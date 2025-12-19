@@ -18,6 +18,8 @@ interface DataSectionProps {
   region: string;
   desa?: string;
   posyandu?: string;
+  month: number;
+  year: number;
 }
 
 interface IbuHamilData {
@@ -28,7 +30,7 @@ interface IbuHamilData {
   terlaluMuda: number;
 }
 
-const ProgresIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu }) => {
+const ProgresIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, year }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [ibuHamilData, setIbuHamilData] = useState<IbuHamilData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,6 +43,8 @@ const ProgresIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
+          bulan: month.toString(),
+          tahun: year.toString(),
         });
         const res = await fetch(`/ibu-hamil-periodik?${query.toString()}`);
         const json = await res.json();
@@ -69,7 +73,7 @@ const ProgresIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu
     };
 
     if (region) fetchData();
-  }, [region, desa, posyandu]);
+  }, [region, desa, posyandu, month, year]);
 
   const handleDownload = async (format: "png" | "jpeg") => {
     if (!chartRef.current) return;

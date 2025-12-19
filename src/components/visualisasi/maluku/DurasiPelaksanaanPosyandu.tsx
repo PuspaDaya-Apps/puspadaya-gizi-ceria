@@ -13,6 +13,8 @@ interface DataSectionProps {
   region: string;
   desa?: string;
   posyandu?: string;
+  month: number;
+  year: number;
 }
 
 interface BoxPlotData {
@@ -38,33 +40,30 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
   region,
   desa,
   posyandu,
+  month,
+  year,
 }) => {
   const [loading, setLoading] = useState(true);
   const [apiData, setApiData] = useState<ApiResponse | null>(null);
   const [currentMonth, setCurrentMonth] = useState("");
 
   useEffect(() => {
-    // Dapatkan nama bulan saat ini
+    // Dapatkan nama bulan berdasarkan props
     const months = [
       "Januari", "Februari", "Maret", "April", "Mei", "Juni",
       "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     ];
-    const now = new Date();
-    setCurrentMonth(months[now.getMonth()]);
+    setCurrentMonth(months[month - 1]); // month is 1-indexed
 
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Get current month and year
-        const currentMonth = (new Date().getMonth() + 1).toString(); // Months are 0-indexed, so add 1
-        const currentYear = new Date().getFullYear().toString();
-        
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: currentMonth,  // Add current month number (1-12)
-          tahun: currentYear,   // Add current year in YYYY format
+          bulan: month.toString(),  // Use specified month number (1-12)
+          tahun: year.toString(),   // Use specified year in YYYY format
         });
 
         const res = await fetch(`/waktu-jadwal-posyandu?${query.toString()}`);
@@ -84,7 +83,7 @@ const DurasiPelaksanaanPosyanduMlk: React.FC<DataSectionProps> = ({
     };
 
     if (region) fetchData();
-  }, [region, desa, posyandu]);
+  }, [region, desa, posyandu, month, year]);
 
   // Siapkan data untuk box plot berdasarkan response API
   const prepareBoxPlotData = (): BoxPlotData[] => {

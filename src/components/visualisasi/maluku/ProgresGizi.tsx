@@ -18,6 +18,8 @@ interface DataSectionProps {
   region: string;
   desa?: string;
   posyandu?: string;
+  month: number;
+  year: number;
 }
 
 interface GiziData {
@@ -35,6 +37,8 @@ const ProgresGiziMlk: React.FC<DataSectionProps> = ({
   region,
   desa,
   posyandu,
+  month,
+  year,
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [giziData, setGiziData] = useState<GiziData[]>([]);
@@ -59,8 +63,8 @@ const ProgresGiziMlk: React.FC<DataSectionProps> = ({
 
   // Membuat cache key untuk identifikasi unik data
   const cacheKey = useMemo(() => {
-    return `${region}-${desa || 'all'}-${posyandu || 'all'}`;
-  }, [region, desa, posyandu]);
+    return `${region}-${desa || 'all'}-${posyandu || 'all'}-${month}-${year}`;
+  }, [region, desa, posyandu, month, year]);
 
   const fetchData = useCallback(async () => {
     // Cek apakah data sudah ada di cache dan belum kadaluarsa (10 menit)
@@ -83,6 +87,8 @@ const ProgresGiziMlk: React.FC<DataSectionProps> = ({
         kabupaten_kota: region,
         ...(desa ? { desa } : {}),
         ...(posyandu ? { posyandu } : {}),
+        bulan: month.toString(),
+        tahun: year.toString(),
       });
 
       const res = await fetch(`/progres-status-gizi?${query.toString()}`);
