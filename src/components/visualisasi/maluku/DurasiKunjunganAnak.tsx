@@ -48,12 +48,11 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
   const [currentMonth, setCurrentMonth] = useState("");
 
   useEffect(() => {
-    // Dapatkan nama bulan berdasarkan props
     const months = [
       "Januari", "Februari", "Maret", "April", "Mei", "Juni",
       "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     ];
-    setCurrentMonth(months[month - 1]); // month is 1-indexed
+    setCurrentMonth(months[month - 1]);
 
     const fetchData = async () => {
       setLoading(true);
@@ -62,11 +61,10 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: month.toString(),  // Use specified month number (1-12)
-          tahun: year.toString(),   // Use specified year in YYYY format
+          bulan: month.toString(),
+          tahun: year.toString(),
         });
 
-        // Menggunakan endpoint proxy yang sudah dikonfigurasi di vite.config.js
         const res = await fetch(`/waktu-kunjungan-anak?${query.toString()}`);
 
         if (!res.ok) {
@@ -75,13 +73,9 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
 
         const json = await res.json();
 
-        // console.log("API Response for waktu-kunjungan-anak:", json);
-
-        // Check if json.data exists (new API format) or if data is directly in json (old format)
         if (json.data) {
           setApiData(json.data);
         } else if (json.rata_rata !== undefined || json.minimum !== undefined) {
-          // Assuming this is the direct data format
           setApiData(json);
         } else {
           console.warn("Unexpected API response format:", json);
@@ -98,7 +92,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
     if (region) fetchData();
   }, [region, desa, posyandu, month, year]);
 
-  // Siapkan data untuk box plot berdasarkan response API
   const prepareBoxPlotData = (): BoxPlotData[] => {
     if (!apiData) return [];
 
@@ -117,17 +110,14 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
 
   const boxPlotData = prepareBoxPlotData();
 
-  // Categories for coloring
   const categoryColors = {
     "Durasi Kunjungan Anak": "#3D9970",
   };
 
-  // Prepare data for chart
   const chartData = boxPlotData.map((item, index) => ({
     name: item.name,
     category: item.category,
     index,
-    // Store all values for tooltip and reference lines
     min: item.min,
     q1: item.q1,
     median: item.median,
@@ -136,7 +126,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
     color: categoryColors[item.category as keyof typeof categoryColors],
   }));
 
-  // Custom bar shape for box plot elements
   const CustomBoxPlot = (props: any) => {
     const { payload, x, y, width, height } = props;
 
@@ -146,12 +135,10 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
     const boxWidth = width * 0.6;
     const whiskerWidth = width * 0.3;
 
-    // Calculate positions based on chart scaling
     const chartBottom = y + height;
 
-    // Gunakan domain yang dinamis berdasarkan data maksimum
     const maxDataValue = Math.max(payload.max, payload.q3, payload.median, payload.q1, payload.min);
-    const domainMax = maxDataValue > 0 ? Math.ceil(maxDataValue * 1.2) : 5; // Fallback ke 5 jika data tidak valid
+    const domainMax = maxDataValue > 0 ? Math.ceil(maxDataValue * 1.2) : 5;
     const scale = height / domainMax;
 
     const minY = chartBottom - payload.min * scale;
@@ -160,7 +147,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
     const q3Y = chartBottom - payload.q3 * scale;
     const maxY = chartBottom - payload.max * scale;
 
-    // Validasi nilai Y agar tidak keluar dari batas chart
     const validatedMinY = Math.max(y, Math.min(minY, chartBottom));
     const validatedQ1Y = Math.max(y, Math.min(q1Y, chartBottom));
     const validatedMedianY = Math.max(y, Math.min(medianY, chartBottom));
@@ -169,7 +155,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
 
     return (
       <g>
-        {/* Kotak untuk interquartile range (Q1 hingga Q3) */}
         <rect
           x={centerX - boxWidth / 2}
           y={validatedQ3Y}
@@ -181,7 +166,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
           strokeWidth={1}
         />
 
-        {/* Median line */}
         <line
           x1={centerX - boxWidth / 2}
           y1={validatedMedianY}
@@ -191,7 +175,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
           strokeWidth={2}
         />
 
-        {/* Bottom whisker (min to Q1) */}
         <line
           x1={centerX}
           y1={validatedMinY}
@@ -209,7 +192,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
           strokeWidth={2}
         />
 
-        {/* Top whisker (Q3 to max) */}
         <line
           x1={centerX}
           y1={validatedQ3Y}
@@ -227,7 +209,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
           strokeWidth={2}
         />
 
-        {/* Value labels */}
         <text
           x={centerX}
           y={validatedMinY - 5}
@@ -280,7 +261,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
     );
   };
 
-  // Custom tooltip
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
@@ -318,18 +298,15 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
         <div className="animate-pulse">
-          {/* Header skeleton */}
           <div className="text-center mb-6">
             <div className="h-6 bg-gray-200 rounded w-3/4 mx-auto mb-2"></div>
             <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
           </div>
 
-          {/* Chart skeleton */}
           <div className="bg-gray-50 rounded-xl p-4 mb-6">
             <div className="h-80 bg-gray-200 rounded-lg w-full"></div>
           </div>
 
-          {/* Legend skeleton */}
           <div className="flex justify-center gap-8 flex-wrap mb-6">
             <div className="flex items-center gap-3">
               <div className="w-5 h-5 bg-gray-200 rounded"></div>
@@ -337,7 +314,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
             </div>
           </div>
 
-          {/* Explanation skeleton */}
           <div className="p-4 bg-gray-100 rounded-lg">
             <div className="h-5 bg-gray-200 rounded w-1/3 mb-3"></div>
             <div className="space-y-2">
@@ -372,7 +348,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
     );
   }
 
-  // Cek apakah data valid
   if (apiData.minimum < 0 || apiData.maksimum < 0 || apiData.median < 0 || apiData.q1 < 0 || apiData.q3 < 0) {
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
@@ -414,12 +389,11 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
               label={{ value: "Bulan", position: "insideBottom", offset: -40, fontSize: 14 }}
             />
             <YAxis
-              domain={[0, 'dataMax + 1']} // Domain dinamis dengan padding
+              domain={[0, 'dataMax + 1']}
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 12, fill: "#374151" }}
               tickFormatter={(value) => {
-                // Bulatkan ke atas jika memiliki 2 angka di belakang koma
                 if (value % 1 !== 0) {
                   return Math.ceil(value * 100) / 100;
                 }
@@ -438,7 +412,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
             />
             <Tooltip content={<CustomTooltip />} />
 
-            {/* Invisible bar to create proper spacing and enable custom drawing */}
             <Bar
               dataKey="max"
               fill="transparent"
@@ -449,7 +422,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
         </ResponsiveContainer>
       </div>
 
-      {/* Enhanced Legend */}
       <div className="mt-6 flex justify-center gap-8 flex-wrap">
         {Object.entries(categoryColors).map(([category, color]) => (
           <div key={category} className="flex items-center gap-3">
@@ -470,7 +442,6 @@ const DurasiKunjunganAnakMlk: React.FC<DataSectionProps> = ({
         ))}
       </div>
 
-      {/* Enhanced Explanation */}
       <div className="mt-6 p-4 bg-blue-50 rounded-lg">
         <h4 className="font-semibold text-blue-800 mb-3">
           Keterangan Visualisasi Box Plot:

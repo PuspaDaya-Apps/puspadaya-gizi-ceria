@@ -29,8 +29,8 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: month.toString(),  // Add specified month number (1-12)
-          tahun: year.toString(),   // Add specified year in YYYY format
+          bulan: month.toString(),
+          tahun: year.toString(),
         });
         const res = await fetch(`/asi-eksklusif?${query.toString()}`);
         const json = await res.json();
@@ -60,13 +60,11 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
               value: prevalensi_asi_eksklusif_tidak_tahu ?? 0,
               description: "Status ASI Eksklusif tidak diketahui",
             },
-            // Removed "Belum Diukur" as per requirement
-          ]; // Show all categories even when value is 0
+          ];
 
           setData(mappedData);
           setTotal(total_balita_asi_eksklusif ?? 0);
         } else {
-          // When json.data is null, set default values with 0
           const defaultData = [
             {
               name: "Ya",
@@ -89,7 +87,6 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
         }
       } catch (err) {
         console.error("Error fetching data:", err);
-        // Set default values with 0 when there's an error
         const defaultData = [
           {
             name: "Ya",
@@ -128,11 +125,8 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
     );
   }
 
-  const COLORS = ["#2b528a", "#d97706", "#e63946"]; // removed green color for "Belum Diukur"
+  const COLORS = ["#2b528a", "#d97706", "#e63946"];
 
-  // Always show the chart, even if data is empty or all values are zero
-
-  // Check if all values are zero
   const isAllZero = data.length > 0 && data.every((item) => item.value === 0);
 
   return (
@@ -168,12 +162,10 @@ const AsiEklusifMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
                 cy="50%"
                 outerRadius={100}
                 label={({ name, value, percent }) => {
-                  // When value is 0 but total is also 0, we show the label with 0%
                   const totalValue = data.reduce((sum, d) => sum + d.value, 0);
                   const percentValue = totalValue
                     ? ((value / totalValue) * 100).toFixed(1)
                     : "0";
-                  // Menampilkan hanya persentase tanpa nilai absolut
                   return `${name}: ${percentValue}%`;
                 }}
               >

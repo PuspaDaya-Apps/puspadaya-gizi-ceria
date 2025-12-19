@@ -40,7 +40,7 @@ interface ApiResponse {
   };
 }
 
-const RestikIbuHamilMlk : React.FC<DataSectionProps> = ({ region, desa, posyandu, month, year }) => {
+const RestikIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, year }) => {
   const barChartRef = useRef<HTMLDivElement>(null);
   const [riskData, setRiskData] = useState<RiskData[]>([]);
   const [totalPengukuran, setTotalPengukuran] = useState<number>(0);
@@ -54,8 +54,8 @@ const RestikIbuHamilMlk : React.FC<DataSectionProps> = ({ region, desa, posyandu
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: month.toString(),  // Add specified month number (1-12)
-          tahun: year.toString(),   // Add specified year in YYYY format
+          bulan: month.toString(),
+          tahun: year.toString(),
         });
         const res = await fetch(`/ibu-hamil?${query.toString()}`);
         const json: ApiResponse = await res.json();
@@ -128,7 +128,6 @@ const RestikIbuHamilMlk : React.FC<DataSectionProps> = ({ region, desa, posyandu
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
           Jumlah Ibu Hamil Berisiko - {region}
@@ -162,7 +161,6 @@ const RestikIbuHamilMlk : React.FC<DataSectionProps> = ({ region, desa, posyandu
         </Menu>
       </div>
 
-      {/* Chart */}
       <div ref={barChartRef} className="bg-white p-6 rounded-lg">
         <ResponsiveContainer width="100%" height={400}>
           <BarChart
@@ -193,4 +191,4 @@ const RestikIbuHamilMlk : React.FC<DataSectionProps> = ({ region, desa, posyandu
   );
 };
 
-export default RestikIbuHamilMlk ;
+export default RestikIbuHamilMlk;

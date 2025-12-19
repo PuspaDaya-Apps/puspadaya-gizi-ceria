@@ -30,7 +30,6 @@ interface IbuHamilData {
   terlaluMuda: number;
 }
 
-// Helper untuk mengubah nama bulan menjadi angka (untuk sorting & filtering)
 const getMonthNumber = (monthName: string): number => {
   const months = [
     "januari", "februari", "maret", "april", "mei", "juni",
@@ -40,16 +39,16 @@ const getMonthNumber = (monthName: string): number => {
     "january", "february", "march", "april", "may", "june",
     "july", "august", "september", "october", "november", "december"
   ];
-  
+
   const lowerName = monthName.toLowerCase();
   let index = months.indexOf(lowerName);
   if (index === -1) {
     index = monthsEn.indexOf(lowerName);
   }
-  return index + 1; // Return 1-12
+  return index + 1;
 };
 
-const ProgresIbuHamilMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, year }) => {
+const ProgresIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, year }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [ibuHamilData, setIbuHamilData] = useState<IbuHamilData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,20 +57,18 @@ const ProgresIbuHamilMaluku: React.FC<DataSectionProps> = ({ region, desa, posya
     const fetchData = async () => {
       setLoading(true);
       try {
-        // UPDATE: Gunakan 'year' dari props, 'bulan' tetap "0" (ambil data setahun)
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
           bulan: "0",
-          tahun: year.toString(), 
+          tahun: year.toString(),
         });
-        
+
         const res = await fetch(`/ibu-hamil-periodik?${query.toString()}`);
         const json = await res.json();
 
         if (json.data) {
-          // 1. Mapping data
           let mappedData: IbuHamilData[] = Object.entries(json.data).map(
             ([bulan, values]: [string, any]) => ({
               bulan,
@@ -82,15 +79,11 @@ const ProgresIbuHamilMaluku: React.FC<DataSectionProps> = ({ region, desa, posya
             })
           );
 
-          // 2. Sorting (Januari -> Desember)
           mappedData.sort((a, b) => getMonthNumber(a.bulan) - getMonthNumber(b.bulan));
 
-          // 3. Filtering Logic
-          // Jika user memilih bulan tertentu (month > 0), tampilkan hanya sampai bulan tersebut
           if (month > 0) {
             mappedData = mappedData.filter((item) => {
               const itemMonthNum = getMonthNumber(item.bulan);
-              // Tampilkan data jika bulan data <= bulan yang dipilih
               return itemMonthNum > 0 && itemMonthNum <= month;
             });
           }
@@ -108,9 +101,7 @@ const ProgresIbuHamilMaluku: React.FC<DataSectionProps> = ({ region, desa, posya
     };
 
     if (region) fetchData();
-    
-    // UPDATE: Dependency array menyertakan month dan year agar trigger ulang saat filter berubah
-  }, [region, desa, posyandu, month, year]); 
+  }, [region, desa, posyandu, month, year]);
 
   const handleDownload = async (format: "png" | "jpeg") => {
     if (!chartRef.current) return;
@@ -136,7 +127,6 @@ const ProgresIbuHamilMaluku: React.FC<DataSectionProps> = ({ region, desa, posya
     );
   }
 
-  // Warna
   const COLORS = {
     kek: "#1f77b4",
     pendek: "#2ca02c",
@@ -144,7 +134,6 @@ const ProgresIbuHamilMaluku: React.FC<DataSectionProps> = ({ region, desa, posya
     terlaluMuda: "#9467bd",
   };
 
-  // Pola garis
   const LINE_STYLES = {
     kek: { strokeDasharray: "0" },
     pendek: { strokeDasharray: "10 5" },
@@ -154,7 +143,6 @@ const ProgresIbuHamilMaluku: React.FC<DataSectionProps> = ({ region, desa, posya
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
           Progres Ibu Hamil Berisiko - {region} ({year})
@@ -189,15 +177,14 @@ const ProgresIbuHamilMaluku: React.FC<DataSectionProps> = ({ region, desa, posya
         </Menu>
       </div>
 
-      {/* Chart */}
       <div ref={chartRef} className="bg-white p-6 rounded-lg">
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={ibuHamilData} margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis 
-              dataKey="bulan" 
-              interval={0} 
-              padding={{ left: 20, right: 20 }} 
+            <XAxis
+              dataKey="bulan"
+              interval={0}
+              padding={{ left: 20, right: 20 }}
             />
 
             <YAxis label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }} />
@@ -234,4 +221,4 @@ const ProgresIbuHamilMaluku: React.FC<DataSectionProps> = ({ region, desa, posya
   );
 };
 
-export default ProgresIbuHamilMaluku;
+export default ProgresIbuHamilMlk;

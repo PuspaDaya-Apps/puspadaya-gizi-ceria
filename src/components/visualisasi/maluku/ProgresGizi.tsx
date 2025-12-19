@@ -30,7 +30,6 @@ interface GiziData {
   normal: number;
 }
 
-// Helper untuk mengubah nama bulan menjadi angka (untuk sorting & filtering)
 const getMonthNumber = (monthName: string): number => {
   const months = [
     "januari", "februari", "maret", "april", "mei", "juni",
@@ -40,24 +39,23 @@ const getMonthNumber = (monthName: string): number => {
     "january", "february", "march", "april", "may", "june",
     "july", "august", "september", "october", "november", "december"
   ];
-  
+
   const lowerName = monthName.toLowerCase();
   let index = months.indexOf(lowerName);
   if (index === -1) {
     index = monthsEn.indexOf(lowerName);
   }
-  return index + 1; // Return 1-12, atau 0 jika tidak ditemukan
+  return index + 1;
 };
 
-// Global cache untuk data
 const dataCache = new Map<string, { data: any; timestamp: number }>();
 
-const ProgresGiziMaluku: React.FC<DataSectionProps> = ({
+const ProgresGiziMlk: React.FC<DataSectionProps> = ({
   region,
   desa,
   posyandu,
-  month, // Digunakan untuk filter batas tampilan
-  year,  // Digunakan untuk fetch data tahunan
+  month,
+  year,
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [giziData, setGiziData] = useState<GiziData[]>([]);
@@ -80,18 +78,15 @@ const ProgresGiziMaluku: React.FC<DataSectionProps> = ({
     link.click();
   };
 
-  // UPDATE: Cache key sekarang menyertakan YEAR karena kita mengambil data per tahun
   const cacheKey = useMemo(() => {
     return `${region}-${desa || 'all'}-${posyandu || 'all'}-0-${year}`;
   }, [region, desa, posyandu, year]);
 
   const fetchData = useCallback(async () => {
-    // Cek cache
     const cached = dataCache.get(cacheKey);
     const now = Date.now();
     const tenMinutes = 10 * 60 * 1000;
 
-    // Jika ada di cache, gunakan data cache, TAPI tetap jalankan logic filtering di bawah
     let rawData = null;
 
     if (cached && (now - cached.timestamp) < tenMinutes) {
@@ -102,13 +97,12 @@ const ProgresGiziMaluku: React.FC<DataSectionProps> = ({
       setError(null);
 
       try {
-        // UPDATE: Fetch menggunakan tahun yang dipilih, tapi bulan "0" (ambil semua bulan di tahun itu)
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: "0", 
-          tahun: year.toString(), // Ambil data setahun penuh sesuai tahun yang dipilih
+          bulan: "0",
+          tahun: year.toString(),
         });
 
         const res = await fetch(`/progres-status-gizi?${query.toString()}`);
@@ -118,9 +112,8 @@ const ProgresGiziMaluku: React.FC<DataSectionProps> = ({
         }
 
         const json = await res.json();
-        
+
         if (json.data) {
-          // Mapping object ke array
           rawData = Object.entries(json.data).map(
             ([bulan, values]: any) => ({
               bulan,
@@ -130,8 +123,7 @@ const ProgresGiziMaluku: React.FC<DataSectionProps> = ({
               normal: values.total_normal ?? 0,
             })
           );
-          
-          // Simpan raw data setahun penuh ke cache
+
           dataCache.set(cacheKey, { data: rawData, timestamp: now });
         } else {
           setGiziData([]);
@@ -147,18 +139,14 @@ const ProgresGiziMaluku: React.FC<DataSectionProps> = ({
       }
     }
 
-    // --- LOGIC FILTERING & SORTING (Dijalankan baik data dari fetch maupun cache) ---
     if (rawData) {
       let processedData = [...rawData];
 
-      // 1. Sorting agar bulan urut (Jan -> Des)
       processedData.sort((a, b) => getMonthNumber(a.bulan) - getMonthNumber(b.bulan));
 
-      // 2. FILTERING: Jika bulan dipilih (month > 0), hide bulan setelahnya
       if (month > 0) {
         processedData = processedData.filter((item) => {
           const itemMonthNum = getMonthNumber(item.bulan);
-          // Tampilkan jika bulan data <= bulan yang dipilih
           return itemMonthNum > 0 && itemMonthNum <= month;
         });
       }
@@ -167,7 +155,7 @@ const ProgresGiziMaluku: React.FC<DataSectionProps> = ({
       setLoading(false);
     }
 
-  }, [region, desa, posyandu, year, month, cacheKey]); // Month masuk dependency agar men-trigger filter ulang
+  }, [region, desa, posyandu, year, month, cacheKey]);
 
   useEffect(() => {
     if (region) {
@@ -205,7 +193,6 @@ const ProgresGiziMaluku: React.FC<DataSectionProps> = ({
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
           Progres Status Gizi - {region} ({year})
@@ -242,7 +229,6 @@ const ProgresGiziMaluku: React.FC<DataSectionProps> = ({
         </Menu>
       </div>
 
-      {/* Chart */}
       <div ref={chartRef} className="bg-white p-6 rounded-lg">
         <ResponsiveContainer width="100%" height={400}>
           <LineChart
@@ -303,4 +289,4 @@ const ProgresGiziMaluku: React.FC<DataSectionProps> = ({
   );
 };
 
-export default ProgresGiziMaluku;
+export default ProgresGiziMlk;

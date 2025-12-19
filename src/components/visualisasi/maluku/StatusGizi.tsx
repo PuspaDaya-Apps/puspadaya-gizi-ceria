@@ -34,8 +34,8 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: month.toString(),  // Add current month number (1-12)
-          tahun: year.toString(),   // Add current year in YYYY format
+          bulan: month.toString(),
+          tahun: year.toString(),
         });
         const res = await fetch(`/balita?${query.toString()}`);
         const json = await res.json();
@@ -45,12 +45,10 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
             { name: "Stunting", value: json.data.total_stunting ?? 0 },
             { name: "Wasting", value: json.data.total_wasting ?? 0 },
             { name: "Underweight", value: json.data.total_underweight ?? 0 },
-            // Excluding Normal status as per requirement
-          ]; // Show all categories even when value is 0
+          ];
           setData(mappedData);
           setTotalBalitaSasaran(json.data.total_balita_sasaran ?? 0);
         } else {
-          // When json.data is null, set default values with 0
           const defaultData = [
             { name: "Stunting", value: 0 },
             { name: "Wasting", value: 0 },
@@ -61,7 +59,6 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
         }
       } catch (err) {
         console.error("Error fetching data:", err);
-        // Set default values with 0 when there's an error
         const defaultData = [
           { name: "Stunting", value: 0 },
           { name: "Wasting", value: 0 },
@@ -87,8 +84,6 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
       </div>
     );
   }
-
-  // Always display component even if all values are 0
 
   return (
     <div className="bg-white rounded-2xl shadow p-6">
@@ -122,7 +117,6 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
         </BarChart>
       </ResponsiveContainer>
 
-      {/* Menampilkan total balita sasaran dari API */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg text-center">
         <p className="text-lg font-semibold text-gray-800">
           Total Balita Sasaran:{" "}
