@@ -10,6 +10,7 @@ interface DataSectionProps {
   year: number;
 }
 
+// 1. Tambahkan month dan year di sini (destructuring)
 const DatasSectionBwi: React.FC<DataSectionProps> = ({
   region,
   desa,
@@ -17,14 +18,6 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({
   month,
   year,
 }) => {
-  // Handle case where month and year are 0 - use current date
-  const currentDate = new Date();
-  const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-11, so add 1
-  const currentYear = currentDate.getFullYear();
-
-  const displayMonth = month === 0 ? currentMonth : month;
-  const displayYear = year === 0 ? currentYear : year;
-
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -32,17 +25,19 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({
     const fetchData = async () => {
       setLoading(true);
       try {
+        // 2. Bangun query string menggunakan props year dan month
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          tahun: displayYear.toString(), // Menggunakan displayYear yang bisa jadi nilai saat ini
-          bulan: displayMonth.toString(), // Menggunakan displayMonth yang bisa jadi nilai saat ini
+          tahun: year.toString(), // Menggunakan prop year
+          bulan: month.toString(), // Menggunakan prop month (number dikonversi ke string untuk URL)
         });
 
         const res = await fetch(`/api?${query.toString()}`);
         const json = await res.json();
 
+        // Logika pemrosesan data (tetap sama)
         let processedData = json.data;
         if (posyandu && json.data) {
           processedData = { ...json.data, total_posyandu: 1 };
@@ -58,7 +53,9 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({
     if (region) {
       fetchData();
     }
-  }, [region, desa, posyandu, displayMonth, displayYear]);
+    // 3. Tambahkan month dan year ke dependency array
+    // Agar fetch ulang dijalankan ketika bulan/tahun berubah
+  }, [region, desa, posyandu, month, year]);
 
   if (loading) {
     return (
@@ -68,20 +65,6 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({
     );
   }
 
-  // Helper function to convert month number to month name in Indonesian
-  const getMonthName = (monthNumber: number): string => {
-    const monthNames = [
-      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-    ];
-
-    // Ensure monthNumber is between 1-12
-    if (monthNumber >= 1 && monthNumber <= 12) {
-      return monthNames[monthNumber - 1]; // Array index starts at 0
-    }
-    return "Invalid Month"; // Fallback for invalid values
-  };
-
   return (
     <section id="features" className="py-0">
       <div className="container mx-auto px-4 py-1">
@@ -89,9 +72,6 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Informasi Data Pengguna Banyuwangi
           </h2>
-          <p className="text-sm font-semibold text-indigo-600 mb-2">
-            Periode: Bulan {getMonthName(displayMonth)} Tahun {displayYear}
-          </p>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Fitur ini menyajikan berbagai data penting terkait informasi gizi,
             kesehatan, serta tumbuh kembang anak secara lengkap dan mudah
@@ -229,12 +209,13 @@ const DatasSectionBwi: React.FC<DataSectionProps> = ({
           />
         </div>
       </div>
+      {/* 4. Pass props ke komponen visualisasi agar sinkron */}
       <VisualisasiSectionBwi
         region={region}
         desa={desa}
         posyandu={posyandu}
-        month={displayMonth}
-        year={displayYear}
+        month={month}
+        year={year}
       />
     </section>
   );
