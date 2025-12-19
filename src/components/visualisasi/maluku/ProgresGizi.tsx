@@ -30,15 +30,15 @@ interface GiziData {
   normal: number;
 }
 
-// Global cache untuk data - menggunakan cache yang sama untuk konsistensi
+// Global cache untuk data
 const dataCache = new Map<string, { data: any; timestamp: number }>();
 
-const ProgresGiziMlk: React.FC<DataSectionProps> = ({
+const ProgresGiziMaluku: React.FC<DataSectionProps> = ({
   region,
   desa,
   posyandu,
-  month,
-  year,
+  month, // Props ini tetap ada tapi tidak digunakan di logic fetch
+  year,  // Props ini tetap ada tapi tidak digunakan di logic fetch
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [giziData, setGiziData] = useState<GiziData[]>([]);
@@ -62,9 +62,10 @@ const ProgresGiziMlk: React.FC<DataSectionProps> = ({
   };
 
   // Membuat cache key untuk identifikasi unik data
+  // UPDATE: Hardcoded 0 untuk month dan year agar cache konsisten
   const cacheKey = useMemo(() => {
-    return `${region}-${desa || 'all'}-${posyandu || 'all'}-${month}-${year}`;
-  }, [region, desa, posyandu, month, year]);
+    return `${region}-${desa || 'all'}-${posyandu || 'all'}-0-0`;
+  }, [region, desa, posyandu]); 
 
   const fetchData = useCallback(async () => {
     // Cek apakah data sudah ada di cache dan belum kadaluarsa (10 menit)
@@ -83,12 +84,13 @@ const ProgresGiziMlk: React.FC<DataSectionProps> = ({
 
     try {
       // Bangun query param dinamis
+      // UPDATE: Bulan dan Tahun di-set constant "0"
       const query = new URLSearchParams({
         kabupaten_kota: region,
         ...(desa ? { desa } : {}),
         ...(posyandu ? { posyandu } : {}),
-        bulan: month.toString(),
-        tahun: year.toString(),
+        bulan: "0", 
+        tahun: "0",
       });
 
       const res = await fetch(`/progres-status-gizi?${query.toString()}`);
@@ -256,9 +258,8 @@ const ProgresGiziMlk: React.FC<DataSectionProps> = ({
         </ResponsiveContainer>
       </div>
 
-
     </div>
   );
 };
 
-export default ProgresGiziMlk;
+export default ProgresGiziMaluku;

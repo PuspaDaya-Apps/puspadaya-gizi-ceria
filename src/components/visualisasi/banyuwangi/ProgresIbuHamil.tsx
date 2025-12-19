@@ -39,13 +39,15 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu
     const fetchData = async () => {
       setLoading(true);
       try {
+        // UPDATE: Bulan dan Tahun di-set constant "0"
         const query = new URLSearchParams({
           kabupaten_kota: region,
           ...(desa ? { desa } : {}),
           ...(posyandu ? { posyandu } : {}),
-          bulan: month.toString(),
-          tahun: year.toString(),
+          bulan: "0",
+          tahun: "0",
         });
+        
         const res = await fetch(`/ibu-hamil-periodik?${query.toString()}`);
         const json = await res.json();
 
@@ -73,7 +75,9 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu
     };
 
     if (region) fetchData();
-  }, [region, desa, posyandu, month, year]);
+    
+    // UPDATE: month dan year dihapus dari dependency array
+  }, [region, desa, posyandu]); 
 
   const handleDownload = async (format: "png" | "jpeg") => {
     if (!chartRef.current) return;
@@ -120,7 +124,7 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
-          Progres Ibu Hamil Berisiko {region}
+          Progres Ibu Hamil Berisiko - {region}
         </h3>
 
         <Menu as="div" className="relative inline-block text-left">
@@ -158,10 +162,10 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu
           <LineChart data={ibuHamilData} margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
-  dataKey="bulan" 
-  interval={0} 
-  padding={{ left: 20, right: 20 }} 
-/>
+              dataKey="bulan" 
+              interval={0} 
+              padding={{ left: 20, right: 20 }} 
+            />
 
             <YAxis label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }} />
             <Tooltip
