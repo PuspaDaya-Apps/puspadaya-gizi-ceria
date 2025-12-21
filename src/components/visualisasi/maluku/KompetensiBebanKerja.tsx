@@ -113,7 +113,7 @@ const KompetensiBebanKerjaMlk: React.FC<DataSectionProps> = ({
   if (loading) {
     return (
       <div className="text-center py-10 text-gray-500">
-        Memuat data {region || "Banyuwangi"}...
+        Memuat data {region || "Maluku"}...
       </div>
     );
   }
@@ -170,7 +170,7 @@ const KompetensiBebanKerjaMlk: React.FC<DataSectionProps> = ({
       <div ref={barChartRef} className="bg-white p-4 md:p-6 rounded-lg">
         <h3 className="text-lg md:text-xl font-semibold text-primary mb-4 text-center">
           Jumlah Kader Berdasarkan Kompetensi Beban Kerja Kader -{" "}
-          {region || "Banyuwangi"}
+          {region || "Maluku"}
         </h3>
 
         <ResponsiveContainer width="100%" height={400}>
