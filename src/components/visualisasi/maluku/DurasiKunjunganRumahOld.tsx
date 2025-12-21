@@ -87,15 +87,24 @@ const DurasiKunjunganRumahMlk: React.FC<DataSectionProps> = ({
   const prepareBoxPlotData = (): BoxPlotData[] => {
     if (!apiData) return [];
 
+    // Helper function to convert values, handling "-" as 0
+    const convertValue = (value: any): number => {
+      if (value === null || value === undefined || value === "-" || value === "") {
+        return 0;
+      }
+      const num = Number(value);
+      return isNaN(num) ? 0 : num;
+    };
+
     return [
       {
         name: currentMonth,
         category: "Durasi Kunjungan Rumah",
-        min: apiData.minimum ?? 0,
-        q1: apiData.q1 ?? 0,
-        median: apiData.median ?? 0,
-        q3: apiData.q3 ?? 0,
-        max: apiData.maksimum ?? 0,
+        min: convertValue(apiData.minimum),
+        q1: convertValue(apiData.q1),
+        median: convertValue(apiData.median),
+        q3: convertValue(apiData.q3),
+        max: convertValue(apiData.maksimum),
       },
     ];
   };
@@ -340,21 +349,7 @@ const DurasiKunjunganRumahMlk: React.FC<DataSectionProps> = ({
     );
   }
 
-  if (apiData.minimum < 0 || apiData.maksimum < 0 || apiData.median < 0 || apiData.q1 < 0 || apiData.q3 < 0) {
-    return (
-      <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
-        <div className="text-center">
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            Durasi Kunjungan Rumah Oleh Kader di {region}
-          </h3>
-          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Rumah</p>
-          <div className="bg-gray-50 rounded-xl p-8 text-center">
-            <p className="text-gray-500">Data tidak valid untuk ditampilkan</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Continue to render the chart regardless of negative values
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
