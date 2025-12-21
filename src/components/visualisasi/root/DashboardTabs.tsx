@@ -90,10 +90,6 @@ const DashboardTabs = () => {
   const getValuesToSend = () => {
     if (!selectedPeriod) return { month: 0, year: 0 };
 
-    if (selectedPeriod === currentPeriodValue) {
-      return { month: 0, year: 0 };
-    }
-
     const [yearStr, monthStr] = selectedPeriod.split("-");
     return {
         month: parseInt(monthStr),
