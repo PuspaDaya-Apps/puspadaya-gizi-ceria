@@ -29,7 +29,7 @@ const FooterSection = () => {
               </h3>
               <div className="rounded-xl overflow-hidden shadow-lg border border-white/10">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.126575525728!2d106.7927083746697!3d-6.365378993541497!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69ef3e038e0dc3%3A0x517e4f90b0a5e3!2sJakarta%2C%20Indonesia!5e0!3m2!1sen!2sid!4v1703123456789?hl=id"
+                  src="https://www.google.com/maps/embed?pb=!4v1768455341077!6m8!1m7!1sXzxNiWmfkhWklU5fCrTK2g!2m2!1d-8.232811602905475!2d114.3485164046211!3f232.6053457951457!4f-11.776089497032288!5f0.4000000000000002" 
                   width="100%"
                   height="256"
                   style={{border: 0}}
@@ -61,15 +61,15 @@ const FooterSection = () => {
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <Mail className="text-blue-400 min-w-[20px]" size={20} />
-                  <span className="text-gray-300">info@puspadaya.com</span>
+                  <span className="text-gray-300">puspadayaofficial@gmail.com</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Phone className="text-blue-400 min-w-[20px]" size={20} />
-                  <span className="text-gray-300">+62 812-3456-7890</span>
+                  <span className="text-gray-300">+62 851-4718-1601</span>
                 </div>
                 <div className="flex items-start space-x-3">
                   <MapPin className="text-blue-400 min-w-[20px] mt-1" size={20} />
-                  <span className="text-gray-300">Jl. Kesehatan No. 123, Jakarta Selatan, Indonesia</span>
+                  <span className="text-gray-300">Jl. Cemara, Kebalenan, Kec. Banyuwangi, Kabupaten Banyuwangi, Jawa Timur 68417</span>
                 </div>
               </div>
             </div>
