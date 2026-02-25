@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -12,6 +12,8 @@ import {
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { MoreVertical } from "lucide-react";
 import * as htmlToImage from "html-to-image";
+import EmptyDataOverlay from "@/components/ui/EmptyDataOverlay";
+import { areAllValuesZero } from "@/hooks/useEmptyDataState";
 
 interface DataSectionProps {
   region: string;
@@ -118,17 +120,25 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu, mo
           { name: "Hb Belum Diketahui", value: 0 },
         ];
 
+  // Check if data is empty (all values are zero)
+  const isEmptyData = useMemo(() => {
+    return areAllValuesZero(displayData, "value");
+  }, [displayData]);
+
   if (loading) {
     return (
       <div className="text-center py-10 text-gray-500">
-        Memuat data {region}...
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mb-3"></div>
+          <p>Memuat data {region}...</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+      <div className={`flex flex-col md:flex-row md:justify-between md:items-center mb-4 ${isEmptyData ? 'opacity-50' : ''}`}>
         <h3 className="text-xl font-semibold text-primary text-center w-full">
           Jumlah Ibu Hamil Berisiko - {region}
         </h3>
@@ -161,7 +171,7 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu, mo
         </Menu>
       </div>
 
-      <div ref={barChartRef} className="bg-white p-6 rounded-lg">
+      <div ref={barChartRef} className="bg-white p-6 rounded-lg relative">
         <ResponsiveContainer width="100%" height={400}>
           <BarChart
             data={displayData}
@@ -178,7 +188,16 @@ const RestikIbuHamil: React.FC<DataSectionProps> = ({ region, desa, posyandu, mo
           </BarChart>
         </ResponsiveContainer>
 
-        <div className="mt-6 bg-gray-100 rounded-lg p-4 text-center">
+        {/* Empty Data Overlay */}
+        {isEmptyData && (
+          <EmptyDataOverlay
+            title="Data Ibu Hamil Berisiko Belum Tersedia"
+            message={`Belum ada data risiko ibu hamil yang tercatat untuk ${region} pada periode ini.`}
+            icon="database"
+          />
+        )}
+
+        <div className={`mt-6 bg-gray-100 rounded-lg p-4 text-center transition-opacity duration-300 ${isEmptyData ? 'opacity-50' : ''}`}>
           <p className="text-gray-600 font-medium">
             Total Sasaran:
             <span className="text-gray-800 font-semibold ml-2">

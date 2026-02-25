@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -13,6 +13,8 @@ import {
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { MoreVertical } from "lucide-react";
 import * as htmlToImage from "html-to-image";
+import EmptyDataOverlay from "@/components/ui/EmptyDataOverlay";
+import { areAllValuesZero } from "@/hooks/useEmptyDataState";
 
 interface DataSectionProps {
   region: string;
@@ -48,7 +50,7 @@ const getMonthNumber = (monthName: string): number => {
   return index + 1;
 };
 
-const ProgresIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, year }) => {
+const ProgresIbuHamilMaluku: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, year }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [ibuHamilData, setIbuHamilData] = useState<IbuHamilData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -101,6 +103,7 @@ const ProgresIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu
     };
 
     if (region) fetchData();
+
   }, [region, desa, posyandu, month, year]);
 
   const handleDownload = async (format: "png" | "jpeg") => {
@@ -119,10 +122,19 @@ const ProgresIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu
     link.click();
   };
 
+  // Check if data is empty (all values are zero)
+  const isEmptyData = useMemo(() => {
+    if (!ibuHamilData || ibuHamilData.length === 0) return true;
+    return areAllValuesZero(ibuHamilData, ["kek", "pendek", "terlaluTua", "terlaluMuda"]);
+  }, [ibuHamilData]);
+
   if (loading) {
     return (
       <div className="text-center py-10 text-gray-500">
-        Memuat data {region}...
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mb-3"></div>
+          <p>Memuat data {region}...</p>
+        </div>
       </div>
     );
   }
@@ -143,7 +155,7 @@ const ProgresIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+      <div className={`flex flex-col md:flex-row md:justify-between md:items-center mb-4 ${isEmptyData ? 'opacity-50' : ''}`}>
         <h3 className="text-xl font-semibold text-primary text-center w-full">
           Progres Ibu Hamil Berisiko - {region} ({year})
         </h3>
@@ -177,7 +189,7 @@ const ProgresIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu
         </Menu>
       </div>
 
-      <div ref={chartRef} className="bg-white p-6 rounded-lg">
+      <div ref={chartRef} className="bg-white p-6 rounded-lg relative">
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={ibuHamilData} margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -216,9 +228,18 @@ const ProgresIbuHamilMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu
             </Line>
           </LineChart>
         </ResponsiveContainer>
+
+        {/* Empty Data Overlay */}
+        {isEmptyData && (
+          <EmptyDataOverlay
+            title="Data Ibu Hamil Berisiko Belum Tersedia"
+            message={`Tidak ada data ibu hamil berisiko yang tercatat untuk wilayah ${region} pada tahun ${year}.`}
+            icon="database"
+          />
+        )}
       </div>
     </div>
   );
 };
 
-export default ProgresIbuHamilMlk;
+export default ProgresIbuHamilMaluku;
