@@ -49,7 +49,7 @@ const DashboardTabs = () => {
       posyandu: {
         Benculuk: ["MELATI 1", "Melati 2", "Melati 6", "Dahlia 2", "Melati 3", "Melati 4", "Nusa Indah 2", "Dahlia 1", "Dahlia 3", "Mawar 1", "Mawar 2", "Nusa Indah 1", "Melati 5"],
         Sembulung: ["Mawar Ungu I", "Mawar Jingga II", "Mawar Merah I", "Mawar Putih I", "Mawar Putih II", "Mawar Jingga I", "Mawar Jingga III", "Mawar Merah II", "Mawar Ungu II"],
-        Sraten: ["Mawar Merah", "Anggrek Biru", "Anggrek Merah", "Anggrek Putih", "Anggrek Kuning", "Anggrek", "Mawar Kuning", "Anggrek Ungu", "Anggrek Jingga", "Mawar Putih", "Aggrek Biru"],
+        Sraten: ["Mawar Merah", "Anggrek Merah", "Anggrek Putih", "Anggrek Kuning", "Anggrek", "Mawar Kuning", "Anggrek Ungu", "Anggrek Jingga", "Mawar Putih", "Aggrek Biru"],
         Tampo: ["Anggrek II", "Anggrek III", "Dahlia I", "Dahlia II", "Mawar I", "Mawar II", "Teratai", "Anggrek I"],
       },
     },
