@@ -10,6 +10,8 @@ import {
   CartesianGrid,
   LabelList,
 } from "recharts";
+import EmptyDataOverlay from '@/components/ui/EmptyDataOverlay';
+import { areAllValuesZero } from '@/hooks/useEmptyDataState';
 
 interface DataSectionProps {
   region: string;
@@ -50,6 +52,7 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
         }
       } catch (err) {
         console.error("Error fetching data:", err);
+        setData([]);
       } finally {
         setLoading(false);
       }
@@ -63,59 +66,78 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
   if (loading) {
     return (
       <div className="text-center py-10 text-gray-500">
-        Memuat data {region} {desa ? `- ${desa}` : ""}{" "}
-        {posyandu ? `- ${posyandu}` : ""}...
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mb-3"></div>
+          <p>Memuat data {region} {desa ? `- ${desa}` : ""}{" "}
+          {posyandu ? `- ${posyandu}` : ""}...</p>
+        </div>
       </div>
     );
   }
 
   const maxValue = data.length > 0 ? Math.max(...data.map((item) => item.value)) : 0;
   const yDomain = [0, Math.ceil(maxValue + maxValue * 0.1)];
+  const isAllZero = areAllValuesZero(data, "value");
 
   return (
-    <div className="bg-white rounded-2xl shadow p-6">
+    <div className="bg-white rounded-2xl shadow p-6 relative">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
         Grafik SKDN {region}
         {desa ? ` - ${desa}` : ""} {posyandu ? ` - ${posyandu}` : ""}
       </h3>
 
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis domain={yDomain} />
-          <Tooltip
-            formatter={(value: number) => [`${value}`, "Jumlah Balita"]}
-            labelFormatter={(name, payload) => {
-              const item = data.find(d => d.name === name);
-              return item ? `${name} (${item.fullName})` : name;
-            }}
-          />
-          <Bar
-            dataKey="value"
-            radius={[8, 8, 0, 0]}
-            shape={(props) => {
-              const { name } = props.payload;
-              const colors = {
-                "S": "#ef4444",
-                "K": "#f59e0b",
-                "D": "#10b981",
-                "N": "#3b82f6"
-              };
-              return (
-                <rect
-                  {...props}
-                  fill={colors[name] || "#8884d8"}
-                />
-              );
-            }}
-          >
-            <LabelList dataKey="value" position="top" />
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      {/* Chart Container with Overlay */}
+      <div className="relative">
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis domain={yDomain} />
+            <Tooltip
+              formatter={(value: number) => [`${value}`, "Jumlah Balita"]}
+              labelFormatter={(name, payload) => {
+                const item = data.find(d => d.name === name);
+                return item ? `${name} (${item.fullName})` : name;
+              }}
+            />
+            <Bar
+              dataKey="value"
+              radius={[8, 8, 0, 0]}
+              shape={(props) => {
+                const { name } = props.payload;
+                const colors = {
+                  "S": "#ef4444",
+                  "K": "#f59e0b",
+                  "D": "#10b981",
+                  "N": "#3b82f6"
+                };
+                return (
+                  <rect
+                    {...props}
+                    fill={colors[name] || "#8884d8"}
+                  />
+                );
+              }}
+            >
+              <LabelList dataKey="value" position="top" />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
 
-      <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        {/* Empty Data Overlay */}
+        {isAllZero && (
+          <EmptyDataOverlay
+            title="Data SKDN Belum Tersedia"
+            message={`Belum ada data SKDN yang tercatat untuk ${region} ${desa ? `- ${desa}` : ""} pada periode ini. Pastikan kader sudah melakukan input data.`}
+            icon="database"
+          />
+        )}
+      </div>
+
+      {/* Info Cards */}
+      <div className={`mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center transition-opacity duration-300 ${
+        isAllZero ? 'opacity-50' : 'opacity-100'
+      }`}>
         <div className="p-3 bg-red-50 rounded-lg">
           <div className="font-bold text-red-800">S</div>
           <div className="text-sm text-gray-600">Sasaran</div>

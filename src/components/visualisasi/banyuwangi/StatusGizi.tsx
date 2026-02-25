@@ -11,6 +11,8 @@ import {
   LabelList,
 } from "recharts";
 import FunLoading from '@/components/ui/FunLoading';
+import EmptyDataOverlay from '@/components/ui/EmptyDataOverlay';
+import { areAllValuesZero } from '@/hooks/useEmptyDataState';
 
 interface DataSectionProps {
   region: string;
@@ -88,43 +90,68 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
     );
   }
 
+  const isAllZero = areAllValuesZero(data, "value");
+  const hasNoTarget = totalBalitaSasaran === 0;
+
   return (
-    <div className="bg-white rounded-2xl shadow p-6">
+    <div className="bg-white rounded-2xl shadow p-6 relative">
       <h3 className="text-xl font-semibold text-primary mb-4 text-center">
         Status Gizi Balita {region}
         {desa ? ` - ${desa}` : ""} {posyandu ? ` - ${posyandu}` : ""}
       </h3>
 
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart
-          data={data}
-          margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis
-            label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }}
-          />
-          <Tooltip formatter={(value: number) => [`${value}%`, "Persentase"]} />
-
-          <Bar dataKey="value" name="Persentase">
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-            <LabelList
-              dataKey="value"
-              position="top"
-              formatter={(value: number) => `${value}%`}
+      {/* Chart Container with Overlay */}
+      <div className="relative">
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart
+            data={data}
+            margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis
+              label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }}
             />
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+            <Tooltip formatter={(value: number) => [`${value}%`, "Persentase"]} />
 
-      <div className="mt-6 p-4 bg-gray-50 rounded-lg text-center">
+            <Bar dataKey="value" name="Persentase">
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+              <LabelList
+                dataKey="value"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+
+        {/* Empty Data Overlay */}
+        {isAllZero && (
+          <EmptyDataOverlay
+            title="Data Belum Tersedia"
+            message={`Belum ada data status gizi yang tercatat untuk ${region} ${desa ? `- ${desa}` : ""} pada periode ini.`}
+            icon="database"
+          />
+        )}
+      </div>
+
+      {/* Total Balita Sasaran */}
+      <div className={`mt-6 p-4 rounded-lg text-center transition-all duration-300 ${
+        hasNoTarget ? 'bg-amber-50 border border-amber-200' : 'bg-gray-50'
+      }`}>
         <p className="text-lg font-semibold text-gray-800">
-          Total Balita Sasaran:{" "}
-          <span className="text-blue-600">{totalBalitaSasaran}</span>
+          Total Balita Sasasaran:{" "}
+          <span className={`${hasNoTarget ? 'text-amber-600' : 'text-blue-600'}`}>
+            {totalBalitaSasaran}
+          </span>
         </p>
+        {hasNoTarget && (
+          <p className="text-sm text-amber-600 mt-1">
+            Belum ada data balita sasaran untuk periode ini
+          </p>
+        )}
       </div>
     </div>
   );

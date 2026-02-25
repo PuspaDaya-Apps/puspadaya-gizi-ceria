@@ -13,6 +13,8 @@ import {
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { MoreVertical } from "lucide-react";
 import * as htmlToImage from "html-to-image";
+import EmptyDataOverlay from "@/components/ui/EmptyDataOverlay";
+import { areAllValuesZero } from "@/hooks/useEmptyDataState";
 
 interface DataSectionProps {
   region: string;
@@ -166,6 +168,12 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
     }
   }, [fetchData]);
 
+  // Check if all data values are zero (empty data state)
+  const isEmptyData = useMemo(() => {
+    if (!giziData || giziData.length === 0) return true;
+    return areAllValuesZero(giziData, ["stunting", "wasting", "underweight", "normal"]);
+  }, [giziData]);
+
   if (loading && giziData.length === 0) {
     return (
       <div className="text-center py-10 text-gray-500">
@@ -193,7 +201,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+      <div className={`flex flex-col md:flex-row md:justify-between md:items-center mb-4 ${isEmptyData ? 'opacity-50' : ''}`}>
         <h3 className="text-xl font-semibold text-primary text-center w-full">
           Progres Status Gizi - {region} ({year})
         </h3>
@@ -229,7 +237,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
         </Menu>
       </div>
 
-      <div ref={chartRef} className="bg-white p-6 rounded-lg">
+      <div ref={chartRef} className="bg-white p-6 rounded-lg relative">
         <ResponsiveContainer width="100%" height={400}>
           <LineChart
             data={giziData}
@@ -283,6 +291,12 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
 
           </LineChart>
         </ResponsiveContainer>
+        {isEmptyData && (
+          <EmptyDataOverlay
+            title="Data Progres Gizi Belum Tersedia"
+            message={`Tidak ada data status gizi yang tersedia untuk wilayah ${region} pada periode yang dipilih.`}
+          />
+        )}
       </div>
 
     </div>
