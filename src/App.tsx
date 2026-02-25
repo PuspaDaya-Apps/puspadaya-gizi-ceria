@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { LoadingProvider } from "./context/LoadingContext";
 import { queryClient } from "./services/api";
+import { ErrorBoundary } from "./components/error/ErrorBoundary";
 
 // Lazy load pages for better performance
 const Index = lazy(() => import("./pages/Index"));
@@ -31,45 +32,47 @@ const LoadingSpinner = () => (
 );
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <LoadingProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <Index />
-              </Suspense>
-            } />
-            <Route path="/team" element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <Team />
-              </Suspense>
-            } />
-            <Route path="/kebijakanprivasi" element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <KebijakanPrivasi />
-              </Suspense>
-            } />
-            <Route path="/syaratdanketentuan" element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <SyaratdanKetentuan />
-              </Suspense>
-            } />
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <LoadingProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Index />
+                </Suspense>
+              } />
+              <Route path="/team" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Team />
+                </Suspense>
+              } />
+              <Route path="/kebijakanprivasi" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <KebijakanPrivasi />
+                </Suspense>
+              } />
+              <Route path="/syaratdanketentuan" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <SyaratdanKetentuan />
+                </Suspense>
+              } />
 
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <NotFound />
-              </Suspense>
-            } />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </LoadingProvider>
-  </QueryClientProvider>
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <NotFound />
+                </Suspense>
+              } />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </LoadingProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;

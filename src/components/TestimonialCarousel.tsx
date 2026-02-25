@@ -46,8 +46,10 @@ const TestimonialCarousel = () => {
   // Handle responsive behavior based on screen size
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setItemsToShow(1); // Show 1 item on mobile
+      if (window.innerWidth < 640) {
+        setItemsToShow(1); // Show 1 item on small mobile phones (<640px)
+      } else if (window.innerWidth < 768) {
+        setItemsToShow(1); // Show 1 item on mobile phones (640px-768px)
       } else if (window.innerWidth < 1024) {
         setItemsToShow(2); // Show 2 items on tablet
       } else {
@@ -94,9 +96,9 @@ const TestimonialCarousel = () => {
       >
         <div className="flex w-full">
           {testimonials.map((testimonial, index) => (
-            <div 
-              key={testimonial.id} 
-              className={`px-4 flex-shrink-0 ${itemsToShow === 1 ? 'w-full' : itemsToShow === 2 ? 'w-1/2' : 'w-1/3'}`}
+            <div
+              key={testimonial.id}
+              className={`px-2 sm:px-4 flex-shrink-0 ${itemsToShow === 1 ? 'w-full' : itemsToShow === 2 ? 'w-1/2' : 'w-1/3'}`}
             >
               <TestimonialCard
                 quote={testimonial.quote}
