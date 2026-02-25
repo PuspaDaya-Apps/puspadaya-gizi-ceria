@@ -24,7 +24,10 @@ import {
   Eye,
   Star,
   X,
+  Trash2,
+  Info,
 } from "lucide-react";
+import { useYouTubeCache } from "@/hooks/useYouTubeCache";
 
 interface YouTubeVideo {
   id: string;
@@ -99,6 +102,10 @@ const YouTubeCarousel: React.FC = () => {
   const [itemsPerView, setItemsPerView] = useState(3);
   const [selectedVideo, setSelectedVideo] = useState<YouTubeVideo | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showCacheInfo, setShowCacheInfo] = useState(false);
+  
+  // Use cache hook
+  const { videos, isLoading, clearCache, getCacheInfo } = useYouTubeCache();
 
   // Calculate items per view based on screen size
   useEffect(() => {
@@ -147,7 +154,7 @@ const YouTubeCarousel: React.FC = () => {
     [api],
   );
 
-  const totalPages = Math.ceil(youtubeVideos.length / itemsPerView);
+  const totalPages = Math.ceil(videos.length / itemsPerView);
 
   return (
     <section className="py-20 bg-gradient-to-b from-blue-50 to-white relative overflow-hidden">
@@ -174,10 +181,49 @@ const YouTubeCarousel: React.FC = () => {
             Tonton video tutorial berikut untuk mempelajari cara menggunakan
             aplikasi Puspadaya dengan efektif dan efisien
           </p>
+          
+          {/* Cache Info & Clear Button */}
+          <div className="flex justify-center items-center gap-3 mt-6">
+            <button
+              onClick={() => {
+                const info = getCacheInfo();
+                if (info && 'exists' in info && info.exists) {
+                  alert(`✅ Cache aktif\n📅 Dibuat: ${new Date(info.timestamp).toLocaleString('id-ID')}\n⏰ Tersisa: ${Math.floor(info.expiresIn / (1000 * 60 * 60 * 24))} hari`);
+                } else {
+                  alert('ℹ️ Cache akan dibuat saat video dimuat');
+                }
+              }}
+              className="inline-flex items-center gap-2 text-xs text-gray-500 hover:text-blue-600 transition-colors"
+              title="Lihat status cache"
+            >
+              <Info className="w-4 h-4" />
+              <span>Cache Status</span>
+            </button>
+            <button
+              onClick={() => {
+                if (window.confirm('🗑️ Hapus cache video YouTube?\n\nCache akan dihapus dan halaman akan refresh untuk memuat ulang data.')) {
+                  clearCache();
+                }
+              }}
+              className="inline-flex items-center gap-2 text-xs text-red-500 hover:text-red-700 transition-colors"
+              title="Hapus cache"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Clear Cache</span>
+            </button>
+          </div>
         </div>
 
         {/* Carousel Section */}
         <div className="relative">
+          {isLoading ? (
+            <div className="text-center py-20">
+              <div className="flex flex-col items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+                <p className="text-gray-600 font-medium">Memuat video tutorial...</p>
+              </div>
+            </div>
+          ) : (
           <Carousel
             opts={{
               align: "start",
@@ -187,7 +233,7 @@ const YouTubeCarousel: React.FC = () => {
             setApi={setApi}
           >
             <CarouselContent className="-ml-2 md:-ml-4">
-              {youtubeVideos.map((video, index) => (
+              {videos.map((video, index) => (
                 <CarouselItem
                   key={video.id}
                   className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3"
@@ -375,6 +421,7 @@ const YouTubeCarousel: React.FC = () => {
               <ChevronRight className="w-6 h-6 md:w-7 md:h-7 text-blue-600 group-hover:text-blue-700" />
             </CarouselNext>
           </Carousel>
+          )}
         </div>
 
         {/* Navigation Dots - Working Implementation */}
