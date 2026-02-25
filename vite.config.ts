@@ -15,7 +15,19 @@ export default defineConfig(({ mode }) => ({
 
     // Proxy configuration
     proxy: {
-      // Base API endpoint
+      // Secure endpoint dengan obfuscation
+      "/secure": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        // Backend harus handle decoding di sisi server
+        rewrite: (path) => {
+          // Path akan seperti: /secure/x1?data=encoded_params
+          // Backend perlu decode endpoint dan params
+          return path.replace(/^\/secure/, API_PREFIX);
+        },
+      },
+
+      // Base API endpoint (legacy - untuk backward compatibility)
       "/api": {
         target: API_BASE_URL,
         changeOrigin: true,
