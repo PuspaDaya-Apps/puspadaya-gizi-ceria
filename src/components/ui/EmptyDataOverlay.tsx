@@ -37,7 +37,7 @@ const EmptyDataOverlay: React.FC<EmptyDataOverlayProps> = ({
   };
 
   return (
-    <div className={`absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center p-6 ${className}`}>
+    <div className={`absolute inset-0 bg-white/95 backdrop-blur-sm z-10 flex items-center justify-center p-6 ${className}`}>
       <div className="text-center max-w-md">
         {/* Icon with animation */}
         <div className="mb-4 flex justify-center">
