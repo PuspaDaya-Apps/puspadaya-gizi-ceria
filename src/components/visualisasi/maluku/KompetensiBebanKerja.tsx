@@ -38,6 +38,23 @@ const KompetensiBebanKerjaMlk: React.FC<DataSectionProps> = ({
   const [workloadData, setWorkloadData] = useState<WorkloadData[]>([]);
   const [jumlahKaderMengisi, setJumlahKaderMengisi] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Handle responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Clean up event listener
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleDownload = async (format: "png" | "jpeg") => {
     if (!barChartRef.current) return;
@@ -167,29 +184,38 @@ const KompetensiBebanKerjaMlk: React.FC<DataSectionProps> = ({
         </Menu>
       </div>
 
-      <div ref={barChartRef} className="bg-white p-4 md:p-6 rounded-lg">
-        <h3 className="text-lg md:text-xl font-semibold text-primary mb-4 text-center">
+      <div ref={barChartRef} className="bg-white p-3 sm:p-4 md:p-6 rounded-lg">
+        <h3 className="text-base sm:text-lg md:text-xl font-semibold text-primary mb-4 text-center">
           Jumlah Kader Berdasarkan Kompetensi Beban Kerja Kader -{" "}
           {region || "Maluku"}
         </h3>
 
-        <ResponsiveContainer width="100%" height={400}>
+        <ResponsiveContainer width="100%" height={isMobile ? 300 : 400}>
           <BarChart
             layout="vertical"
             data={workloadData}
-            margin={{ top: 20, right: 30, left: 150, bottom: 20 }}
+            margin={{ 
+              top: 20, 
+              right: isMobile ? 20 : 30, 
+              left: isMobile ? 80 : 150, 
+              bottom: 20 
+            }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis type="number" tick={{ fontSize: 12 }} />
+            <XAxis 
+              type="number" 
+              tick={{ fontSize: isMobile ? 11 : 12 }}
+            />
             <YAxis
               dataKey="name"
               type="category"
-              width={140}
-              tick={{ fontSize: 12 }}
+              width={isMobile ? 70 : 140}
+              tick={{ fontSize: isMobile ? 10 : 12 }}
             />
             <Tooltip
               formatter={(value) => [`${value}`, "Jumlah Kader"]}
               labelFormatter={(name) => `Kategori: ${name}`}
+              contentStyle={{ fontSize: isMobile ? 12 : 14 }}
             />
             <Legend />
             <Bar dataKey="value" fill="#2b528a" name="Jumlah Kader">
@@ -197,14 +223,14 @@ const KompetensiBebanKerjaMlk: React.FC<DataSectionProps> = ({
                 dataKey="value"
                 position="right"
                 formatter={(value: number) => `${value}`}
-                fontSize={12}
+                fontSize={isMobile ? 10 : 12}
               />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
 
-        <div className="mt-6 bg-gray-100 rounded-lg p-4 text-center">
-          <p className="text-gray-600 font-medium">
+        <div className="mt-4 sm:mt-6 bg-gray-100 rounded-lg p-3 sm:p-4 text-center">
+          <p className="text-sm sm:text-base text-gray-600 font-medium">
             Jumlah Kader Mengisi
             <span className="text-gray-800 font-semibold ml-2">
               {jumlahKaderMengisi}
@@ -212,11 +238,11 @@ const KompetensiBebanKerjaMlk: React.FC<DataSectionProps> = ({
           </p>
         </div>
 
-        <div className="mt-4 md:mt-6 p-3 md:p-4 bg-blue-50 rounded-lg">
-          <h4 className="font-semibold text-blue-800 mb-2 text-sm md:text-base">
+        <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 rounded-lg">
+          <h4 className="font-semibold text-blue-800 mb-2 text-sm sm:text-base">
             Keterangan Kategori:
           </h4>
-          <ul className="text-xs md:text-sm text-gray-700 list-disc pl-5 space-y-1">
+          <ul className="text-xs sm:text-sm text-gray-700 list-disc pl-5 space-y-1">
             <li>
               Posyandu Balita: Kegiatan pelayanan kesehatan untuk balita di
               posyandu

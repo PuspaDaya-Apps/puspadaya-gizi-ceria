@@ -45,6 +45,23 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
 }) => {
   const [loading, setLoading] = useState(true);
   const [apiData, setApiData] = useState<ApiResponse | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Handle responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Clean up event listener
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // --- LOGIKA PENENTUAN TANGGAL ---
   const now = new Date();
@@ -268,12 +285,12 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
   };
 
   const renderContainer = (content: React.ReactNode) => (
-    <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
-      <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">
+    <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 max-w-4xl mx-auto">
+      <div className="text-center mb-4 sm:mb-6">
+        <h3 className="text-lg sm:text-2xl font-bold text-gray-800 mb-2">
           Durasi Pelaksanaan Posyandu Oleh Kader di {region}
         </h3>
-        <p className="text-gray-600">Distribusi Waktu Posyandu</p>
+        <p className="text-sm sm:text-base text-gray-600">Distribusi Waktu Posyandu</p>
       </div>
       {content}
     </div>
@@ -301,31 +318,36 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
 
   return renderContainer(
     <>
-      <div className="bg-gray-50 rounded-xl p-4">
-        <ResponsiveContainer width="100%" height={400}>
+      <div className="bg-gray-50 rounded-xl p-3 sm:p-4">
+        <ResponsiveContainer width="100%" height={isMobile ? 300 : 400}>
           <ComposedChart
             data={chartData}
-            margin={{ top: 30, right: 40, left: 60, bottom: 80 }}
+            margin={{ 
+              top: isMobile ? 20 : 30, 
+              right: isMobile ? 20 : 40, 
+              left: isMobile ? 40 : 60, 
+              bottom: isMobile ? 60 : 80 
+            }}
           >
             <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
             <XAxis
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={false} // MENYEMBUNYIKAN NAMA BULAN DI GARIS AXIS
+              tick={false}
               height={50}
-              label={{ 
-                value: `Periode ${getMonthName(effectiveMonth)} ${effectiveYear}`, // Label Dinamis
-                position: "insideBottom", 
-                offset: -40, 
-                fontSize: 14 
+              label={{
+                value: `Periode ${getMonthName(effectiveMonth)} ${effectiveYear}`,
+                position: "insideBottom",
+                offset: isMobile ? -30 : -40,
+                fontSize: isMobile ? 12 : 14
               }}
             />
             <YAxis
               domain={[0, 'dataMax + 1']}
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 12, fill: "#374151" }}
+              tick={{ fontSize: isMobile ? 10 : 12, fill: "#374151" }}
               tickFormatter={(value) => {
                 if (value % 1 !== 0) {
                   return Math.ceil(value * 100) / 100;
@@ -338,12 +360,15 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
                 position: "insideLeft",
                 style: {
                   textAnchor: "middle",
-                  fontSize: "14px",
+                  fontSize: isMobile ? 12 : 14,
                   fill: "#374151",
                 },
               }}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip 
+              content={<CustomTooltip />}
+              contentStyle={{ fontSize: isMobile ? 11 : 13 }}
+            />
 
             <Bar
               dataKey="max"
@@ -355,12 +380,12 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
         </ResponsiveContainer>
       </div>
 
-      <div className="mt-6 flex justify-center gap-8 flex-wrap">
+      <div className="mt-4 sm:mt-6 flex justify-center gap-4 sm:gap-8 flex-wrap">
         {Object.entries(categoryColors).map(([category, color]) => (
-          <div key={category} className="flex items-center gap-3">
+          <div key={category} className="flex items-center gap-2 sm:gap-3">
             <div className="flex items-center">
               <div
-                className="w-5 h-5 rounded border-2"
+                className="w-4 h-4 sm:w-5 sm:h-5 rounded border-2"
                 style={{
                   backgroundColor: color,
                   opacity: 0.7,
@@ -368,28 +393,28 @@ const DurasiPelaksanaanPosyanduBwi: React.FC<DataSectionProps> = ({
                 }}
               />
             </div>
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-xs sm:text-sm font-medium text-gray-700">
               {category}
             </span>
           </div>
         ))}
       </div>
 
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-        <h4 className="font-semibold text-blue-800 mb-3">
+      <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 rounded-lg">
+        <h4 className="font-semibold text-blue-800 mb-2 text-sm sm:text-base">
           Keterangan Visualisasi Box Plot:
         </h4>
-        <div className="space-y-2 text-sm text-gray-700">
+        <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-700">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-1 bg-red-500"></div>
+            <div className="w-4 sm:w-6 h-0.5 bg-red-500"></div>
             <span>Garis merah = Nilai Median (titik tengah data)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 border-2 border-gray-800 bg-green-500 opacity-60"></div>
+            <div className="w-4 sm:w-6 h-4 sm:h-6 border-2 border-gray-800 bg-green-500 opacity-60"></div>
             <span>Kotak = Rentang Interkuartil (Q1 hingga Q3) - 50% data tengah</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-0.5 bg-gray-800"></div>
+            <div className="w-4 sm:w-6 h-0.5 bg-gray-800"></div>
             <span>Garis (whisker) = Rentang nilai minimum hingga maksimum</span>
           </div>
           <div className="flex items-center gap-2">

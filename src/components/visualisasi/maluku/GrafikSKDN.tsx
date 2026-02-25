@@ -24,6 +24,23 @@ interface DataSectionProps {
 const GrafikSKDNMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, year }) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Handle responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Clean up event listener
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,19 +97,25 @@ const GrafikSKDNMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
   const isAllZero = areAllValuesZero(data, "value");
 
   return (
-    <div className="bg-white rounded-2xl shadow p-6 relative">
-      <h3 className="text-xl font-semibold text-primary mb-4 text-center">
+    <div className="bg-white rounded-2xl shadow p-4 sm:p-6 relative">
+      <h3 className="text-lg sm:text-xl font-semibold text-primary mb-4 text-center">
         Grafik SKDN {region}
         {desa ? ` - ${desa}` : ""} {posyandu ? ` - ${posyandu}` : ""}
       </h3>
 
       {/* Chart Container with Overlay */}
       <div className="relative">
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={data}>
+        <ResponsiveContainer width="100%" height={isMobile ? 250 : 300}>
+          <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis domain={yDomain} />
+            <XAxis 
+              dataKey="name" 
+              tick={{ fontSize: isMobile ? 12 : 14 }}
+            />
+            <YAxis 
+              domain={yDomain}
+              tick={{ fontSize: isMobile ? 12 : 14 }}
+            />
             <Tooltip
               formatter={(value: number) => [`${value}`, "Jumlah Balita"]}
               labelFormatter={(name, payload) => {
@@ -102,7 +125,7 @@ const GrafikSKDNMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
             />
             <Bar
               dataKey="value"
-              radius={[8, 8, 0, 0]}
+              radius={[4, 4, 0, 0]}
               shape={(props) => {
                 const { name } = props.payload;
                 const colors = {
@@ -119,7 +142,11 @@ const GrafikSKDNMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
                 );
               }}
             >
-              <LabelList dataKey="value" position="top" />
+              <LabelList 
+                dataKey="value" 
+                position="top" 
+                fontSize={isMobile ? 10 : 12}
+              />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
@@ -135,24 +162,24 @@ const GrafikSKDNMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
       </div>
 
       {/* Info Cards */}
-      <div className={`mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center transition-opacity duration-300 ${
+      <div className={`mt-4 sm:mt-6 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-center transition-opacity duration-300 ${
         isAllZero ? 'opacity-50' : 'opacity-100'
       }`}>
-        <div className="p-3 bg-red-50 rounded-lg">
-          <div className="font-bold text-red-800">S</div>
-          <div className="text-sm text-gray-600">Sasaran</div>
+        <div className="p-2 sm:p-3 bg-red-50 rounded-lg">
+          <div className="font-bold text-red-800 text-sm sm:text-base">S</div>
+          <div className="text-xs sm:text-sm text-gray-600">Sasaran</div>
         </div>
-        <div className="p-3 bg-yellow-50 rounded-lg">
-          <div className="font-bold text-yellow-800">K</div>
-          <div className="text-sm text-gray-600">KMS</div>
+        <div className="p-2 sm:p-3 bg-yellow-50 rounded-lg">
+          <div className="font-bold text-yellow-800 text-sm sm:text-base">K</div>
+          <div className="text-xs sm:text-sm text-gray-600">KMS</div>
         </div>
-        <div className="p-3 bg-green-50 rounded-lg">
-          <div className="font-bold text-green-800">D</div>
-          <div className="text-sm text-gray-600">Ditimbang</div>
+        <div className="p-2 sm:p-3 bg-green-50 rounded-lg">
+          <div className="font-bold text-green-800 text-sm sm:text-base">D</div>
+          <div className="text-xs sm:text-sm text-gray-600">Ditimbang</div>
         </div>
-        <div className="p-3 bg-blue-50 rounded-lg">
-          <div className="font-bold text-blue-800">N</div>
-          <div className="text-sm text-gray-600">Naik BB</div>
+        <div className="p-2 sm:p-3 bg-blue-50 rounded-lg">
+          <div className="font-bold text-blue-800 text-sm sm:text-base">N</div>
+          <div className="text-xs sm:text-sm text-gray-600">Naik BB</div>
         </div>
       </div>
     </div>

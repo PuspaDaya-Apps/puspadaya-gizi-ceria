@@ -28,6 +28,23 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
   const [data, setData] = useState<any[]>([]);
   const [totalBalitaSasaran, setTotalBalitaSasaran] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Handle responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Clean up event listener
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,25 +111,41 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
   const hasNoTarget = totalBalitaSasaran === 0;
 
   return (
-    <div className="bg-white rounded-2xl shadow p-6 relative">
-      <h3 className="text-xl font-semibold text-primary mb-4 text-center">
+    <div className="bg-white rounded-2xl shadow p-4 sm:p-6 relative">
+      <h3 className="text-lg sm:text-xl font-semibold text-primary mb-4 text-center">
         Status Gizi Balita {region}
         {desa ? ` - ${desa}` : ""} {posyandu ? ` - ${posyandu}` : ""}
       </h3>
 
       {/* Chart Container with Overlay */}
       <div className="relative">
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={isMobile ? 250 : 300}>
           <BarChart
             data={data}
-            margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+            margin={{ top: isMobile ? 10 : 20, right: isMobile ? 10 : 30, left: isMobile ? 10 : 20, bottom: isMobile ? 10 : 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis
-              label={{ value: "Persentase (%)", angle: -90, position: "insideLeft" }}
+            <XAxis 
+              dataKey="name" 
+              tick={{ fontSize: isMobile ? 11 : 14 }}
+              angle={isMobile ? -15 : 0}
+              textAnchor={isMobile ? "end" : "middle"}
+              height={isMobile ? 60 : undefined}
             />
-            <Tooltip formatter={(value: number) => [`${value}%`, "Persentase"]} />
+            <YAxis
+              label={{ 
+                value: "Persentase (%)", 
+                angle: -90, 
+                position: "insideLeft",
+                fontSize: isMobile ? 11 : 14,
+                offset: isMobile ? 0 : 10
+              }}
+              tick={{ fontSize: isMobile ? 11 : 14 }}
+            />
+            <Tooltip 
+              formatter={(value: number) => [`${value}%`, "Persentase"]}
+              contentStyle={{ fontSize: isMobile ? 12 : 14 }}
+            />
 
             <Bar dataKey="value" name="Persentase">
               {data.map((entry, index) => (
@@ -122,6 +155,7 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
                 dataKey="value"
                 position="top"
                 formatter={(value: number) => `${value}%`}
+                fontSize={isMobile ? 10 : 12}
               />
             </Bar>
           </BarChart>
@@ -138,17 +172,17 @@ const StatusGiziBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
       </div>
 
       {/* Total Balita Sasaran */}
-      <div className={`mt-6 p-4 rounded-lg text-center transition-all duration-300 ${
+      <div className={`mt-4 sm:mt-6 p-3 sm:p-4 rounded-lg text-center transition-all duration-300 ${
         hasNoTarget ? 'bg-amber-50 border border-amber-200' : 'bg-gray-50'
       }`}>
-        <p className="text-lg font-semibold text-gray-800">
+        <p className="text-base sm:text-lg font-semibold text-gray-800">
           Total Balita Sasasaran:{" "}
-          <span className={`${hasNoTarget ? 'text-amber-600' : 'text-blue-600'}`}>
+          <span className={`${hasNoTarget ? 'text-amber-600' : 'text-blue-600'} text-sm sm:text-base`}>
             {totalBalitaSasaran}
           </span>
         </p>
         {hasNoTarget && (
-          <p className="text-sm text-amber-600 mt-1">
+          <p className="text-xs sm:text-sm text-amber-600 mt-1">
             Belum ada data balita sasaran untuk periode ini
           </p>
         )}
