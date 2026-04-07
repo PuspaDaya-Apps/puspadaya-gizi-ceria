@@ -4,7 +4,7 @@ import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
 
 // Konstanta untuk base URL API
-const API_BASE_URL = "http://ssc80wssow48gsgwwg8888s4.103.109.210.102.sslip.io";
+const API_BASE_URL = "http://gsg4k8os8gwsc4ksk4kkgg48.103.109.210.102.sslip.io";
 const API_PREFIX = "/api/v1/public-dashboard";
 
 // https://vitejs.dev/config/
