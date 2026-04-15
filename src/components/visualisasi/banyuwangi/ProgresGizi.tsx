@@ -169,10 +169,15 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
   }, [fetchData]);
 
   // Check if all data values are zero (empty data state)
-  const isEmptyData = useMemo(() => {
-    if (!giziData || giziData.length === 0) return true;
-    return areAllValuesZero(giziData, ["stunting", "wasting", "underweight", "normal"]);
-  }, [giziData]);
+const isEmptyData = useMemo(() => {
+  if (!giziData || giziData.length === 0) return true;
+  
+  // Cek manual — kalau ada satu nilai > 0, berarti data ada
+  return !giziData.some(item => 
+    item.stunting > 0 || item.wasting > 0 || 
+    item.underweight > 0 || item.normal > 0
+  );
+}, [giziData]);
 
   if (loading && giziData.length === 0) {
     return (
