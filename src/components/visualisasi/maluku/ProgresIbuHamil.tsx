@@ -122,11 +122,14 @@ const ProgresIbuHamilMaluku: React.FC<DataSectionProps> = ({ region, desa, posya
     link.click();
   };
 
-  // Check if data is empty (all values are zero)
-  const isEmptyData = useMemo(() => {
-    if (!ibuHamilData || ibuHamilData.length === 0) return true;
-    return areAllValuesZero(ibuHamilData, ["kek", "pendek", "terlaluTua", "terlaluMuda"]);
-  }, [ibuHamilData]);
+ const isEmptyData = useMemo(() => {
+  if (!ibuHamilData || ibuHamilData.length === 0) return true;
+  return !ibuHamilData.some(item =>
+    item.kek > 0 || item.pendek > 0 ||
+    item.terlaluTua > 0 || item.terlaluMuda > 0
+  );
+}, [ibuHamilData]);
+  
 
   if (loading) {
     return (
