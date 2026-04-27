@@ -85,7 +85,13 @@ const DurasiKunjunganRumahMlk: React.FC<DataSectionProps> = ({
   }, [region, desa, posyandu, month, year]);
 
   const prepareBoxPlotData = (): BoxPlotData[] => {
-    if (!apiData) return [];
+    const safeData = apiData ?? {
+      minimum: 0,
+      q1: 0,
+      median: 0,
+      q3: 0,
+      maksimum: 0,
+    };
 
     // Helper function to convert values, handling "-" as 0
     const convertValue = (value: any): number => {
@@ -100,11 +106,11 @@ const DurasiKunjunganRumahMlk: React.FC<DataSectionProps> = ({
       {
         name: currentMonth,
         category: "Durasi Kunjungan Rumah",
-        min: convertValue(apiData.minimum),
-        q1: convertValue(apiData.q1),
-        median: convertValue(apiData.median),
-        q3: convertValue(apiData.q3),
-        max: convertValue(apiData.maksimum),
+        min: convertValue(safeData.minimum),
+        q1: convertValue(safeData.q1),
+        median: convertValue(safeData.median),
+        q3: convertValue(safeData.q3),
+        max: convertValue(safeData.maksimum),
       },
     ];
   };
@@ -327,22 +333,6 @@ const DurasiKunjunganRumahMlk: React.FC<DataSectionProps> = ({
                 <div className="h-4 bg-gray-200 rounded w-1/4"></div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!apiData) {
-    return (
-      <div className="bg-white rounded-2xl shadow-lg p-6 max-w-4xl mx-auto">
-        <div className="text-center">
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            Durasi Kunjungan Rumah Oleh Kader di {region}
-          </h3>
-          <p className="text-gray-600 mb-6">Distribusi Waktu Kunjungan Rumah</p>
-          <div className="bg-gray-50 rounded-xl p-8 text-center">
-            <p className="text-gray-500">Tidak ada data yang tersedia untuk ditampilkan</p>
           </div>
         </div>
       </div>

@@ -27,6 +27,13 @@ interface WorkloadData {
   value: number;
 }
 
+const DEFAULT_WORKLOAD_DATA: WorkloadData[] = [
+  { name: "Posyandu Balita", value: 0 },
+  { name: "Posyandu Ibu Hamil", value: 0 },
+  { name: "Kunjungan Rumah", value: 0 },
+  { name: "Tugas Tambahan", value: 0 },
+];
+
 const KompetensiBebanKerja: React.FC<DataSectionProps> = ({
   region,
   desa,
@@ -35,7 +42,7 @@ const KompetensiBebanKerja: React.FC<DataSectionProps> = ({
   year,
 }) => {
   const barChartRef = useRef<HTMLDivElement>(null);
-  const [workloadData, setWorkloadData] = useState<WorkloadData[]>([]);
+  const [workloadData, setWorkloadData] = useState<WorkloadData[]>(DEFAULT_WORKLOAD_DATA);
   const [jumlahKaderMengisi, setJumlahKaderMengisi] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -110,11 +117,13 @@ const KompetensiBebanKerja: React.FC<DataSectionProps> = ({
 
           setJumlahKaderMengisi(json.data.jumlah_kader_mengisi || 0);
         } else {
-          setWorkloadData([]);
+          setWorkloadData(DEFAULT_WORKLOAD_DATA);
           setJumlahKaderMengisi(0);
         }
       } catch (err) {
         console.error("Error fetching data:", err);
+        setWorkloadData(DEFAULT_WORKLOAD_DATA);
+        setJumlahKaderMengisi(0);
       } finally {
         setLoading(false);
       }
@@ -125,23 +134,10 @@ const KompetensiBebanKerja: React.FC<DataSectionProps> = ({
     }
   }, [region, desa, posyandu, month, year]);
 
-  const isAllZero = workloadData.every((d) => d.value === 0);
-
   if (loading) {
     return (
       <div className="text-center py-10 text-gray-500">
         Memuat data {region || "Banyuwangi"}...
-      </div>
-    );
-  }
-
-  if (!loading && isAllZero) {
-    return (
-      <div className="bg-white rounded-2xl shadow p-6 text-center mb-8">
-        <h3 className="text-xl font-semibold text-primary mb-4 text-center">
-          Jumlah Kader Berdasarkan Kompetensi Beban Kerja Kader
-        </h3>
-        <p className="text-gray-500">Tidak ada data kompetensi beban kerja.</p>
       </div>
     );
   }

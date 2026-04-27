@@ -11,8 +11,6 @@ import {
   LabelList,
 } from "recharts";
 import FunLoading from '@/components/ui/FunLoading';
-import EmptyDataOverlay from '@/components/ui/EmptyDataOverlay';
-import { areAllValuesZero } from '@/hooks/useEmptyDataState';
 
 interface DataSectionProps {
   region: string;
@@ -107,7 +105,6 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
     );
   }
 
-  const isAllZero = areAllValuesZero(data, "value");
   const hasNoTarget = totalBalitaSasaran === 0;
 
   return (
@@ -160,15 +157,6 @@ const StatusGiziMlk: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-
-        {/* Empty Data Overlay */}
-        {isAllZero && (
-          <EmptyDataOverlay
-            title="Data Belum Tersedia"
-            message={`Belum ada data status gizi yang tercatat untuk ${region} ${desa ? `- ${desa}` : ""} pada periode ini.`}
-            icon="database"
-          />
-        )}
       </div>
 
       {/* Total Balita Sasaran */}

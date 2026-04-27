@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -13,8 +13,6 @@ import {
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { MoreVertical } from "lucide-react";
 import * as htmlToImage from "html-to-image";
-import EmptyDataOverlay from "@/components/ui/EmptyDataOverlay";
-import { areAllValuesZero } from "@/hooks/useEmptyDataState";
 
 interface DataSectionProps {
   region: string;
@@ -32,6 +30,21 @@ interface IbuHamilData {
   terlaluMuda: number;
 }
 
+const MONTH_LABELS_ID = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];
+
 const getMonthNumber = (monthName: string): number => {
   const months = [
     "januari", "februari", "maret", "april", "mei", "juni",
@@ -48,6 +61,17 @@ const getMonthNumber = (monthName: string): number => {
     index = monthsEn.indexOf(lowerName);
   }
   return index + 1;
+};
+
+const buildZeroSeries = (monthLimit: number): IbuHamilData[] => {
+  const limit = monthLimit > 0 ? Math.min(monthLimit, 12) : 12;
+  return MONTH_LABELS_ID.slice(0, limit).map((bulan) => ({
+    bulan,
+    kek: 0,
+    pendek: 0,
+    terlaluTua: 0,
+    terlaluMuda: 0,
+  }));
 };
 
 const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, year }) => {
@@ -92,11 +116,11 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu
 
           setIbuHamilData(mappedData);
         } else {
-          setIbuHamilData([]);
+          setIbuHamilData(buildZeroSeries(month));
         }
       } catch (err) {
         console.error("Error fetching data:", err);
-        setIbuHamilData([]);
+        setIbuHamilData(buildZeroSeries(month));
       } finally {
         setLoading(false);
       }
@@ -121,14 +145,6 @@ const ProgresIbuHamilBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu
     link.download = `ProgresIbuHamil.${format}`;
     link.click();
   };
-
-const isEmptyData = useMemo(() => {
-  if (!ibuHamilData || ibuHamilData.length === 0) return true;
-  return !ibuHamilData.some(item =>
-    item.kek > 0 || item.pendek > 0 ||
-    item.terlaluTua > 0 || item.terlaluMuda > 0
-  );
-}, [ibuHamilData]);
 
   if (loading) {
     return (
@@ -157,7 +173,7 @@ const isEmptyData = useMemo(() => {
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
-      <div className={`flex flex-col md:flex-row md:justify-between md:items-center mb-4 ${isEmptyData ? 'opacity-50' : ''}`}>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
           Progres Ibu Hamil Berisiko - {region} ({year})
         </h3>
@@ -230,15 +246,6 @@ const isEmptyData = useMemo(() => {
             </Line>
           </LineChart>
         </ResponsiveContainer>
-
-        {/* Empty Data Overlay */}
-        {isEmptyData && (
-          <EmptyDataOverlay
-            title="Data Ibu Hamil Berisiko Belum Tersedia"
-            message={`Tidak ada data ibu hamil berisiko yang tercatat untuk wilayah ${region} pada tahun ${year}.`}
-            icon="database"
-          />
-        )}
       </div>
     </div>
   );

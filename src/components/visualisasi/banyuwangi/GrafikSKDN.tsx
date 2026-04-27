@@ -10,8 +10,6 @@ import {
   CartesianGrid,
   LabelList,
 } from "recharts";
-import EmptyDataOverlay from '@/components/ui/EmptyDataOverlay';
-import { areAllValuesZero } from '@/hooks/useEmptyDataState';
 
 interface DataSectionProps {
   region: string;
@@ -25,6 +23,12 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const defaultData = [
+    { name: "S", value: 0, fullName: "Sasaran" },
+    { name: "K", value: 0, fullName: "KMS" },
+    { name: "D", value: 0, fullName: "Ditimbang" },
+    { name: "N", value: 0, fullName: "Naik BB" },
+  ];
 
   // Handle responsive behavior
   useEffect(() => {
@@ -65,11 +69,11 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
           ];
           setData(mappedData);
         } else {
-          setData([]);
+          setData(defaultData);
         }
       } catch (err) {
         console.error("Error fetching data:", err);
-        setData([]);
+        setData(defaultData);
       } finally {
         setLoading(false);
       }
@@ -94,7 +98,6 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
 
   const maxValue = data.length > 0 ? Math.max(...data.map((item) => item.value)) : 0;
   const yDomain = [0, Math.ceil(maxValue + maxValue * 0.1)];
-  const isAllZero = areAllValuesZero(data, "value");
 
   return (
     <div className="bg-white rounded-2xl shadow p-4 sm:p-6 relative">
@@ -150,21 +153,10 @@ const GrafikSKDNBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, mon
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-
-        {/* Empty Data Overlay */}
-        {isAllZero && (
-          <EmptyDataOverlay
-            title="Data SKDN Belum Tersedia"
-            message={`Belum ada data SKDN yang tercatat untuk ${region} ${desa ? `- ${desa}` : ""} pada periode ini. Pastikan kader sudah melakukan input data.`}
-            icon="database"
-          />
-        )}
       </div>
 
       {/* Info Cards */}
-      <div className={`mt-4 sm:mt-6 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-center transition-opacity duration-300 ${
-        isAllZero ? 'opacity-50' : 'opacity-100'
-      }`}>
+      <div className="mt-4 sm:mt-6 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-center transition-opacity duration-300 opacity-100">
         <div className="p-2 sm:p-3 bg-red-50 rounded-lg">
           <div className="font-bold text-red-800 text-sm sm:text-base">S</div>
           <div className="text-xs sm:text-sm text-gray-600">Sasaran</div>

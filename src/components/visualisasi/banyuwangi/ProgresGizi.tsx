@@ -13,8 +13,6 @@ import {
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { MoreVertical } from "lucide-react";
 import * as htmlToImage from "html-to-image";
-import EmptyDataOverlay from "@/components/ui/EmptyDataOverlay";
-import { areAllValuesZero } from "@/hooks/useEmptyDataState";
 
 interface DataSectionProps {
   region: string;
@@ -32,6 +30,21 @@ interface GiziData {
   normal: number;
 }
 
+const MONTH_LABELS_ID = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];
+
 const getMonthNumber = (monthName: string): number => {
   const months = [
     "januari", "februari", "maret", "april", "mei", "juni",
@@ -48,6 +61,17 @@ const getMonthNumber = (monthName: string): number => {
     index = monthsEn.indexOf(lowerName);
   }
   return index + 1;
+};
+
+const buildZeroSeries = (monthLimit: number): GiziData[] => {
+  const limit = monthLimit > 0 ? Math.min(monthLimit, 12) : 12;
+  return MONTH_LABELS_ID.slice(0, limit).map((bulan) => ({
+    bulan,
+    stunting: 0,
+    wasting: 0,
+    underweight: 0,
+    normal: 0,
+  }));
 };
 
 const dataCache = new Map<string, { data: any; timestamp: number }>();
@@ -128,14 +152,14 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
 
           dataCache.set(cacheKey, { data: rawData, timestamp: now });
         } else {
-          setGiziData([]);
+          setGiziData(buildZeroSeries(month));
           setLoading(false);
           return;
         }
       } catch (err) {
         console.error("Error fetching data:", err);
         setError(err instanceof Error ? err.message : "Terjadi kesalahan saat mengambil data");
-        setGiziData([]);
+        setGiziData(buildZeroSeries(month));
         setLoading(false);
         return;
       }
@@ -163,7 +187,7 @@ const ProgresGiziBwi: React.FC<DataSectionProps> = ({
     if (region) {
       fetchData();
     } else {
-      setGiziData([]);
+      setGiziData(buildZeroSeries(month));
       setLoading(false);
     }
   }, [fetchData]);
@@ -206,7 +230,7 @@ const isEmptyData = useMemo(() => {
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
-      <div className={`flex flex-col md:flex-row md:justify-between md:items-center mb-4 ${isEmptyData ? 'opacity-50' : ''}`}>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
         <h3 className="text-xl font-semibold text-primary text-center w-full">
           Progres Status Gizi - {region} ({year})
         </h3>
@@ -296,12 +320,6 @@ const isEmptyData = useMemo(() => {
 
           </LineChart>
         </ResponsiveContainer>
-        {isEmptyData && (
-          <EmptyDataOverlay
-            title="Data Progres Gizi Belum Tersedia"
-            message={`Tidak ada data status gizi yang tersedia untuk wilayah ${region} pada periode yang dipilih.`}
-          />
-        )}
       </div>
 
     </div>
