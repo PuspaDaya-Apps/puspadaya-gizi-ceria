@@ -182,36 +182,7 @@ const YouTubeCarousel: React.FC = () => {
             aplikasi Puspadaya dengan efektif dan efisien
           </p>
           
-          {/* Cache Info & Clear Button */}
-          <div className="flex justify-center items-center gap-3 mt-6">
-            <button
-              onClick={() => {
-                const info = getCacheInfo();
-                if (info && 'exists' in info && info.exists) {
-                  alert(`✅ Cache aktif\n📅 Dibuat: ${new Date(info.timestamp).toLocaleString('id-ID')}\n⏰ Tersisa: ${Math.floor(info.expiresIn / (1000 * 60 * 60 * 24))} hari`);
-                } else {
-                  alert('ℹ️ Cache akan dibuat saat video dimuat');
-                }
-              }}
-              className="inline-flex items-center gap-2 text-xs text-gray-500 hover:text-blue-600 transition-colors"
-              title="Lihat status cache"
-            >
-              <Info className="w-4 h-4" />
-              <span>Cache Status</span>
-            </button>
-            <button
-              onClick={() => {
-                if (window.confirm('🗑️ Hapus cache video YouTube?\n\nCache akan dihapus dan halaman akan refresh untuk memuat ulang data.')) {
-                  clearCache();
-                }
-              }}
-              className="inline-flex items-center gap-2 text-xs text-red-500 hover:text-red-700 transition-colors"
-              title="Hapus cache"
-            >
-              <Trash2 className="w-4 h-4" />
-              <span>Clear Cache</span>
-            </button>
-          </div>
+    
         </div>
 
         {/* Carousel Section */}
