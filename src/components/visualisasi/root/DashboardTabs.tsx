@@ -57,7 +57,7 @@ const DashboardTabs = () => {
       desa: ["Portho", "Haria", "Tiow", "Kulur", "Saparua"],
       posyandu: {
         Portho: ["Roos-Portho", "Cempaka-Portho", "Flamboyan", "Mawar-Portho"],
-        Haria: ["Sakura-Haria", "Teratai-Haria", "Anggrek-Haria", "Aster-Haria", "Dahlia-Haria", "Dalies-Haria", "Matahari-Haria", "Melati-Haria"],
+        Haria: ["Sakura-Haria", "Teratai-Haria", "Anggrek-Haria", "Aster-Haria", "Dahlia-Haria", "Dalies-Haria", "Matahari-Haria", "Melati-Haria", "Bougenville-Haria"],
         Tiow: ["Kemiri-Tiow", "Kenari-Tiow"],
         Kulur: ["Mawar-Kulur"],
         Saparua: ["Melati-Saparua", "Anggrek-Saparua", "Kamboja-Saparua"],
