@@ -91,17 +91,17 @@ const HeroSection = () => {
         <div className="w-full lg:w-1/2 flex justify-center">
           <div className="relative">
             {/* Phone mockup with better styling */}
-            <div className="relative bg-gray-200 border-8 border-gray-800 rounded-[2.5rem] p-4 shadow-2xl max-w-sm mx-auto">
-              <div className="bg-black rounded-[2rem] overflow-hidden">
+            <div className="relative bg-gray-200 border-8 border-gray-800 rounded-[2.5rem] shadow-2xl w-[280px] mx-auto overflow-hidden">
+              <div className="bg-black rounded-[2rem] overflow-hidden mt-6">
                 <img
                   src="/lovable-uploads/95e14473-190b-4fd1-8942-8b32f7627ce1.png"
                   alt="Puspadaya App Interface"
-                  className="w-full block"
+                  className="w-full h-auto block"
                 />
               </div>
 
               {/* Status bar */}
-              <div className="absolute top-0 left-0 right-0 h-8 bg-gray-800 rounded-t-[2.2rem] rounded-b-md flex items-center justify-center">
+              <div className="absolute top-0 left-0 right-0 h-8 bg-gray-800 rounded-t-[2.2rem] flex items-center justify-center">
                 <div className="flex space-x-1">
                   <div className="w-1 h-1 bg-white rounded-full"></div>
                   <div className="w-1 h-1 bg-white rounded-full"></div>
