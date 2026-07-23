@@ -1,8 +1,8 @@
 
 import React from 'react';
-import Navigation from '@/components/Navigation';
+import Navigation from '@/components/section/Navigation';
 import TeamSection from '@/components/TeamSection';
-import FooterSection from '@/components/FooterSection';
+import FooterSection from '@/components/section/FooterSection';
 
 const Team = () => {
   return (

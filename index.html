@@ -3,7 +3,10 @@
 <html lang="id" data-theme="puspadaya">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Puspadaya - Pantau Gizi & Tumbuh Kembang Si Kecil</title>
     <meta name="description" content="Puspadaya - Platform monitoring gizi dan tumbuh kembang bayi. Mudah, Akurat, dan Terpercaya untuk Ibu Cerdas." />
     <meta name="author" content="Puspadaya" />
@@ -11,17 +14,53 @@
     <meta property="og:title" content="Puspadaya - Pantau Gizi & Tumbuh Kembang Si Kecil" />
     <meta property="og:description" content="Platform monitoring gizi dan tumbuh kembang bayi. Mudah, Akurat, dan Terpercaya untuk Ibu Cerdas." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta property="og:image" content="https://puspadaya-id.netlify.app/lovable-uploads/95e14473-190b-4fd1-8942-8b32f7627ce2.jpeg" />
+    <!-- https://puspadaya-id.netlify.app/lovable-uploads/95e14473-190b-4fd1-8942-8b32f7627ce2.jpeg -->
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@puspadaya" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta name="twitter:image" content="https://puspadaya-id.netlify.app/lovable-uploads/95e14473-190b-4fd1-8942-8b32f7627ce2.jpeg" />
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Preconnect to important origins -->
+    <link rel="preconnect" href="https://cdn.gpteng.co" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- DNS prefetch for external services -->
+    <link rel="dns-prefetch" href="https://cdn.gpteng.co">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
   </head>
 
   <body>
     <div id="root"></div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Load external script asynchronously after main app -->
+    <script>
+      // Load GPTEngineer script asynchronously to prevent blocking
+      if ('scriptLoader' in window === false) {
+        window.scriptLoader = true;
+        window.addEventListener('load', function() {
+          const script = document.createElement('script');
+          script.src = 'https://cdn.gpteng.co/gptengineer.js';
+          script.type = 'module';
+          script.async = true;
+          
+          // Error handling untuk script eksternal
+          script.onerror = function() {
+            console.warn('GPTEngineer script failed to load, continuing without it');
+          };
+          
+          script.onload = function() {
+            console.log('GPTEngineer script loaded successfully');
+          };
+          
+          document.body.appendChild(script);
+        });
+      }
+    </script>
   </body>
 </html>

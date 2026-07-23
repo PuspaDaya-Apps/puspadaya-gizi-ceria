@@ -1,0 +1,189 @@
+import React, { useEffect, useState } from "react";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Label,
+} from "recharts";
+
+interface DataSectionProps {
+  region: string;
+  desa?: string;
+  posyandu?: string;
+  month: number;
+  year: number;
+}
+
+const MpasiBwi: React.FC<DataSectionProps> = ({ region, desa, posyandu, month, year }) => {
+  const [data, setData] = useState<any[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Handle responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Clean up event listener
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const query = new URLSearchParams({
+          kabupaten_kota: region,
+          ...(desa ? { desa } : {}),
+          ...(posyandu ? { posyandu } : {}),
+          bulan: month.toString(),  // Add specified month number (1-12)
+          tahun: year.toString(),   // Add specified year in YYYY format
+        });
+        const res = await fetch(`/anak-mpasi?${query.toString()}`);
+        const json = await res.json();
+
+        if (json.data) {
+          const {
+            prevalensi_mpasi_iya,
+            prevalensi_mpasi_tidak,
+            prevalensi_mpasi_tidak_tahu,
+            prevalensi_mpasi_belum_diukur,
+            total_balita_mpasi,
+          } = json.data;
+
+          const mpasiIya = prevalensi_mpasi_iya ?? 0;
+          const mpasiTidak = prevalensi_mpasi_tidak ?? 0;
+          const mpasiTidakTahu = prevalensi_mpasi_tidak_tahu ?? 0;
+          const mpasiBelumDiukur = prevalensi_mpasi_belum_diukur ?? 0;
+
+          const mappedData = [
+            { name: "Ya", value: mpasiIya, description: "Balita yang mendapat selain ASI" },
+            { name: "Tidak", value: mpasiTidak, description: "Balita yang tidak mendapat selain ASI" },
+            { name: "Tidak Diisi", value: mpasiTidakTahu, description: "Status MPASI tidak diketahui" },
+            // Removed "Belum Diukur" as per requirement
+          ]; // Show all categories even when value is 0
+
+          setData(mappedData);
+          setTotal(total_balita_mpasi ?? 0);
+        } else {
+          // When json.data is null, set default values with 0
+          const defaultData = [
+            { name: "Ya", value: 0, description: "Balita yang mendapat selain ASI" },
+            { name: "Tidak", value: 0, description: "Balita yang tidak mendapat selain ASI" },
+            { name: "Tidak Diisi", value: 0, description: "Status MPASI tidak diketahui" },
+          ];
+          setData(defaultData);
+          setTotal(0);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        // Set default values with 0 when there's an error
+        const defaultData = [
+          { name: "Ya", value: 0, description: "Balita yang mendapat selain ASI" },
+          { name: "Tidak", value: 0, description: "Balita yang tidak mendapat selain ASI" },
+          { name: "Tidak Diisi", value: 0, description: "Status MPASI tidak diketahui" },
+        ];
+        setData(defaultData);
+        setTotal(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (region) fetchData();
+  }, [region, desa, posyandu, month, year]);
+
+  if (loading) {
+    return (
+      <div className="text-center py-10 text-gray-500">
+        Memuat data {region} {desa ? `- ${desa}` : ""} {posyandu ? `- ${posyandu}` : ""}...
+      </div>
+    );
+  }
+
+  const COLORS = ["#1f77b4", "#ff7f0e", "#e63946"];
+
+
+  const totalValue = data.reduce((sum, d) => sum + d.value, 0);
+
+  return (
+    <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+      <h3 className="text-lg sm:text-xl font-semibold text-primary mb-4 text-center">
+        Persentase Balita Mendapatkan Makanan Selain ASI {region}
+      </h3>
+
+      <>
+        <ResponsiveContainer width="100%" height={isMobile ? 300 : 500}>
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius={isMobile ? 80 : 110}
+              innerRadius={isMobile ? 35 : 50}
+              labelLine
+              label={({ name, value }) => {
+                const percentValue = totalValue
+                  ? ((value / totalValue) * 100).toFixed(1)
+                  : "0";
+                return `${name} ${percentValue}%`;
+              }}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+
+            <Tooltip
+              formatter={(value, name) => {
+                const percent = totalValue
+                  ? ((Number(value) / totalValue) * 100).toFixed(1)
+                  : "0";
+                const entry = data.find((d) => d.name === name);
+                return [`${value} (${percent}%)`, entry?.description || name];
+              }}
+              contentStyle={{ fontSize: isMobile ? 12 : 14 }}
+            />
+
+            <Legend
+              formatter={(value) => {
+                const dataEntry = data.find((d) => d.name === value);
+                return dataEntry ? `${value}: ${dataEntry.description}` : value;
+              }}
+              wrapperStyle={{ fontSize: isMobile ? 11 : 13 }}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+
+        <div className="mt-4 text-center">
+          <div className="inline-block bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg px-3 sm:px-4 py-2 border border-gray-300">
+            <span className="text-sm sm:text-base text-gray-700 font-medium">
+              Total Balita:{" "}
+            </span>
+            <span className="text-sm sm:text-base text-gray-800 font-semibold">
+              {total}
+            </span>
+          </div>
+        </div>
+      </>
+    </div>
+  );
+};
+
+export default MpasiBwi;

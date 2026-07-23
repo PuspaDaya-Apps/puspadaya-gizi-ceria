@@ -1,0 +1,331 @@
+import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  LabelList,
+} from "recharts";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { MoreVertical } from "lucide-react";
+import * as htmlToImage from "html-to-image";
+
+interface DataSectionProps {
+  region: string;
+  desa?: string;
+  posyandu?: string;
+  month: number;
+  year: number;
+}
+
+interface GiziData {
+  bulan: string;
+  stunting: number;
+  wasting: number;
+  underweight: number;
+  normal: number;
+}
+
+const MONTH_LABELS_ID = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];
+
+const getMonthNumber = (monthName: string): number => {
+  const months = [
+    "januari", "februari", "maret", "april", "mei", "juni",
+    "juli", "agustus", "september", "oktober", "november", "desember"
+  ];
+  const monthsEn = [
+    "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november", "december"
+  ];
+
+  const lowerName = monthName.toLowerCase();
+  let index = months.indexOf(lowerName);
+  if (index === -1) {
+    index = monthsEn.indexOf(lowerName);
+  }
+  return index + 1;
+};
+
+const buildZeroSeries = (monthLimit: number): GiziData[] => {
+  const limit = monthLimit > 0 ? Math.min(monthLimit, 12) : 12;
+  return MONTH_LABELS_ID.slice(0, limit).map((bulan) => ({
+    bulan,
+    stunting: 0,
+    wasting: 0,
+    underweight: 0,
+    normal: 0,
+  }));
+};
+
+const dataCache = new Map<string, { data: any; timestamp: number }>();
+
+const ProgresGiziMlk: React.FC<DataSectionProps> = ({
+  region,
+  desa,
+  posyandu,
+  month,
+  year,
+}) => {
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [giziData, setGiziData] = useState<GiziData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleDownload = async (format: "png" | "jpeg") => {
+    if (!chartRef.current) return;
+    const options = { backgroundColor: "#ffffff" };
+    const dataUrl =
+      format === "png"
+        ? await htmlToImage.toPng(chartRef.current, options)
+        : await htmlToImage.toJpeg(chartRef.current, {
+          quality: 0.95,
+          backgroundColor: "#ffffff",
+        });
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = `ProgresGizi.${format}`;
+    link.click();
+  };
+
+  const cacheKey = useMemo(() => {
+    return `${region}-${desa || 'all'}-${posyandu || 'all'}-0-${year}`;
+  }, [region, desa, posyandu, year]);
+
+  const fetchData = useCallback(async () => {
+    const cached = dataCache.get(cacheKey);
+    const now = Date.now();
+    const tenMinutes = 10 * 60 * 1000;
+
+    let rawData = null;
+
+    if (cached && (now - cached.timestamp) < tenMinutes) {
+      rawData = cached.data;
+      setLoading(false);
+    } else {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const query = new URLSearchParams({
+          kabupaten_kota: region,
+          ...(desa ? { desa } : {}),
+          ...(posyandu ? { posyandu } : {}),
+          bulan: "0",
+          tahun: year.toString(),
+        });
+
+        const res = await fetch(`/progres-status-gizi?${query.toString()}`);
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const json = await res.json();
+
+        if (json.data) {
+          rawData = Object.entries(json.data).map(
+            ([bulan, values]: any) => ({
+              bulan,
+              stunting: values.total_stunting ?? 0,
+              wasting: values.total_wasting ?? 0,
+              underweight: values.total_underweight ?? 0,
+              normal: values.total_normal ?? 0,
+            })
+          );
+
+          dataCache.set(cacheKey, { data: rawData, timestamp: now });
+        } else {
+          setGiziData(buildZeroSeries(month));
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(err instanceof Error ? err.message : "Terjadi kesalahan saat mengambil data");
+        setGiziData(buildZeroSeries(month));
+        setLoading(false);
+        return;
+      }
+    }
+
+    if (rawData) {
+      let processedData = [...rawData];
+
+      processedData.sort((a, b) => getMonthNumber(a.bulan) - getMonthNumber(b.bulan));
+
+      if (month > 0) {
+        processedData = processedData.filter((item) => {
+          const itemMonthNum = getMonthNumber(item.bulan);
+          return itemMonthNum > 0 && itemMonthNum <= month;
+        });
+      }
+
+      setGiziData(processedData);
+      setLoading(false);
+    }
+
+  }, [region, desa, posyandu, year, month, cacheKey]);
+
+  useEffect(() => {
+    if (region) {
+      fetchData();
+    } else {
+      setGiziData(buildZeroSeries(month));
+      setLoading(false);
+    }
+  }, [fetchData]);
+
+
+
+
+  const isDataEmpty = useMemo(() => {
+  if (!giziData || giziData.length === 0) return true;
+  
+  // Cek manual — kalau ada satu nilai > 0, berarti data ada
+  return !giziData.some(item => 
+    item.stunting > 0 || item.wasting > 0 || 
+    item.underweight > 0 || item.normal > 0
+  );
+}, [giziData]);
+
+  if (loading && giziData.length === 0) {
+    return (
+      <div className="text-center py-10 text-gray-500">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mb-3"></div>
+          <p>Memuat data {region}...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-10 text-red-500">
+        <p>Terjadi kesalahan: {error}</p>
+        <button
+          onClick={fetchData}
+          className="mt-3 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/80"
+        >
+          Coba Lagi
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-2xl shadow p-6 relative mb-8">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+        <h3 className="text-xl font-semibold text-primary text-center w-full">
+          Progres Status Gizi - {region} ({year})
+        </h3>
+
+        <Menu as="div" className="relative inline-block text-left">
+          <MenuButton className="p-2 rounded-full hover:bg-gray-100">
+            <MoreVertical className="w-5 h-5 text-gray-600" />
+          </MenuButton>
+          <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right bg-white border border-gray-200 rounded-lg shadow-lg focus:outline-none">
+            <MenuItem>
+              {({ active }) => (
+                <button
+                  onClick={() => handleDownload("png")}
+                  className={`${active ? "bg-gray-100" : ""
+                    } w-full px-4 py-2 text-left text-sm text-gray-700`}
+                >
+                  Download PNG
+                </button>
+              )}
+            </MenuItem>
+            <MenuItem>
+              {({ active }) => (
+                <button
+                  onClick={() => handleDownload("jpeg")}
+                  className={`${active ? "bg-gray-100" : ""
+                    } w-full px-4 py-2 text-left text-sm text-gray-700`}
+                >
+                  Download JPG
+                </button>
+              )}
+            </MenuItem>
+          </MenuItems>
+        </Menu>
+      </div>
+
+      <div ref={chartRef} className="bg-white p-6 rounded-lg relative">
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart
+            data={giziData}
+            margin={{ top: 20, right: 30, left: 10, bottom: 20 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="bulan"
+              interval={0}
+              padding={{ left: 20, right: 20 }}
+              angle={-15}
+              textAnchor="end"
+            />
+            <YAxis tickFormatter={(value) => `${value}%`} />
+
+            <Tooltip
+              formatter={(value) => `${value}%`}
+            />
+            <Legend />
+            <Line type="monotone" dataKey="stunting" stroke="#ef4444" strokeWidth={2} name="Stunting">
+              <LabelList
+                dataKey="stunting"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
+            </Line>
+
+            <Line type="monotone" dataKey="wasting" stroke="#3b82f6" strokeWidth={2} name="Wasting">
+              <LabelList
+                dataKey="wasting"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
+            </Line>
+
+            <Line type="monotone" dataKey="underweight" stroke="#8B4513" strokeWidth={2} name="Underweight">
+              <LabelList
+                dataKey="underweight"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
+            </Line>
+
+            <Line type="monotone" dataKey="normal" stroke="#16a34a" strokeWidth={2} name="Normal">
+              <LabelList
+                dataKey="normal"
+                position="top"
+                formatter={(value: number) => `${value}%`}
+              />
+            </Line>
+
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+    </div>
+  );
+};
+
+export default ProgresGiziMlk;

@@ -1,22 +1,187 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
+import { visualizer } from "rollup-plugin-visualizer";
+
+// Konstanta untuk base URL API
+const API_BASE_URL = "http://gsg4k8os8gwsc4ksk4kkgg48.103.109.210.102.sslip.io";
+const API_PREFIX = "/api/v1/public-dashboard";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+
+    // Proxy configuration
+    proxy: {
+      // Secure endpoint dengan obfuscation
+      "/secure": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        // Backend harus handle decoding di sisi server
+        rewrite: (path) => {
+          // Path akan seperti: /secure/x1?data=encoded_params
+          // Backend perlu decode endpoint dan params
+          return path.replace(/^\/secure/, API_PREFIX);
+        },
+      },
+
+      // Base API endpoint (legacy - untuk backward compatibility)
+      "/api": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, API_PREFIX),
+      },
+
+      // Balita endpoints
+      "/balita": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/balita/, `${API_PREFIX}/balita-status`),
+      },
+
+      "/progres-status-gizi": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/progres-status-gizi/, `${API_PREFIX}/balita-status-period`),
+      },
+
+      "/anak-mpasi": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/anak-mpasi/, `${API_PREFIX}/anak-mpasi`),
+      },
+
+      "/asi-eksklusif": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/asi-eksklusif/, `${API_PREFIX}/asi-eksklusif`),
+      },
+
+      // Data SKDN
+      "/data-skdn": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/data-skdn/, `${API_PREFIX}/skdn-data`),
+      },
+
+      // Ibu Hamil endpoints
+      "/ibu-hamil": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ibu-hamil/, `${API_PREFIX}/ibu-hamil`),
+      },
+
+      "/ibu-hamil-periodik": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ibu-hamil-periodik/, `${API_PREFIX}/ibu-hamil-periodik`),
+      },
+
+      // Beban Kerja endpoints
+      "/jenis-kompetensi": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/jenis-kompetensi/, `${API_PREFIX}/jenis-kompetensi`),
+      },
+
+      "/waktu-kunjungan": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/waktu-kunjungan/, `${API_PREFIX}/waktu-kunjungan-total`),
+      },
+
+      "/waktu-jadwal-posyandu": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/waktu-jadwal-posyandu/, `${API_PREFIX}/waktu-jadwal-posyandu`),
+      },
+
+      "/waktu-kunjungan-anak": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/waktu-kunjungan-anak/, `${API_PREFIX}/waktu-kunjungan-anak`),
+      },
+
+      "/waktu-kunjungan-ibu-hamil": {
+        target: API_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/waktu-kunjungan-ibu-hamil/, `${API_PREFIX}/waktu-kunjungan-ibu-hamil`),
+      },
+    },
   },
+
   plugins: [
     react(),
-    mode === 'development' &&
-    componentTagger(),
+    mode === "report" && visualizer({
+      filename: "dist/stats.html",
+      template: "treemap", // sunburst, treemap, circlepacking, network
+      open: true,
+    })
   ].filter(Boolean),
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split vendor chunks for better caching
+          'react-vendor': ['react', 'react-dom'],
+          'radix-vendor': [
+            '@radix-ui/react-accordion',
+            '@radix-ui/react-alert-dialog',
+            '@radix-ui/react-aspect-ratio',
+            '@radix-ui/react-avatar',
+            '@radix-ui/react-checkbox',
+            '@radix-ui/react-collapsible',
+            '@radix-ui/react-context-menu',
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-hover-card',
+            '@radix-ui/react-label',
+            '@radix-ui/react-menubar',
+            '@radix-ui/react-navigation-menu',
+            '@radix-ui/react-popover',
+            '@radix-ui/react-progress',
+            '@radix-ui/react-radio-group',
+            '@radix-ui/react-scroll-area',
+            '@radix-ui/react-select',
+            '@radix-ui/react-separator',
+            '@radix-ui/react-slider',
+            '@radix-ui/react-slot',
+            '@radix-ui/react-switch',
+            '@radix-ui/react-tabs',
+            '@radix-ui/react-toast',
+            '@radix-ui/react-toggle',
+            '@radix-ui/react-toggle-group',
+            '@radix-ui/react-tooltip',
+          ],
+          'ui-vendor': ['@headlessui/react'],
+          'chart-vendor': ['recharts', 'react-plotly.js'],
+          'utils': ['date-fns', 'clsx', 'tailwind-merge'],
+        },
+      },
+    },
+    // Enable compression in production
+    cssCodeSplit: true,
+    sourcemap: mode !== 'production', // Only generate source maps in development
+  },
+
+  // Performance optimizations
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'recharts',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-accordion',
+    ],
   },
 }));
